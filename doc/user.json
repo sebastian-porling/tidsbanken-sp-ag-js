@@ -1,0 +1,115 @@
+// GET /user
+// Response
+// 303, if success
+{
+    "HTTP/1.1 303 See Other": "",
+    "Location": "https://example.com/user/:own_user_id"
+}
+// 401, otherwise
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// POST /user
+// BODY
+{
+    "email": "String",
+    "full_name": "String",
+    "password": "String",
+    "isAdmin": "Boolean",
+    "profile_pic": "String",
+    "2FA": "Boolean",
+    "vacation_days": "Integer",
+    "used_vacation_days": "Integer"
+}
+// Response
+// 201, if success. 401, if not admin, 400 if something's missing or already exists 
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// GET /user/:user_id
+// Response
+// 200: is user
+{
+    "full_name": "String",
+    "profile_pic": "String"
+}
+// 200: is admin
+{
+    "full_name": "String",
+    "profile_pic": "String",
+    "email": "String",
+    "created_at": "Date",
+    "modified_at": "Date",
+    "vacation_days": "Integer",
+    "used_vacation_days": "Integer",
+    "isAdmin": "Boolean"
+}
+// 404, user doesn't exist, 401 not logged in
+
+// PATCH /user/:user_id
+// BODY
+// For users:
+{
+    "full_name": "String",
+    "profile_pic": "String",
+    "email": "String",
+    "2FA": "Boolean",
+}
+// For admin:
+{
+    "email": "String",
+    "full_name": "String",
+    "isAdmin": "Boolean",
+    "profile_pic": "String",
+    "2FA": "Boolean",
+    "vacation_days": "Integer",
+    "used_vacation_days": "Integer"
+}
+// Response
+// 200
+// 404 user doesn't exist, 403 forbidden, 400 tried to change password or forgot field. 401 not logged in
+{
+    "status": "Integer",
+    "message": "String"
+} 
+
+// DELETE /user/:user_id
+// Response
+// 200 or 404 or 401 
+{
+    "status": "Integer",
+    "message": "String"
+} 
+
+// GET /user/:user_id/requests
+// optionally /user/:user_id/requests?query=any
+// Response 200
+[
+    {
+        "title": "String",
+        "period_start": "Date",
+        "period_end": "Date",
+        "status": "String"
+    }
+]
+
+// 404, 401
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// POST /user/:user_id/update_password
+// BODY
+{
+    "password": "String"
+}
+// Response 200, 401 not logged in, 404 user not found, 400 if bad request, 403 not self or admin
+{
+    "status": "Integer",
+    "message": "String"
+}

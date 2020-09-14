@@ -1,0 +1,53 @@
+// GET /request/:request_id/comment
+// response 200:
+[
+    {
+        "comment_id": "Long",
+        "message": "String",
+        "user": "String",
+        "created_at": "Date",
+        "modified_at": "Date"
+    }
+]
+// 404, 403, 401 
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// POST /request/:request_id/comment
+// BODY
+{
+    "message": "String",
+    "user_id": "Long"
+}
+// Response, 201 created, 401 not logged in, 403 forbidden, 400 bad request, 404 request not found and user not found
+
+// GET /request/:request_id/comment/:comment_id
+// Response 200:
+{
+    "message": "String",
+    "user": "String",
+    "created_at": "Date",
+    "modified_at": "Date"
+}
+// Response 404 not found, 403 forbidden, 401 not logged in
+
+// PATCH /request/:request_id/comment/:comment_id
+// BODY
+{
+    "message": "String"
+}
+// Response: 200, 400, 401, 403, 404
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// DELETE /request/:request_id/comment/:comment_id
+// Response 200, 401, 403, 404
+{
+    "status": "Integer",
+    "message": "String"
+}
+

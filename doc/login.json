@@ -1,0 +1,9 @@
+// POST /login
+// Body
+{
+    "email": "String",
+    "password": "String"
+}
+
+// Response
+// 200, if success || 401, otherwise

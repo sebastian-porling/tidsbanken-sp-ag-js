@@ -1,0 +1,53 @@
+// GET /ineligible
+// Response 200
+[
+    {
+        "ip_id": "Long",
+        "period_start": "Date",
+        "period_end": "Date"
+    }
+]
+// 401
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// POST /ineligible
+// BODY
+{
+    "period_start": "Date",
+    "period_end": "Date",
+}
+// Response 201, 401, 400, 403
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// GET /ineligible/:ip_id
+// Response 200
+{
+    "period_start": "Date",
+    "period_end": "Date"
+}
+// Response 401, 403, 404
+
+// PATCH /ineligible/:ip:id
+// BODY
+{
+    "period_start": "Date",
+    "period_end": "Date"
+}
+// Response 200, 400, 401, 403, 404
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// DELETE /ineligible/:ip_id
+// Response 200, 401, 403, 404
+{
+    "status": "Integer",
+    "message": "String"
+}

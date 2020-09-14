@@ -1,0 +1,77 @@
+// GET /request
+// optionall: GET /request?query=any
+// Response 200:
+[
+    {
+        "request_id": "Long",
+        "title": "String",
+        "period_start": "Date",
+        "period_end": "Date",
+        "status": "String",
+        "owner": "String"
+    }
+]
+// 401 not logged in
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// POST /request
+// BODY
+{
+    "title": "String",
+    "period_start": "Date",
+    "period_end": "Date",
+    "owner_id": "Long"
+}
+// 400 bad request, 401 not logged in, 404 user not found
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// GET /request/:request_id
+// Response 200:
+{
+    "title": "String",
+    "period_start": "Date",
+    "period_end": "Date",
+    "status": "String",
+    "owner": "String"
+}
+// 401, 404, 400
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// PATCH /request/:request_id
+// BODY
+// request owner
+{
+    "title": "String",
+    "period_start": "Date",
+    "period_end": "Date"
+}
+// admin
+{
+    "title": "String",
+    "period_start": "Date",
+    "period_end": "Date",
+    "status": "String"
+}
+// Response 200, 400, 401, 403, 404
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+// DELETE /request/:request_id
+// Response, 200, 404, 401, 403
+{
+    "status": "Integer",
+    "message": "String"
+}
+
+
