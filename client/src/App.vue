@@ -1,16 +1,16 @@
 <template>
   <v-app id="inspire">
-    <UserProfilePage />
+<RequestHistoryPage />
   </v-app >
 </template>
 
 <script>
-import UserProfilePage from './pages/user-profile-page/UserProfilePage';
+import RequestHistoryPage from './pages/request-history-page/RequestHistoryPage';
 
 export default {
   name: 'App',
   components: {
-    UserProfilePage
+    RequestHistoryPage
   }
 }
 </script>

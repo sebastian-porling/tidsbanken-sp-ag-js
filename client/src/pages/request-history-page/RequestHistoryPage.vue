@@ -1,8 +1,13 @@
 <template>
-<v-row class="container">
+<v-col class="container">
+  <v-row>
     <UserInfoComponent />
-  <RequestHistoryTable />
-</v-row>
+  </v-row>
+  <br>
+  <v-row>
+    <RequestHistoryTable />
+  </v-row>
+</v-col>
 </template>
 
 <script>

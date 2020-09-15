@@ -5,13 +5,6 @@
       v-model="valid"
       :lazy-validation="lazy"
     >
-      <v-text-field
-        v-model="name"
-        :counter="100"
-        :rules="nameRules"
-        label="Name"
-        required
-      ></v-text-field>
 
       <v-text-field
         v-model="email"
