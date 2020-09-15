@@ -13,7 +13,7 @@ public class CommentController{
     }
 
     @PostMapping("/request/{request_id}/comment")
-    public String createComment(@RequestBody Comment comment) {
+    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
         Comment createComment = commentRepository.save(comment);
         Response response = new Response(createComment, "CREATE");
         HttpStatus status = HttpStatus.CREATED;
@@ -25,7 +25,7 @@ public class CommentController{
     }
 
     @PatchMapping("/request/{request_id}/comment/{comment_id}")
-    public String updateComment(@RequestBody Comment comment) {
+    public ResponseEntity<Comment> updateComment(@RequestBody Comment comment) {
     }
 
     @DeleteMapping("/request/{request_id}/comment/{comment_id}")

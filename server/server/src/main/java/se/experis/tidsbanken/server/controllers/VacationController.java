@@ -11,7 +11,7 @@ public class VacationController{
     }
 
     @PostMapping("/request")
-    public String createRequest(@RequestBody VacationRequest vacationrequest) {
+    public ResponseEntity<CommonResponse> createRequest(@RequestBody VacationRequest vacationrequest) {
     }
 
     @GetMapping("/request/{request_id}")
@@ -19,7 +19,7 @@ public class VacationController{
     }
 
     @PatchMapping("/request/{request_id}")
-    public String updateRequest(@RequestBody VacationRequest vacationrequest) {
+    public ResponseEntity<CommonResponse> updateRequest(@RequestBody VacationRequest vacationrequest) {
     }
 
     @DeleteMapping("/request/{request_id}")

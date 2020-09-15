@@ -12,7 +12,7 @@ public class IneligibleController{
 
 
     @PostMapping("/ineligible")
-    public String createIneligiblePeriod(@RequestBody IneligiblePeriod ineligibleperiod) {
+    public ResponseEntity<IneligiblePeriod> createIneligiblePeriod(@RequestBody IneligiblePeriod ineligibleperiod) {
     }
 
     @GetMapping("/ineligible/{ip_id}")
@@ -20,7 +20,7 @@ public class IneligibleController{
     }
 
     @PatchMapping("/ineligible/{ip_id}")
-    public String updateIneligiblePeriod(@RequestBody IneligiblePeriod ineligibleperiod) {
+    public ResponseEntity<IneligiblePeriod> updateIneligiblePeriod(@RequestBody IneligiblePeriod ineligibleperiod) {
     }
 
     @DeleteMapping("/ineligible/{ip_id}")
