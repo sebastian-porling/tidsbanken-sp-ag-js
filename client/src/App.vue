@@ -1,16 +1,16 @@
 <template>
   <v-app id="inspire">
-    <Header />
+    <UserProfilePage />
   </v-app >
 </template>
 
 <script>
-import Header from './components/layout/Header';
+import UserProfilePage from './pages/user-profile-page/UserProfilePage';
 
 export default {
   name: 'App',
   components: {
-    Header
+    UserProfilePage
   }
 }
 </script>

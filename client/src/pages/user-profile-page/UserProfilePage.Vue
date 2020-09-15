@@ -1,13 +1,14 @@
 <template>
-  
+    <UserProfileForm />
 </template>
 
 <script>
-export default {
+import UserProfileForm from './UserProfileForm';
 
+export default {
+    name: 'UserProfilePage',
+    components: {
+        UserProfileForm
+    }
 }
 </script>
-
-<style>
-
-</style>
