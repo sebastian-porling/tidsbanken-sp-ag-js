@@ -17,7 +17,7 @@ public class IneligiblePeriod {
     public Date period_end;
 
     @ManyToOne
-    public User moderator_id;
+    public User moderator;
 
     @Column(nullable = false)
     public Date created_at = new java.sql.Timestamp(new Date().getTime());

@@ -14,10 +14,10 @@ public class Comment {
     public String message;
 
     @ManyToOne
-    public VacationRequest request_id;
+    public VacationRequest request;
 
     @ManyToOne
-    public User user_id;
+    public User user;
 
     @Column(nullable = false)
     public Date created_at = new java.sql.Timestamp(new Date().getTime());
