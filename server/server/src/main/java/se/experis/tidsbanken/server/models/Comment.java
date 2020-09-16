@@ -17,7 +17,7 @@ public class Comment {
     public VacationRequest request;
 
     @ManyToOne
-    public User user;
+    public AppUser user;
 
     @Column(nullable = false)
     public Date created_at = new java.sql.Timestamp(new Date().getTime());
