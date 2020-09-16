@@ -8,27 +8,27 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class CommentController{
-    @GetMapping("/request/{request_id}/comment")
-    public ResponseEntity<Comment> getComments(){
+    @GetMapping("/request/:request_id/comment")
+    public ResponseEntity<CommonResponse> getComments(){
     }
 
-    @PostMapping("/request/{request_id}/comment")
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
+    @PostMapping("/request/:request_id/comment")
+    public ResponseEntity<CommonResponse> createComment(@RequestBody Comment comment) {
         Comment createComment = commentRepository.save(comment);
         Response response = new Response(createComment, "CREATE");
         HttpStatus status = HttpStatus.CREATED;
         return new ResponseEntity<>(response, status);
     }
 
-    @GetMapping("/request/{request_id}/comment/{comment_id}")
-    public ResponseEntity<Comment> getComments(){
+    @GetMapping("/request/:request_id/comment/{comment_id}")
+    public ResponseEntity<CommonResponse> getComments(){
     }
 
-    @PatchMapping("/request/{request_id}/comment/{comment_id}")
-    public ResponseEntity<Comment> updateComment(@RequestBody Comment comment) {
+    @PatchMapping("/request/:request_id/comment/{comment_id}")
+    public ResponseEntity<CommonResponse> updateComment(@RequestBody Comment comment) {
     }
 
-    @DeleteMapping("/request/{request_id}/comment/{comment_id}")
-    public ResponseEntity<Comment> deleteComment(){
+    @DeleteMapping("/request/:request_id/comment/{comment_id}")
+    public ResponseEntity<CommonResponse> deleteComment(){
     }
 }

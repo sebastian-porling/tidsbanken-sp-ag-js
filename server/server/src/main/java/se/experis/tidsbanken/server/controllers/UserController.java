@@ -14,7 +14,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/user/{user_id}")
+    @GetMapping("/user/:user_id")
     public ResponseEntity<CommonResponse> getProfile(@PathVariable("user_id")long user_id){
         Optional<CommonResponse> userProfile = userRepository.findById(user_id);
         if (userProfile.exists())
@@ -23,20 +23,20 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PatchMapping("/user/{user_id}")
+    @PatchMapping("/user/:user_id")
     public ResponseEntity<CommonResponse> updateUser(@RequestBody UserModel usermodel) {
     }
 
-    @DeleteMapping("/user/{user_id}")
+    @DeleteMapping("/user/:user_id")
     public ResponseEntity<CommonResponse> deleteUser(@PathVariable("user_id")long user_id){
     }
 
-    @GetMapping("/user/{user_id}/requests")
+    @GetMapping("/user/:user_id/requests")
     public ResponseEntity<CommonResponse> vacationRequests(@PathVariable("user_id")long user_id){
     }
 
 
-    @PostMapping("/user/{user_id}/update_password")
+    @PostMapping("/user/:user_id/update_password")
     public ResponseEntity<CommonResponse> updatePassword(@RequestBody UserModel usermodel) {
     }
 

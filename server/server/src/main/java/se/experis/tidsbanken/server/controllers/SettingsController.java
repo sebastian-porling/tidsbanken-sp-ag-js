@@ -14,7 +14,7 @@ public class SettingsController{
 
     @PatchMapping("/settings")
 
-    @GetMapping("/settings/{settings_id}")
+    @GetMapping("/settings/:settings_id")
 
-    @DeleteMapping("/settings/{settings_id}")
+    @DeleteMapping("/settings/:settings_id")
 }
