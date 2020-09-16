@@ -23,7 +23,7 @@ public class VacationRequest {
     public User owner;
 
     @ManyToOne
-    public Status status;
+    public RequestStatus requestStatus;
 
     @Column(nullable = false)
     public Date created_at = new java.sql.Timestamp(new Date().getTime());
