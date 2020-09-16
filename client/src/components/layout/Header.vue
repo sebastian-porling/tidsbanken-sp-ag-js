@@ -45,7 +45,7 @@
             <v-avatar color="light-blue" size="36">
                 <span class="white--text headline">UU</span>
             </v-avatar>
-            <strong> User Usersson</strong>
+            <strong style="margin-left: 5px"> User Usersson</strong>
       </v-btn>
       <v-btn outlined>
           Sign out
