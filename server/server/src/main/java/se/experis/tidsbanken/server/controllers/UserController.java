@@ -59,8 +59,7 @@ public class UserController {
                 cr.status = 201;
                 resStatus = HttpStatus.CREATED;
             } catch (Exception e) {
-                cr.message = e.getMessage();
-                resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                return errorMessage(e);
             }
         }
 
@@ -139,8 +138,7 @@ public class UserController {
                 cr.status = 200;
                 resStatus = HttpStatus.OK;
             } catch (Exception e) {
-                cr.message = e.getMessage();
-                resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                return errorMessage(e);
             }
 
         } else {
@@ -170,8 +168,7 @@ public class UserController {
                 cr.status = 200;
                 resStatus = HttpStatus.OK;
             } catch (Exception e) {
-                cr.message = e.getMessage();
-                resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                return errorMessage(e);
             }
 
         } else {
@@ -233,8 +230,7 @@ public class UserController {
                 cr.status = 200;
                 resStatus = HttpStatus.OK;
             } catch (Exception e) {
-                cr.message = e.getMessage();
-                resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                return errorMessage(e);
             }
 
         } else {
@@ -244,6 +240,14 @@ public class UserController {
         }
 
         return new ResponseEntity<>(cr, resStatus);
+    }
+
+    private ResponseEntity<CommonResponse> errorMessage (Exception e) {
+        CommonResponse cr = new CommonResponse();
+        System.out.println(e.getMessage());
+        cr.message = "Something went wrong when trying to process the request";
+        HttpStatus resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        return new ResponseEntity<CommonResponse>(cr, resStatus);
     }
 
 }
