@@ -1,16 +1,15 @@
 <template>
   <v-app id="inspire">
-    <Header />
+
   </v-app >
 </template>
 
 <script>
-import Header from './components/layout/Header';
+
 
 export default {
   name: 'App',
   components: {
-    Header
   }
 }
 </script>
