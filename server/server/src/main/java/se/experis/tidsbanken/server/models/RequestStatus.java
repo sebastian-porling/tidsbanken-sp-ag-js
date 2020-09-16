@@ -3,7 +3,7 @@ package se.experis.tidsbanken.server.models;
 import javax.persistence.*;
 
 @Entity
-public class Status {
+public class RequestStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
