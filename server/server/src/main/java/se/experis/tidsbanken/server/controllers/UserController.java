@@ -19,6 +19,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<CommonResponse> getUser(){
+        return null;
     }
 
 
@@ -44,19 +45,23 @@ public class UserController {
 
     @PatchMapping("/user/:user_id")
     public ResponseEntity<CommonResponse> updateUser(@RequestBody AppUser user) {
+        return null;
     }
 
     @DeleteMapping("/user/:user_id")
     public ResponseEntity<CommonResponse> deleteUser(@PathVariable("user_id")long user_id){
+        return null;
     }
 
     @GetMapping("/user/:user_id/requests")
     public ResponseEntity<CommonResponse> vacationRequests(@PathVariable("user_id")long user_id){
+        return null;
     }
 
 
     @PostMapping("/user/:user_id/update_password")
     public ResponseEntity<CommonResponse> updatePassword(@RequestBody AppUser user) {
+        return null;
     }
 
 

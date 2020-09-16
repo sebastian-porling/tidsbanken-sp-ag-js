@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class SettingsController{
+    /*
     @GetMapping("/settings")
 
     @PostMapping("/settings")
@@ -17,4 +18,5 @@ public class SettingsController{
     @GetMapping("/settings/:settings_id")
 
     @DeleteMapping("/settings/:settings_id")
+    */
 }
