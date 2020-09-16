@@ -1,16 +1,14 @@
 <template>
   <v-app id="inspire">
-<RequestHistoryPage />
+
   </v-app >
 </template>
 
 <script>
-import RequestHistoryPage from './pages/request-history-page/RequestHistoryPage';
 
 export default {
   name: 'App',
   components: {
-    RequestHistoryPage
   }
 }
 </script>
