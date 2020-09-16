@@ -1,10 +1,15 @@
 <template>
-  
+  <LoginForm />
 </template>
 
 <script>
-export default {
+import LoginForm from './LoginForm';
 
+export default {
+  name: 'LoginPage',
+  components: {
+    LoginForm
+  }
 }
 </script>
 

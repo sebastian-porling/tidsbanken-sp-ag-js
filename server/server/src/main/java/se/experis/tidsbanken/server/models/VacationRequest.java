@@ -20,10 +20,10 @@ public class VacationRequest {
     public Date period_end;
 
     @ManyToOne
-    public User owner;
+    public AppUser owner;
 
     @ManyToOne
-    public Status status;
+    public RequestStatus requestStatus;
 
     @Column(nullable = false)
     public Date created_at = new java.sql.Timestamp(new Date().getTime());
@@ -32,7 +32,7 @@ public class VacationRequest {
     public Date modified_at = new java.sql.Timestamp(new Date().getTime());
 
     @ManyToOne
-    public User moderator;
+    public AppUser moderator;
 
     @Column
     public Date moderation_date;
