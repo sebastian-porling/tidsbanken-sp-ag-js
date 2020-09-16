@@ -14,11 +14,6 @@ public class UserController {
     }
 
 
-    @PostMapping("/user")
-    public ResponseEntity<CommonResponse> register(@RequestBody UserModel usermodel) {
-    }
-
-
     @GetMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> getProfile(@PathVariable("user_id")long user_id){
         Optional<CommonResponse> userProfile = userRepository.findById(user_id);
