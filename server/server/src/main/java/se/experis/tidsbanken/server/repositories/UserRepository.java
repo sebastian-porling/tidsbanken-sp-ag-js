@@ -1,12 +1,12 @@
 package se.experis.tidsbanken.server.repositories;
 
-import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import se.experis.tidsbanken.server.models.AppUser;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
-    User getById(int id);
+public interface UserRepository extends JpaRepository<AppUser, Integer> {
+    AppUser getById(int id);
 
-    User getByUsername (String username);
+    AppUser getByEmail (String email);
 
-    User findByIsActiveTrue();
+    AppUser findByIsActiveTrue();
 }
