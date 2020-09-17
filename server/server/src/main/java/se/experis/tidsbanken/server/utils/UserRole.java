@@ -2,7 +2,7 @@ package se.experis.tidsbanken.server.utils;
 
 import org.springframework.stereotype.Component;
 
-public enum UserRoll {
+public enum UserRole {
     ADMINISTRATOR,
     USER
 }
