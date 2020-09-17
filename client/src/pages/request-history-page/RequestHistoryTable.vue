@@ -3,7 +3,7 @@
       <v-data-table
     :headers="headers"
     :items="requests"
-    :items-per-page="5"
+    :items-per-page="10"
     :sort-by="['created_at']"
     :sort-desc="[true]"
     class="elevation-1"

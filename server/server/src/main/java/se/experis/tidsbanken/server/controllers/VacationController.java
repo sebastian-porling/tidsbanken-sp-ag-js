@@ -12,7 +12,6 @@ import se.experis.tidsbanken.server.repositories.VacationRequestRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class VacationController{
