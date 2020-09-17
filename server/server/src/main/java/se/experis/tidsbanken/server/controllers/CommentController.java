@@ -17,8 +17,8 @@ public class CommentController{
     @Autowired
     private CommentRepository commentRepository;
 
-    @GetMapping("/request/:request_id/comment")
-    public ResponseEntity<CommonResponse> getComments(){
+    @GetMapping("/request/{request_id}/comment")
+    public ResponseEntity<CommonResponse> getComments(@PathVariable("request_id") Long requestId){
 
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
@@ -26,12 +26,13 @@ public class CommentController{
        /*
         */
 
-        return new ResponseEntity<CommonResponse>(cr, resStatus);
+        return new ResponseEntity<>(cr, resStatus);
 
     }
 
-    @PostMapping("/request/:request_id/comment")
-    public ResponseEntity<CommonResponse> createComment(@RequestBody Comment comment) {
+    @PostMapping("/request/{request_id}/comment")
+    public ResponseEntity<CommonResponse> createComment(@PathVariable("request_id") Long requestId,
+                                                        @RequestBody Comment comment) {
 
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
@@ -39,33 +40,38 @@ public class CommentController{
         /*
          */
 
-        return new ResponseEntity<CommonResponse>(cr, resStatus);
+        return new ResponseEntity<>(cr, resStatus);
     }
 
-    @GetMapping("/request/:request_id/comment/{comment_id}")
-    public ResponseEntity<CommonResponse> getComment(){
+    @GetMapping("/request/:{request_id}/comment/{comment_id}")
+    public ResponseEntity<CommonResponse> getComment(@PathVariable("request_id") Long requestId,
+                                                     @PathVariable("comment_id") Long commentId){
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
 
         /*
          */
 
-        return new ResponseEntity<CommonResponse>(cr, resStatus);
+        return new ResponseEntity<>(cr, resStatus);
     }
 
-    @PatchMapping("/request/:request_id/comment/{comment_id}")
-    public ResponseEntity<CommonResponse> updateComment(@RequestBody Comment comment) {CommonResponse cr = new CommonResponse();
+    @PatchMapping("/request/{request_id}/comment/{comment_id}")
+    public ResponseEntity<CommonResponse> updateComment(@PathVariable("request_id") Long requestId,
+                                                        @PathVariable("comment_id") Long commentId,
+                                                        @RequestBody Comment comment) {
+        CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
 
         /*
          */
 
-        return new ResponseEntity<CommonResponse>(cr, resStatus);
+        return new ResponseEntity<>(cr, resStatus);
 
     }
 
-    @DeleteMapping("/request/:request_id/comment/:comment_id")
-    public ResponseEntity<CommonResponse> deleteComment(){
+    @DeleteMapping("/request/{request_id}/comment/{comment_id}")
+    public ResponseEntity<CommonResponse> deleteComment(@PathVariable("request_id") Long requestId,
+                                                        @PathVariable("comment_id") Long commentId){
 
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
@@ -73,7 +79,7 @@ public class CommentController{
         /*
          */
 
-        return new ResponseEntity<CommonResponse>(cr, resStatus);
+        return new ResponseEntity<>(cr, resStatus);
 
     }
 }

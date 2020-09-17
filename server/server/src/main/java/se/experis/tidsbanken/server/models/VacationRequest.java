@@ -14,10 +14,10 @@ public class VacationRequest {
     public String title;
 
     @Column(nullable = false)
-    public Date period_start;
+    public Date start;
 
     @Column(nullable = false)
-    public Date period_end;
+    public Date end;
 
     @ManyToOne
     public AppUser owner;
@@ -36,4 +36,8 @@ public class VacationRequest {
 
     @Column
     public Date moderation_date;
+
+    public boolean onlyApproved() {
+        return this.requestStatus.status.equals("Approved");
+    }
 }
