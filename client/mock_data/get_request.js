@@ -19,7 +19,7 @@ export default {
             title: "Paris",
             period_start: "2020-10-04",
             period_end: "2020-10-14",
-            status: "Rejected",
+            status: "Denied",
             owner: {
                 user_id: 4,
                 name: "Svea Lindqvist",
@@ -31,7 +31,7 @@ export default {
             title: "Be with the kids",
             period_start: "2020-10-06",
             period_end: "2020-10-19",
-            status: "Accepted",
+            status: "Approved",
             owner: {
                 user_id: 5,
                 name: "Karin Lövgren",
@@ -49,6 +49,6 @@ export default {
                 name: "Torsten Sixtensson",
                 profile_pic: "https://www.booksie.com/files/profiles/22/mr-anonymous.png"
             }
-        },
+        }
     ]
 }
