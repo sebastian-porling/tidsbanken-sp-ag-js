@@ -6,5 +6,5 @@ import se.experis.tidsbanken.server.models.RequestStatus;
 
 @Repository
 public interface StatusRepository extends JpaRepository<RequestStatus, Integer> {
-    RequestStatus getById(int id);
+
 }

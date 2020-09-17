@@ -6,5 +6,5 @@ import se.experis.tidsbanken.server.models.IneligiblePeriod;
 
 @Repository
 public interface IneligiblePeriodRepository extends JpaRepository<IneligiblePeriod, Long> {
-    IneligiblePeriod getById(long id);
+
 }

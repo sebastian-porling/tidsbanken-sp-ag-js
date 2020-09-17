@@ -6,5 +6,5 @@ import se.experis.tidsbanken.server.models.VacationRequest;
 
 @Repository
 public interface VacationRequestRepository extends JpaRepository<VacationRequest, Long> {
-    VacationRequest getById(long id);
+
 }
