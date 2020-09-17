@@ -3,8 +3,9 @@
     <v-form ref="form" v-model="valid" :lazy-validation="lazy">
 
       <v-row justify="center">
-        <v-avatar color="indigo" size="120" v-model="profile_pic">
-          <span class="white--text headline">A</span>
+        <v-avatar color="indigo" size="120" v-model="user.profile_pic">
+          <!-- <span class="white--text headline">A</span> -->
+          <img :src="user.profile_pic" alt="profilePic">
         </v-avatar>
       </v-row>
 
@@ -12,10 +13,9 @@
         <v-btn color="default" @click="changePicture">Change Picture</v-btn>
       </v-row>
 
+      <v-text-field v-model="full_name" :placeholder="[[ user.full_name ]]" :counter="100" :rules="nameRules" label="Name" required></v-text-field>
 
-      <v-text-field v-model="name" :counter="100" :rules="nameRules" label="Name" required></v-text-field>
-
-      <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+      <v-text-field v-model="email" :placeholder="[[ user.email ]]" :rules="emailRules" label="E-mail" required>{{ user.email }}</v-text-field>
 
       <v-text-field
         type="password"
@@ -38,16 +38,20 @@
 </template>
 
 <script>
+
 export default {
   name: 'UserProfileForm',
+  props: [
+    'user'
+  ],
   data: () => ({
     valid: true,
-    name: "",
+    full_name: this.user.full_name,
     nameRules: [
       (v) => !!v || "Name is required",
-      (v) => (v && v.length <= 10) || "Name must be less than 100 characters",
+      (v) => (v && v.length <= 100) || "Name must be less than 100 characters",
     ],
-    email: "",
+    email: this.user.email,
     emailRules: [
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
@@ -58,10 +62,10 @@ export default {
       (v) => (v && v.length >= 6) || "Password must be more than 6 characters",
     ],
   }),
-
   methods: {
     saveChanges() {
-      this.$refs.form.saveChanges();
+      /* this.$refs.form.saveChanges(); */
+      console.log(this.full_name);
     },
     twoFactorAuthenticationSettings() {
       this.$refs.form.twoFactorAuthenticationSettings();
