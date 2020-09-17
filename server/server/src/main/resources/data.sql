@@ -24,14 +24,14 @@ INSERT INTO app_user (email, full_name, password, is_admin,
                 TO_DATE('15/09/2020', 'DD/MM/YYYY'));
 
 /* Status */
-INSERT INTO Status (Status) VALUES ('Pending');
-INSERT INTO Status (Status) VALUES ('Approved');
-INSERT INTO Status (Status) VALUES ('Denied');
+INSERT INTO status (status) VALUES ('Pending');
+INSERT INTO status (status) VALUES ('Approved');
+INSERT INTO status (status) VALUES ('Denied');
 
 /* VacationRequest (User:Nr | 1:2, 2:3, 3:1) */
 INSERT INTO vacation_request (created_at, moderation_date, modified_at,
                 period_end, period_start, title, moderator_user_id,
-                owner_user_id, status_status_id)
+                owner_user_id, request_status_status_id)
                 VALUES (TO_DATE('15/09/2020', 'DD/MM/YYYY'), null,
                 TO_DATE('15/09/2020', 'DD/MM/YYYY'),
                 TO_DATE('31/12/2020', 'DD/MM/YYYY'),
@@ -40,7 +40,7 @@ INSERT INTO vacation_request (created_at, moderation_date, modified_at,
 
 INSERT INTO vacation_request (created_at, moderation_date, modified_at,
                 period_end, period_start, title, moderator_user_id,
-                owner_user_id, status_status_id)
+                owner_user_id, request_status_status_id)
                 VALUES (TO_DATE('01/08/2020', 'DD/MM/YYYY'),
                 TO_DATE('11/09/2020', 'DD/MM/YYYY'),
                 TO_DATE('11/09/2020', 'DD/MM/YYYY'),
@@ -50,7 +50,7 @@ INSERT INTO vacation_request (created_at, moderation_date, modified_at,
 
 INSERT INTO vacation_request (created_at, moderation_date, modified_at,
                 period_end, period_start, title, moderator_user_id,
-                owner_user_id, status_status_id)
+                owner_user_id, request_status_status_id)
                 VALUES (TO_DATE('15/09/2020', 'DD/MM/YYYY'), null,
                 TO_DATE('15/09/2020', 'DD/MM/YYYY'),
                 TO_DATE('05/01/2021', 'DD/MM/YYYY'),
@@ -59,7 +59,7 @@ INSERT INTO vacation_request (created_at, moderation_date, modified_at,
 
 INSERT INTO vacation_request (created_at, moderation_date, modified_at,
                 period_end, period_start, title, moderator_user_id,
-                owner_user_id, status_status_id)
+                owner_user_id, request_status_status_id)
                 VALUES (TO_DATE('01/05/2020', 'DD/MM/YYYY'),
                 TO_DATE('25/05/2020', 'DD/MM/YYYY'),
                 TO_DATE('25/05/2020', 'DD/MM/YYYY'),
@@ -69,7 +69,7 @@ INSERT INTO vacation_request (created_at, moderation_date, modified_at,
 
 INSERT INTO vacation_request (created_at, moderation_date, modified_at,
                 period_end, period_start, title, moderator_user_id,
-                owner_user_id, status_status_id)
+                owner_user_id, request_status_status_id)
                 VALUES (TO_DATE('15/08/2020', 'DD/MM/YYYY'),
                 TO_DATE('15/09/2020', 'DD/MM/YYYY'),
                 TO_DATE('15/09/2020', 'DD/MM/YYYY'),
@@ -79,7 +79,7 @@ INSERT INTO vacation_request (created_at, moderation_date, modified_at,
 
 INSERT INTO vacation_request (created_at, moderation_date, modified_at,
                 period_end, period_start, title, moderator_user_id,
-                owner_user_id, status_status_id)
+                owner_user_id, request_status_status_id)
                 VALUES (TO_DATE('15/09/2020', 'DD/MM/YYYY'), null,
                 TO_DATE('15/09/2020', 'DD/MM/YYYY'),
                 TO_DATE('30/01/2021', 'DD/MM/YYYY'),
