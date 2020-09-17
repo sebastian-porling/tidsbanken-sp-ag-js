@@ -26,6 +26,9 @@ export default {
             data: response.data
         }
     },
+    props: [
+        'request_id'
+    ],
     filters: {
         initials: (data) => {
             if (!data) return 'UU';

@@ -1,16 +1,10 @@
 <template>
     <v-card>
         <v-card-title>
-            <span class="headline">Spa week</span>
-            <v-chip class="ma-2" color="green" text-color="white">
-                Approved
-            </v-chip>
-            <v-chip class="ma-2" color="warning" text-color="white">
-                Pending
-            </v-chip>
-            <v-chip class="ma-2" color="red" text-color="white">
-                Denied
-            </v-chip>
+            <span class="headline">{{ request.title }}</span>
+                <v-chip class="ma-2" :color="getColor(request.status)" text-color="white">
+                    {{ request.status }}
+                </v-chip>
         </v-card-title>
         <v-card-text>
             <v-container>
@@ -21,10 +15,11 @@
                                 <span class="white--text headline">UU</span>
                             </v-avatar>
                             <strong style="margin-left: 5px">
-                                User Usersson</strong
+                                {{ request.owner.name }}</strong
                             >
                         </v-btn>
                     </v-col>
+                    <!-- Not implemented period start and end -->
                     <v-col cols="12" sm="6" md="6">
                         <v-text-field
                             type="date"
@@ -42,7 +37,7 @@
                         ></v-text-field>
                     </v-col>
                     <v-col cols="12">
-                        <view-request-comments />
+                        <view-request-comments :request_id="request_id" />
                         <view-request-comment-form />
                     </v-col>
                 </v-row>
@@ -58,7 +53,9 @@
 
 <script>
 import ViewRequestCommentForm from './ViewRequestCommentForm';
-import ViewRequestComments from './ViewRequestComments'
+import ViewRequestComments from './ViewRequestComments';
+import reponse from '../../../mock_data/get_request_id';
+
 export default {
     name: "ViewRequestInfo",
     components: {
@@ -66,12 +63,30 @@ export default {
         'view-request-comments': ViewRequestComments
 
     },
+    data () {
+        return {
+            request: reponse.data,
+        }
+    },
+    props: [
+        'request_id'
+    ],
     methods: {
         closeModal() {
             this.$emit("closeModal");
         },
         changeMode() {
             this.$emit("changeMode");
+        },
+        getColor (status) {
+          switch(status) {
+            case 'Pending':
+                  return 'orange';
+            case 'Approved':
+                return 'green';
+            case 'Denied':
+                return 'red';
+          }
         }
     }
 };
