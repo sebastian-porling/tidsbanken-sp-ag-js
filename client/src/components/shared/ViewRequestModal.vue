@@ -1,11 +1,6 @@
 <template>
-    <v-dialog v-model="dialog" width="600px">
-        <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on">
-                View Request
-            </v-btn>
-        </template>
-        <view-request-info v-show='!this.editMode' @closeModal='closeModal' @changeMode='changeMode'/>
+    <v-dialog v-model="active" persistent width="600px">
+        <view-request-info :request_id="request" v-show='!this.editMode' @closeModal='closeModal' @changeMode='changeMode'/>
         <view-request-edit-form v-show='this.editMode' @closeModal='closeModal' @changeMode='changeMode'/>
     </v-dialog>
 </template>
@@ -28,12 +23,19 @@ export default {
     },
     methods: {
         closeModal() {
-            this.dialog = false;
+            this.$emit("closeModal");
+        },
+        openModal() {
+            this.dialog = true;
         },
         changeMode() {
             this.editMode = !this.editMode;
         }
     },
+    props: [
+        'active',
+        'request'
+    ]
 };
 </script>
 
