@@ -60,4 +60,14 @@ public class AuthorizationService {
         }
         return jwt;
     }
+
+    public AppUser currentUser(HttpServletRequest request) {
+        try {
+            String jwt = extractToken(request);
+            String email = jwtUtil.extractEmail(jwt);
+            return userRepository.getByEmail(email).get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
