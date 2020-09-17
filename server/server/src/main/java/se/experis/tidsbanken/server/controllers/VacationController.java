@@ -6,12 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+<<<<<<< HEAD
+import se.experis.tidsbanken.server.models.CommonResponse;
+import se.experis.tidsbanken.server.models.VacationRequest;
+=======
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.VacationRequestRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+>>>>>>> 8adbf446083741fbc0052cbc12c2124ebb037abd
 
 @Controller
 public class VacationController{
@@ -21,6 +26,9 @@ public class VacationController{
 
     @GetMapping("/request")
     public ResponseEntity<CommonResponse> getRequests(){
+<<<<<<< HEAD
+        return null;
+=======
         /*      X    User should be authenticated
                 O    Curated list
                 O    Chronological order (soonest first)
@@ -74,10 +82,14 @@ public class VacationController{
 
         return new ResponseEntity<>(cr, resStatus);
 
+>>>>>>> 8adbf446083741fbc0052cbc12c2124ebb037abd
     }
 
     @PostMapping("/request")
     public ResponseEntity<CommonResponse> createRequest(@RequestBody VacationRequest vacationrequest) {
+<<<<<<< HEAD
+        return null;
+=======
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
 
@@ -88,10 +100,14 @@ public class VacationController{
         */
 
         return new ResponseEntity<CommonResponse>(cr, resStatus);
+>>>>>>> 8adbf446083741fbc0052cbc12c2124ebb037abd
     }
 
     @GetMapping("/request/:request_id")
     public ResponseEntity<CommonResponse> getRequestsForId(@PathVariable("request_id")long request_id){
+<<<<<<< HEAD
+        return null;
+=======
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
 
@@ -102,10 +118,14 @@ public class VacationController{
         */
 
         return new ResponseEntity<CommonResponse>(cr, resStatus);
+>>>>>>> 8adbf446083741fbc0052cbc12c2124ebb037abd
     }
 
     @PatchMapping("/request/:request_id")
     public ResponseEntity<CommonResponse> updateRequest(@RequestBody VacationRequest vacationrequest) {
+<<<<<<< HEAD
+        return null;
+=======
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
 
@@ -121,10 +141,14 @@ public class VacationController{
         */
 
         return new ResponseEntity<CommonResponse>(cr, resStatus);
+>>>>>>> 8adbf446083741fbc0052cbc12c2124ebb037abd
     }
 
     @DeleteMapping("/request/:request_id")
     public ResponseEntity<CommonResponse> deleteRequest(@PathVariable("request_id")long request_id){
+<<<<<<< HEAD
+        return null;
+=======
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
 
@@ -135,5 +159,6 @@ public class VacationController{
 
         return new ResponseEntity<CommonResponse>(cr, resStatus);
 
+>>>>>>> 8adbf446083741fbc0052cbc12c2124ebb037abd
     }
 }

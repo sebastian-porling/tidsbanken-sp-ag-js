@@ -10,6 +10,8 @@ import se.experis.tidsbanken.server.repositories.IneligiblePeriodRepository;
 import se.experis.tidsbanken.server.models.*;
 
 import java.util.*;
+import se.experis.tidsbanken.server.models.CommonResponse;
+import se.experis.tidsbanken.server.models.IneligiblePeriod;
 
 @Controller
 public class IneligibleController{
@@ -33,6 +35,7 @@ public class IneligibleController{
         }
         return new ResponseEntity<>(cr, resStatus);
     }
+
 
     @PostMapping("/ineligible")
     public ResponseEntity<CommonResponse> createIneligiblePeriod(@RequestBody IneligiblePeriod ip) {
