@@ -5,12 +5,12 @@
       app
     >
       <v-list dense>
-        <v-list-item link>
+        <v-list-item router-link to="dashboard">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Dashboard</v-list-item-title>
+            <v-list-item-title><router-link to="/" style="text-decoration: none;">Dashboard</router-link></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link>
@@ -18,7 +18,7 @@
             <v-icon>mdi-history</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Request History</v-list-item-title>
+            <v-list-item-title><router-link to="history" style="text-decoration: none;">Request History</router-link></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link>
@@ -26,7 +26,7 @@
             <v-icon>mdi-head-minus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Admin</v-list-item-title>
+            <v-list-item-title><router-link to="admin" style="text-decoration: none;">Admin</router-link></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -45,10 +45,10 @@
             <v-avatar color="light-blue" size="36">
                 <span class="white--text headline">UU</span>
             </v-avatar>
-            <strong style="margin-left: 5px"> User Usersson</strong>
+            <strong style="margin-left: 5px"><router-link to="profile" class="white--text" style="text-decoration: none;">User Usersson</router-link></strong>
       </v-btn>
       <v-btn outlined>
-          Sign out
+          <router-link to="login" class="white--text" style="text-decoration: none;">Sign out</router-link>
       </v-btn>
     </v-app-bar>
 
