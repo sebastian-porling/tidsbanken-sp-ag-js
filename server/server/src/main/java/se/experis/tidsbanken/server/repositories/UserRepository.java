@@ -1,12 +1,14 @@
 package se.experis.tidsbanken.server.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import se.experis.tidsbanken.server.models.AppUser;
 
-public interface UserRepository extends JpaRepository<AppUser, Long> {
-    AppUser getById(long id);
+import java.util.Optional;
 
-    AppUser getByEmail (String email);
+@Repository
+public interface UserRepository extends CrudRepository<AppUser, Long> {
 
-    AppUser findByIsActiveTrue();
+    Optional<AppUser> getByEmail(String email);
+
 }

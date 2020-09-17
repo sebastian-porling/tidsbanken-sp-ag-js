@@ -3,6 +3,7 @@ package se.experis.tidsbanken.server.models;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "status")
 public class RequestStatus {
 
     @Id
