@@ -1,5 +1,7 @@
 <template>
 <v-col class="container">
+  <br>
+  <br>
   <v-row>
     <UserInfoComponent />
   </v-row>
