@@ -7,7 +7,11 @@ import org.springframework.http.HttpStatus;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.UserRepository;
 import se.experis.tidsbanken.server.repositories.VacationRequestRepository;
+import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.utils.JwtUtil;
+import se.experis.tidsbanken.server.utils.UserRole;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
@@ -21,24 +25,36 @@ public class UserController {
     @Autowired
     private VacationRequestRepository vacationRequestRepository;
 
-    @GetMapping("/user")
-    public ResponseEntity<CommonResponse> getUser(){
-        CommonResponse cr = new CommonResponse();
-        cr.message = "Not Implemented";
-        HttpStatus resStatus = HttpStatus.NOT_IMPLEMENTED;
+    @Autowired
+    private AuthorizationService authorizationService;
 
+    @GetMapping("/user")
+    public ResponseEntity<CommonResponse> getUser(HttpServletRequest request){
+        HttpStatus resStatus;
+        CommonResponse cr;
+        if(authorizationService.isAuthorized(request)) {
+            resStatus = HttpStatus.NOT_IMPLEMENTED;
+            cr = new CommonResponse(resStatus.value(), "Not Implemented");
+        } else {
+            resStatus = HttpStatus.UNAUTHORIZED;
+            cr = new CommonResponse(resStatus.value(), "Not Authorized");
+        }
         return new ResponseEntity<>(cr, resStatus);
     }
 
     @PostMapping("/user")
-    public ResponseEntity<CommonResponse> createUser(@RequestBody AppUser user) {
+    public ResponseEntity<CommonResponse> createUser(@RequestBody AppUser user, HttpServletRequest request) {
         CommonResponse cr = new CommonResponse();
         HttpStatus resStatus;
 
-        Optional<AppUser> fetchedUser = userRepository.findById(user.user_id);
-        /* NOT IMPLEMENTED:
-         *      Check if admin
-        */
+        if (!authorizationService.isAuthorizedAdmin(request)) {
+            resStatus = HttpStatus.UNAUTHORIZED;
+            cr = new CommonResponse(resStatus.value(), "Not Authorized");
+            return new ResponseEntity<>(cr, resStatus);
+        }
+
+        Optional<AppUser> fetchedUser = userRepository.getByEmail(user.email);
+
         if (fetchedUser.isPresent()) {
             cr.message = "User already exists";
             cr.status = 401;
@@ -46,7 +62,6 @@ public class UserController {
         } else {
             try {
                 userRepository.save(user);
-
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("email", user.email);
                 data.put("full_name", user.full_name);
