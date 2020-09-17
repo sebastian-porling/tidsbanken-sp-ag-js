@@ -43,9 +43,10 @@
       <header-notifications />
       <v-btn text>
             <v-avatar color="light-blue" size="36">
-                <span class="white--text headline">UU</span>
+               <!--  <span class="white--text headline">UU</span> -->
+                 <img :src="user.profile_pic" alt="profilePic">
             </v-avatar>
-            <strong style="margin-left: 5px"><router-link to="profile" class="white--text" style="text-decoration: none;">User Usersson</router-link></strong>
+            <strong style="margin-left: 5px"><router-link to="profile" class="white--text" style="text-decoration: none;">{{ user.full_name }}</router-link></strong>
       </v-btn>
       <v-btn outlined>
           <router-link to="login" class="white--text" style="text-decoration: none;">Sign out</router-link>
@@ -56,6 +57,8 @@
 </template>
 
 <script>
+import response from '../../../mock_data/get_user_userid';
+
 import HeaderNotifications from './HeaderNotifications';
 export default {
     name: 'Header',
@@ -64,6 +67,7 @@ export default {
     },
     data: () => ({
         drawer: null,
+        user: response,
     }),
 }
 </script>
