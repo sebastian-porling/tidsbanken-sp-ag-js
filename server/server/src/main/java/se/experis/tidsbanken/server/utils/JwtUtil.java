@@ -1,20 +1,16 @@
 package se.experis.tidsbanken.server.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
-import se.experis.tidsbanken.server.models.AppUser;
+import se.experis.tidsbanken.server.models.User;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JwtUtil {
 
-    private String SECRET = "test";
+    final private String SECRET = "test";
 
     /**
      *
@@ -79,9 +75,9 @@ public class JwtUtil {
      * @param audience
      * @return
      */
-    public String generateToken(AppUser user, String audience) {
+    public String generateToken(User user, String audience) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, user.email, audience);
+        return createToken(claims, user.getEmail(), audience);
     }
 
     /**
@@ -106,10 +102,10 @@ public class JwtUtil {
      * @param audience user role
      * @return true if valid
      */
-    public Boolean validateToken(String token, AppUser user, String audience) {
+    public Boolean validateToken(String token, User user, String audience) {
         final String tokenAudience = extractAudience(token);
         final String tokenEmail = extractEmail(token);
-        return (tokenEmail.equals(user.email) && tokenAudience.equals(audience) && !isTokenExpired(token));
+        return (tokenEmail.equals(user.getEmail()) && tokenAudience.equals(audience) && !isTokenExpired(token));
     }
 
     /**
@@ -118,9 +114,9 @@ public class JwtUtil {
      * @param user user
      * @return true if valid
      */
-    public Boolean validateToken(String token, AppUser user) {
+    public Boolean validateToken(String token, User user) {
         final String tokenEmail = extractEmail(token);
-        return (tokenEmail.equals(user.email) && !isTokenExpired(token));
+        return (tokenEmail.equals(user.getEmail()) && !isTokenExpired(token));
     }
 
 }
