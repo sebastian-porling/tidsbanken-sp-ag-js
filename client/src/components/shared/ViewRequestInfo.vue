@@ -25,7 +25,7 @@
                         <v-text-field
                             type="date"
                             label="Start"
-                            value="2020-10-01"
+                            v-model="period_start"
                             disabled
                         ></v-text-field>
                     </v-col>
@@ -33,7 +33,7 @@
                         <v-text-field
                             type="date"
                             label="End"
-                            value="2020-10-07"
+                            v-model="period_end"
                             disabled
                         ></v-text-field>
                     </v-col>
@@ -62,11 +62,12 @@ export default {
     components: {
         'view-request-comment-form': ViewRequestCommentForm,
         'view-request-comments': ViewRequestComments
-
     },
     data () {
         return {
             request: response.data,
+            period_start: response.data.period_start,
+            period_end: response.data.period_end
         }
     },
     props: [

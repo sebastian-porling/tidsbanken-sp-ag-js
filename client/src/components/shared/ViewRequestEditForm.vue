@@ -26,7 +26,6 @@
                             label="Title"
                             v-model="title"
                             :rules="titleRules"
-                            :placeholder="[[ request.title ]]"
                         ></v-text-field>
                     </v-col>
                     <!-- Not implemented period start and end -->
@@ -75,15 +74,15 @@ export default {
             request: response.data,
             today: new Date().toJSON().slice(0,10),
             valid: true,
-            title: "",
+            title: response.data.title,
             titleRules: [
               v => (v && v.length >= 10) || 'Title must be 10 characters or more',
             ],
-            period_start: "",
+            period_start: response.data.period_start,
             startRules: [
               v => !!v || "Start date is required",
             ],
-            period_end: "",
+            period_end: response.data.period_end,
             endRules: [
               v => !!v || "Start date is required",
               v => (v && v > this.period_start) || "End date can not be before start date"
