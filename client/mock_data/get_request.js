@@ -50,5 +50,18 @@ export default {
                 profile_pic: "https://www.booksie.com/files/profiles/22/mr-anonymous.png"
             }
         }
+        ,
+        {
+            request_id: 4,
+            title: "Well deserved vacation",
+            period_start: "2020-10-10",
+            period_end: "2020-10-17",
+            status: "Pending",
+            owner: {
+                user_id: 6,
+                name: "User Usersson",
+                profile_pic: "https://www.booksie.com/files/profiles/22/mr-anonymous.png"
+            }
+        }
     ]
 }
