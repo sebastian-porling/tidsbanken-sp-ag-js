@@ -3,13 +3,25 @@ package se.experis.tidsbanken.server.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "status")
-public class RequestStatus {
+public class Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer status_id;
+    private Integer id;
 
     @Column(nullable = false)
-    public String status;
+    private String status;
+
+    public Integer getId() {
+        return id;
+    }
+
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
