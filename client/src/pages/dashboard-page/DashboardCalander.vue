@@ -115,6 +115,15 @@ import ipResponse from '../../../mock_data/get_ineligibles';
       updateRange () {
         const events = []
 
+            this.ineligiblePeriods.forEach(period => {
+                events.push({
+                    name: "Ineligible Period",
+                    start: period.period_start,
+                    end: period.period_end,
+                    color: 'grey',
+                })
+            })
+
             this.requests.forEach(request => {
                 events.push({
                     name: request.owner.name + ": " + request.title,
@@ -122,7 +131,7 @@ import ipResponse from '../../../mock_data/get_ineligibles';
                     end: request.period_end,
                     color: this.getColor(request.status),
                 }) 
-            });
+            }); 
 
         this.events = events
       },
