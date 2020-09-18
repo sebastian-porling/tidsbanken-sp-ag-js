@@ -12,7 +12,8 @@
                     <v-col cols="12">
                         <v-btn text>
                             <v-avatar color="light-blue" size="36">
-                                <span class="white--text headline">UU</span>
+                                <!-- <span class="white--text headline">UU</span> -->
+                                <img :src="request.owner.profile_pic" alt="profilePic">
                             </v-avatar>
                             <strong style="margin-left: 5px">
                                 {{ request.owner.name }}</strong
@@ -54,7 +55,7 @@
 <script>
 import ViewRequestCommentForm from './ViewRequestCommentForm';
 import ViewRequestComments from './ViewRequestComments';
-import reponse from '../../../mock_data/get_request_id';
+import response from '../../../mock_data/get_request_id';
 
 export default {
     name: "ViewRequestInfo",
@@ -65,7 +66,7 @@ export default {
     },
     data () {
         return {
-            request: reponse.data,
+            request: response.data,
         }
     },
     props: [
