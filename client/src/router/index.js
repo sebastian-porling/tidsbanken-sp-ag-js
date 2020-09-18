@@ -20,11 +20,11 @@ export default new Router ({
             name: 'Login',
             component: LoginPage
         },
-/*         {
+         {
             path:'/admin',
             name: 'Admin',
             component: AdminPage
-        }, */
+        }, 
         {
             path:'/history',
             name: 'Request History',

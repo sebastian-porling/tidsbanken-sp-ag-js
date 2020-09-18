@@ -17,7 +17,6 @@
   </v-data-table>
   
   </v-row>
-  <div>
 </template>
 
 <script>
