@@ -15,9 +15,11 @@
                                 <!-- <span class="white--text headline">UU</span> -->
                                 <img :src="request.owner.profile_pic" alt="profilePic">
                             </v-avatar>
-                            <strong style="margin-left: 5px">
-                                {{ request.owner.name }}</strong
-                            >
+                            <router-link to="profile" style="text-decoration: none;">
+                                <strong style="margin-left: 5px">
+                                {{ request.owner.name }}
+                                </strong>
+                            </router-link>
                         </v-btn>
                     </v-col>
                     <!-- Not implemented period start and end -->
