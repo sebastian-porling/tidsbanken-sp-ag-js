@@ -8,10 +8,11 @@
         <v-btn color="grey" medium>Export</v-btn>
         </div>
 
-<div class="modals">
+    <div class="modals">
             <application-settings-modal/>
             </div>
     </v-col>
+  
   </v-row>
     </v-main>
     
@@ -19,11 +20,11 @@
 
 <script>
 import ApplicationSettingsModal from '@/pages/admin-page/ApplicationSettingsModal'
+
 export default {
     name: 'AdminPage',
   components: {
-          'application-settings-modal': ApplicationSettingsModal,
-
+    'application-settings-modal': ApplicationSettingsModal,
   }
 
 }
