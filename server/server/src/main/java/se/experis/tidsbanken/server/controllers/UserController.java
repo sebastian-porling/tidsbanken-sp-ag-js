@@ -184,6 +184,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/all")
+    public ResponseEntity<CommonResponse> getAllUsers(HttpServletRequest request) {
+        if(authorizationService.isAuthorizedAdmin(request)) {
+            try{
+                return ResponseEntity.ok(
+                        new CommonResponse("All users", userRepository.findAll()));
+            } catch (Exception e) { return errorMessage(e); }
+        } else return unauthorized();
+    }
+
     private ResponseEntity<CommonResponse> errorMessage (Exception e) {
         System.out.println(e.getMessage());
         return new ResponseEntity<>(
