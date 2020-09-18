@@ -39,7 +39,7 @@
       name: '',
       nameRules: [
         v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 100 characters',
+        v => (v && v.length <= 100) || 'Name must be less than 100 characters',
       ],
       email: '',
       emailRules: [

@@ -1,20 +1,33 @@
 package se.experis.tidsbanken.server.models;
 
 public class CommonResponse {
-    public Integer status;
-    public String message;
-    public Object data;
+    private String message;
+    private Object data;
 
     public CommonResponse(){ }
 
-    public CommonResponse(Integer status, String message) {
-        this.status = status;
+    public CommonResponse(String message) {
         this.message = message;
     }
 
-    public CommonResponse(Integer status, String message, Object data) {
-        this.status = status;
+    public CommonResponse(String message, Object data) {
         this.message = message;
+        this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void message(String message) {
+        this.message = message;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void data(Object data) {
         this.data = data;
     }
 }

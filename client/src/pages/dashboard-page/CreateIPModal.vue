@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" width="600px">
+    <v-dialog v-model="dialog" width="350px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
           v-bind="attrs"
@@ -13,22 +13,13 @@
           <span class="headline">Add a Ineligible Period</span>
         </v-card-title>
         <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="6">
-                <v-text-field type="date" label="Start*" required></v-text-field>
-              </v-col>
-               <v-col cols="12" sm="6" md="6">
-                <v-text-field type="date" label="End*" required></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <small>*indicates required field</small>
+            <p>{{ errorMessage }}</p>
+            <v-date-picker v-model="dates" range :min="today"></v-date-picker>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red darken-1" text @click="dialog = false">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="dialog = false">Submit</v-btn>
+          <v-btn color="green darken-1" text @click="validateData">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -40,8 +31,44 @@ export default {
     data() {
         return {
             dialog: false,
+            dates: [null, null],
+            ineligible_period: {
+              period_start: null,
+              period_end: null,
+            },
+            today: new Date().toJSON().slice(0,10),
+            errorMessage: "",
         }
     },
+    methods: {
+      validateData() {
+        this.setDates(this.dates);
+
+        if(this.period_start != null && this.period_end != null){
+          if(this.period_start < this.period_end) {
+              this.dialog = false;
+              // Connect to api
+              alert("New Ineligible Period has been added between " + this.period_start + " and " + this.period_end);
+          } else {
+            this.switchDates();
+            this.dialog = false;
+            // Connect to api
+              alert("New Ineligible Period has been added between " + this.period_start + " and " + this.period_end);
+          }
+        } else {
+          this.errorMessage = "You need to enter a start and an end date..";
+        }
+      },
+      setDates(dates) {
+        this.period_end = dates[1];
+        this.period_start = dates[0];
+      },
+      switchDates(){
+        let temp = this.period_start;
+        this.period_start = this.period_end;
+        this.period_end = temp;
+      }
+    },    
 }
 </script>
 
