@@ -1,4 +1,6 @@
 export default {
+    data: [
+        {
     user_id: 7,
     full_name: "Magda Torsdotter",
     profile_pic: "https://www.booksie.com/files/profiles/22/mr-anonymous.png",
@@ -8,4 +10,6 @@ export default {
     vacation_days: 25,
     used_vacation_days: 7,
     isAdmin: false
+        }
+        ]
 }

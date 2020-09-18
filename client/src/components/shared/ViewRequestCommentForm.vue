@@ -1,17 +1,32 @@
 <template>
-    <div>
-        <v-textarea solo name="input-7-4" label="Comment"></v-textarea>
+    <v-form v-model="valid">
+        <v-textarea v-model="comment" name="input-7-4" label="Comment" :counter="250" :rules="rules"></v-textarea>
         <v-container class="d-flex flex-row-reverse">
-            <v-btn color="green darken-1" text>
+            <v-btn color="green darken-1" text :disabled="!valid" @click="submit">
                 Submit
             </v-btn>
         </v-container>
-    </div>
+    </v-form>
 </template>
 
 <script>
 export default {
-    name: 'ViewRequestCommentForm'
+    name: 'ViewRequestCommentForm',
+    data () {
+        return {
+    valid: true,
+    comment: "",
+    rules: [v => v.length <= 250 || 'Max 250 characters'],
+        }
+    },
+    methods: {
+        submit() {
+            this.comment = "";
+            // Do stuff
+            alert("Commented!")
+        }
+    }
+
 };
 </script>
 

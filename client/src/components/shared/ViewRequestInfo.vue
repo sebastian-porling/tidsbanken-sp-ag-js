@@ -12,11 +12,14 @@
                     <v-col cols="12">
                         <v-btn text>
                             <v-avatar color="light-blue" size="36">
-                                <span class="white--text headline">UU</span>
+                                <!-- <span class="white--text headline">UU</span> -->
+                                <img :src="request.owner.profile_pic" alt="profilePic">
                             </v-avatar>
-                            <strong style="margin-left: 5px">
-                                {{ request.owner.name }}</strong
-                            >
+                            <router-link to="profile" style="text-decoration: none;">
+                                <strong style="margin-left: 5px">
+                                {{ request.owner.name }}
+                                </strong>
+                            </router-link>
                         </v-btn>
                     </v-col>
                     <!-- Not implemented period start and end -->
@@ -24,7 +27,7 @@
                         <v-text-field
                             type="date"
                             label="Start"
-                            value="2020-10-01"
+                            v-model="period_start"
                             disabled
                         ></v-text-field>
                     </v-col>
@@ -32,7 +35,7 @@
                         <v-text-field
                             type="date"
                             label="End"
-                            value="2020-10-07"
+                            v-model="period_end"
                             disabled
                         ></v-text-field>
                     </v-col>
@@ -54,18 +57,19 @@
 <script>
 import ViewRequestCommentForm from './ViewRequestCommentForm';
 import ViewRequestComments from './ViewRequestComments';
-import reponse from '../../../mock_data/get_request_id';
+import response from '../../../mock_data/get_request_id';
 
 export default {
     name: "ViewRequestInfo",
     components: {
         'view-request-comment-form': ViewRequestCommentForm,
         'view-request-comments': ViewRequestComments
-
     },
     data () {
         return {
-            request: reponse.data,
+            request: response.data,
+            period_start: response.data.period_start,
+            period_end: response.data.period_end
         }
     },
     props: [

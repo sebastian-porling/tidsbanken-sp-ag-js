@@ -1,5 +1,5 @@
 <template>
-    <v-list>
+    <v-list style="max-height: 225px" class="overflow-y-auto">
         <v-list-item v-for="comment in data" :key="comment.comment_id">
             <v-list-item-avatar>
                 <v-avatar color="light-blue" size="36">
