@@ -1,5 +1,5 @@
 /*  Users (1 admin, 2 regular)   */
-INSERT INTO app_user
+INSERT INTO user
     (email, full_name, password, is_admin, profile_pic, two_factor_auth,
     vacation_days,used_vacation_days, is_active, created_at, modified_at)
     VALUES
@@ -22,7 +22,7 @@ INSERT INTO status (status) VALUES
 /* VacationRequest (User:Nr | 1:2, 2:3, 3:1) */
 INSERT INTO vacation_request
     (created_at, moderation_date, modified_at, end, start, title,
-    moderator_user_id, owner_user_id, request_status_status_id)
+    moderator_id, owner_id, status_id)
     VALUES
 
     (TO_DATE('15/09/2020', 'DD/MM/YYYY'), null, TO_DATE('15/09/2020', 'DD/MM/YYYY'),
@@ -51,7 +51,7 @@ INSERT INTO vacation_request
 
 /* Comments */
 
-INSERT INTO comment (created_at, message, modified_at, request_request_id, user_user_id)
+INSERT INTO comment (created_at, message, modified_at, request_id, user_id)
     VALUES
     (TO_DATE('16/09/2020', 'DD/MM/YYYY'),
     'Two week christmas vacation seems kinda long does it not? I can give you 7 days. We need you at work.',
@@ -90,7 +90,7 @@ INSERT INTO comment (created_at, message, modified_at, request_request_id, user_
     TO_DATE('15/09/2020', 'DD/MM/YYYY'), 6, 2);
 
 /* IneligiblePeriod */
-INSERT INTO ineligible_period (created_at, modified_at, start, end, moderator_user_id)
+INSERT INTO ineligible_period (created_at, modified_at, start, end, moderator_id)
     VALUES
     (TO_DATE('15/09/2020', 'DD/MM/YYYY'), TO_DATE('15/09/2020', 'DD/MM/YYYY'),
     TO_DATE('30/06/2020','DD/MM/YYYY'), TO_DATE('10/09/2020','DD/MM/YYYY'), 2),
