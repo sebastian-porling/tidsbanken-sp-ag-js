@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_user_userid'
+import response from '../../../mock_data/get_all_users'
 import CreateUserModal from '@/pages/admin-page/CreateUserModal'
 import EditUserModal from '@/pages/admin-page/EditUserModal'
     export default {
@@ -38,6 +38,7 @@ import EditUserModal from '@/pages/admin-page/EditUserModal'
             value: 'title',
           },
           {text: 'Name', value: 'full_name'},
+          {text: 'Email', value: 'email'},
           { text: 'Created at', value: 'created_at'},
           { text: 'Modified at', value: 'modified_at' }
         ],

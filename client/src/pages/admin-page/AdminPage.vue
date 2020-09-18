@@ -1,5 +1,6 @@
 <template>
  <v-main>
+     <UserTable />
         <v-row align="center" justify="space-around">
     <v-col class="text-center" cols="10" sm="7">
         <div class="imp-ex">
@@ -20,11 +21,12 @@
 
 <script>
 import ApplicationSettingsModal from '@/pages/admin-page/ApplicationSettingsModal'
-
+import UserTable from '@/pages/admin-page/UserTable'
 export default {
     name: 'AdminPage',
   components: {
-    'application-settings-modal': ApplicationSettingsModal,
+          'application-settings-modal': ApplicationSettingsModal,
+          UserTable
   }
 
 }
