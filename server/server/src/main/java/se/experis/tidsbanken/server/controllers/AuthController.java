@@ -1,17 +1,13 @@
 package se.experis.tidsbanken.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.UserRepository;
-import se.experis.tidsbanken.server.utils.Credentials;
-import se.experis.tidsbanken.server.utils.JwtUtil;
-import se.experis.tidsbanken.server.utils.UserRole;
+import se.experis.tidsbanken.server.utils.*;
+
 
 import java.util.Optional;
 
@@ -29,10 +25,10 @@ public class AuthController {
     public ResponseEntity<CommonResponse> login(@RequestBody Credentials credentials) {
         try {
             if (credentials.getEmail() != null && credentials.getPassword() != null) {
-                Optional<AppUser> fetchedUser = userRepository.getByEmail(credentials.getEmail());
-                if (fetchedUser.isPresent() && fetchedUser.get().password.equals(credentials.getPassword())) {
-                    AppUser presentUser = fetchedUser.get();
-                    final UserRole userRole = presentUser.isAdmin ? UserRole.ADMINISTRATOR : UserRole.USER;
+               final Optional<User> fetchedUser = userRepository.getByEmail(credentials.getEmail());
+                if (fetchedUser.isPresent() && fetchedUser.get().getPassword().equals(credentials.getPassword())) {
+                    final User presentUser = fetchedUser.get();
+                    final UserRole userRole = presentUser.isAdmin() ? UserRole.ADMINISTRATOR : UserRole.USER;
                     final String jwt = jwtUtil.generateToken(presentUser, userRole.toString());
                     return ResponseEntity.ok(new CommonResponse("User credentials approved", jwt));
                 } else {throw new Exception("");}
