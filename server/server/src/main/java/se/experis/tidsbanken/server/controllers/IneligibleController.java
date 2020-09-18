@@ -1,19 +1,18 @@
 package se.experis.tidsbanken.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import se.experis.tidsbanken.server.repositories.IneligiblePeriodRepository;
 
 import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 
-import se.experis.tidsbanken.server.models.CommonResponse;
-import se.experis.tidsbanken.server.models.IneligiblePeriod;
+import se.experis.tidsbanken.server.repositories.IneligiblePeriodRepository;
+import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 
-import javax.servlet.http.HttpServletRequest;
+
 
 @Controller
 public class IneligibleController{
@@ -28,7 +27,8 @@ public class IneligibleController{
     public ResponseEntity<CommonResponse> getIneligiblePeriod(){
         try {
             return ResponseEntity.ok(
-                    new CommonResponse("All ineligible periods", ipRepository.findAllByOrderByStartDesc()));
+                    new CommonResponse("All ineligible periods",
+                            ipRepository.findAllByOrderByStartDesc()));
         } catch (Exception e) { return errorMessage(); }
     }
 
@@ -57,7 +57,8 @@ public class IneligibleController{
         Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
         if (fetchedPeriod.isPresent()){
             IneligiblePeriod period = fetchedPeriod.get();
-            return ResponseEntity.ok(new CommonResponse("Ineligible period fetched successfully",
+            return ResponseEntity.ok(new CommonResponse(
+                    "Ineligible period fetched successfully",
                     getResponseObject(period)));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -73,13 +74,14 @@ public class IneligibleController{
         Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
         if (fetchedPeriod.isPresent()) {
             IneligiblePeriod updatedPeriod = fetchedPeriod.get();
-            updatedPeriod.start = ip.start;
-            updatedPeriod.end = ip.end;
-            updatedPeriod.moderator = ip.moderator;
-            updatedPeriod.modified_at = new java.sql.Date(System.currentTimeMillis());
+            if (ip.getStart() != null) updatedPeriod.setStart(ip.getStart());
+            if (ip.getEnd() != null) updatedPeriod.setEnd(ip.getEnd());
+            if (ip.getModerator() != null) updatedPeriod.setModerator(ip.getOriginalModerator());
+            updatedPeriod.setModifiedAt(new java.sql.Date(System.currentTimeMillis()));
             try {
                 ipRepository.save(updatedPeriod);
-                return ResponseEntity.ok(new CommonResponse("Ineligible period updated successfully",
+                return ResponseEntity.ok(new CommonResponse(
+                        "Ineligible period updated successfully",
                         getResponseObject(updatedPeriod)));
             } catch (Exception e) { return errorMessage(); }
         } else {
@@ -96,7 +98,8 @@ public class IneligibleController{
         if (fetchedPeriod.isPresent()) {
             try {
                 ipRepository.deleteById(ip_id);
-                return ResponseEntity.ok(new CommonResponse("Ineligible period deleted successfully"));
+                return ResponseEntity.ok(new CommonResponse(
+                        "Ineligible period deleted successfully"));
             } catch (Exception e) {
                 e.printStackTrace();
                 return errorMessage();
@@ -110,16 +113,17 @@ public class IneligibleController{
     private ResponseEntity<CommonResponse> errorMessage() {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new CommonResponse("Something went wrong when trying to process the request "));
+                .body(new CommonResponse(
+                        "Something went wrong when trying to process the request "));
     }
 
     private HashMap<String, Object> getResponseObject(IneligiblePeriod ip) {
         HashMap<String, Object> data = new HashMap<>();
-        data.put("period_start", ip.start);
-        data.put("period_end", ip.end);
-        data.put("moderator", ip.moderator);
-        data.put("created_at", ip.created_at);
-        data.put("modified_at", ip.modified_at);
+        data.put("period_start", ip.getStart());
+        data.put("period_end", ip.getEnd());
+        data.put("moderator", ip.getModerator());
+        data.put("created_at", ip.getCreatedAt());
+        data.put("modified_at", ip.getModifiedAt());
         return data;
     }
 
