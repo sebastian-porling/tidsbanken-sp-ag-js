@@ -19,7 +19,7 @@ public class CommonResponse {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void message(String message) {
         this.message = message;
     }
 
@@ -27,7 +27,7 @@ public class CommonResponse {
         return data;
     }
 
-    public void setData(Object data) {
+    public void data(Object data) {
         this.data = data;
     }
 }

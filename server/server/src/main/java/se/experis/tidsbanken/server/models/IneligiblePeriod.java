@@ -1,33 +1,91 @@
 package se.experis.tidsbanken.server.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.HashMap;
 
 @Entity
 public class IneligiblePeriod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long ip_id;
+    private Long id;
 
     @Column(nullable = false)
     @NotNull
-    public Date start;
+    private Date start;
 
     @Column(nullable = false)
     @NotNull
-    public Date end;
+    private Date end;
 
     @ManyToOne
     @NotNull
-    public AppUser moderator;
+    private User moderator;
 
     @Column(nullable = false)
-    public Date created_at = new java.sql.Date(System.currentTimeMillis());
+    private Date createdAt = new java.sql.Date(System.currentTimeMillis());
     @Column(nullable = false)
-    public java.sql.Date modified_at = new java.sql.Date(System.currentTimeMillis());
+    private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
+
+    public Long getId() {
+        return id;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
+
+    public HashMap<String, Object> getModerator() {
+        final HashMap<String, Object> moderator = new HashMap<>();
+        moderator.put("id", this.moderator.getId());
+        moderator.put("email", this.moderator.getEmail());
+        moderator.put("profile_pic", this.moderator.getProfilePic());
+        return moderator;
+    }
+
+    @JsonIgnore
+    public User getOriginalModerator() {
+        return this.moderator;
+    }
+
+    public void setModerator(User moderator) {
+        this.moderator = moderator;
+    }
+
+    @JsonProperty("created_at")
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @JsonProperty("modified_at")
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
 
     public boolean excludesInPeriod(IneligiblePeriod ip) {
         return (ip.start.before(this.start) && ip.end.before(this.start)) ||

@@ -2,10 +2,9 @@ package se.experis.tidsbanken.server.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import se.experis.tidsbanken.server.models.AppUser;
+import se.experis.tidsbanken.server.models.User;
 import se.experis.tidsbanken.server.repositories.UserRepository;
-import se.experis.tidsbanken.server.utils.JwtUtil;
-import se.experis.tidsbanken.server.utils.UserRole;
+import se.experis.tidsbanken.server.utils.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,9 +35,9 @@ public class AuthorizationService {
 
     public Boolean isAuthorized(HttpServletRequest request) {
         try {
-            String jwt = extractToken(request);
-            String email = jwtUtil.extractEmail(jwt);
-            AppUser user = userRepository.getByEmail(email).get();
+            final String jwt = extractToken(request);
+            final String email = jwtUtil.extractEmail(jwt);
+            final User user = userRepository.getByEmail(email).get();
             return jwtUtil.validateToken(jwt, user);
         } catch (Exception e) {
             return false;
@@ -46,9 +45,9 @@ public class AuthorizationService {
     }
 
     private Boolean isAuthorizedRole(HttpServletRequest request, UserRole userRole) throws Exception{
-        String jwt = extractToken(request);
-        String email = jwtUtil.extractEmail(jwt);
-        AppUser user = userRepository.getByEmail(email).get();
+        final String jwt = extractToken(request);
+        final String email = jwtUtil.extractEmail(jwt);
+        final User user = userRepository.getByEmail(email).get();
         return jwtUtil.validateToken(jwt, user, userRole.toString());
     }
 
@@ -61,10 +60,10 @@ public class AuthorizationService {
         return jwt;
     }
 
-    public AppUser currentUser(HttpServletRequest request) {
+    public User currentUser(HttpServletRequest request) {
         try {
-            String jwt = extractToken(request);
-            String email = jwtUtil.extractEmail(jwt);
+            final String jwt = extractToken(request);
+            final String email = jwtUtil.extractEmail(jwt);
             return userRepository.getByEmail(email).get();
         } catch (Exception e) {
             return null;
