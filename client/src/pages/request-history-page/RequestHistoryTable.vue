@@ -59,7 +59,6 @@ import response from '../../../mock_data/get_request'
           }
       },
       launchModal(value) {
-        console.log("Request with id " + value.request_id + " is clicked")
         this.request = value.request_id;
         this.activateModal = true;
       },
