@@ -23,7 +23,7 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private boolean isAdmin;
+    private Boolean isAdmin;
 
     @Column
     private String profilePic;
@@ -45,6 +45,8 @@ public class User {
 
     @Column(nullable = false)
     private Date modifiedAt = new java.sql.Timestamp(new Date().getTime());
+
+    public User() {}
 
     public Long getId() {
         return id;
@@ -77,7 +79,7 @@ public class User {
     }
 
     @JsonProperty("is_admin")
-    public boolean isAdmin() {
+    public Boolean isAdmin() {
         return isAdmin;
     }
 
