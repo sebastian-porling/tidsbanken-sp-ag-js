@@ -4,7 +4,7 @@ import AdminPage from '../pages/admin-page/AdminPage'
 import DashboardPage from '../pages/dashboard-page/DashboardPage'
 import LoginPage from '../pages/login-page/LoginPage'
 import RequestHistoryPage from '../pages/request-history-page/RequestHistoryPage'
-import UserProfilePage from '../pages/user-profile-page/UserProfilePage'
+import UserPage from '../pages/user-profile-page/UserPage'
 
 Vue.use(Router)
 
@@ -33,7 +33,7 @@ export default new Router ({
         {
             path:'/profile',
             name: 'User Profile',
-            component: UserProfilePage
+            component: UserPage
         }
     ]
 })

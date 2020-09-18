@@ -27,7 +27,7 @@ public class UserController {
         if(!authorizationService.isAuthorized(request)) { return unauthorized(); }
         final HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/user/" + authorizationService.currentUser(request).getId()));
-        return new ResponseEntity<>(headers, HttpStatus.PERMANENT_REDIRECT);
+        return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
     }
 
     @PostMapping("/user")
@@ -80,12 +80,17 @@ public class UserController {
         final Optional<User> fetchedUser = userRepository.findById(userId);
         if (fetchedUser.isPresent()) {
             User updatedUser = fetchedUser.get();
+            if (user.getPassword() != null) return ResponseEntity
+                    .badRequest()
+                    .body(new CommonResponse("Not allowed to patch password"));
             if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
             if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
             if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
             if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
             if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
-            if (authorizationService.isAuthorizedAdmin(request)) { updatedUser.setAdmin(user.isAdmin()); }
+            if (authorizationService.isAuthorizedAdmin(request)) {
+                updatedUser.setAdmin(user.isAdmin());
+            } else  if (user.isAdmin() != null) return forbidden();
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
                 userRepository.save(updatedUser);
@@ -208,5 +213,11 @@ public class UserController {
         return new ResponseEntity<>(
                 new CommonResponse( "Not Authorized"),
                 HttpStatus.UNAUTHORIZED);
+    }
+
+    private ResponseEntity<CommonResponse> forbidden() {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new CommonResponse("Forbidden"));
     }
 }

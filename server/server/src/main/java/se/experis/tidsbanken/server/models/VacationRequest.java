@@ -44,6 +44,8 @@ public class VacationRequest {
     @Column
     private Date moderationDate;
 
+    public VacationRequest() {}
+
     public Long getId() {
         return id;
     }
@@ -89,8 +91,9 @@ public class VacationRequest {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public VacationRequest setStatus(Status status) {
         this.status = status;
+        return this;
     }
 
     @JsonProperty("created_at")
@@ -147,6 +150,11 @@ public class VacationRequest {
 
     public boolean onlyApproved() {
         return this.status.getStatus().equals("Approved");
+    }
+
+    public boolean excludesInPeriod(VacationRequest ip) {
+        return (ip.start.before(this.start) && ip.end.before(this.start)) ||
+                (ip.start.after(this.end) && ip.end.after(this.end));
     }
 
 }

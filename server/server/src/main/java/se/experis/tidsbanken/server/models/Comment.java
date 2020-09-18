@@ -28,6 +28,8 @@ public class Comment {
     @Column(nullable = false)
     private Date modifiedAt = new java.sql.Timestamp(new Date().getTime());
 
+    public Comment() { }
+
     public Long getId() {
         return id;
     }
