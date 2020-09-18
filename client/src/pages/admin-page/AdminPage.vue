@@ -9,10 +9,11 @@
         <v-btn color="grey" medium>Export</v-btn>
         </div>
 
-<div class="modals">
+    <div class="modals">
             <application-settings-modal/>
             </div>
     </v-col>
+  
   </v-row>
     </v-main>
     
@@ -26,7 +27,6 @@ export default {
   components: {
           'application-settings-modal': ApplicationSettingsModal,
           UserTable
-
   }
 
 }

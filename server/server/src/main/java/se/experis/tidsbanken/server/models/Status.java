@@ -12,10 +12,16 @@ public class Status {
     @Column(nullable = false)
     private String status;
 
+    public Status(Integer id, String status) {
+        this.id = id;
+        this.status = status;
+    }
+
+    public Status() {}
+
     public Integer getId() {
         return id;
     }
-
 
     public String getStatus() {
         return status;

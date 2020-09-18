@@ -32,6 +32,8 @@ public class IneligiblePeriod {
     @Column(nullable = false)
     private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 
+    public IneligiblePeriod() {}
+
     public Long getId() {
         return id;
     }
