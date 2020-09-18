@@ -15,7 +15,6 @@
   </v-data-table>
   <view-request-modal :active="activateModal" :request="request" @closeModal="closeModal"/>
   </v-row>
-  <div>
 </template>
 
 <script>
