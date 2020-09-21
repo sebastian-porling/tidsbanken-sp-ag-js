@@ -1,6 +1,5 @@
 <template>
  <v-main>
-     <UserTable />
         <v-row align="center" justify="space-around">
     <v-col class="text-center" cols="10" sm="7">
         <div class="imp-ex">
@@ -8,8 +7,14 @@
         &nbsp;&nbsp;&nbsp;
         <v-btn color="grey" medium>Export</v-btn>
         </div>
-
-    <div class="modals">
+        <br>
+       <div class="redirect">
+            <v-btn @click="$router.push('requests')">View Requests</v-btn>
+            &nbsp;&nbsp;&nbsp;
+              <v-btn @click="$router.push('users')">View Users</v-btn>
+              </div>
+              <br>
+              <div class="modals">
             <application-settings-modal/>
             </div>
     </v-col>
@@ -21,12 +26,10 @@
 
 <script>
 import ApplicationSettingsModal from '@/pages/admin-page/ApplicationSettingsModal'
-import UserTable from '@/pages/admin-page/UserTable'
 export default {
     name: 'AdminPage',
   components: {
           'application-settings-modal': ApplicationSettingsModal,
-          UserTable
   }
 
 }
@@ -39,5 +42,8 @@ export default {
 .modals{
     padding:2%;
     padding-bottom: 4%;
+}
+.redirect{
+    padding: 2%;
 }
 </style>
