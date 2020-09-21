@@ -13,9 +13,9 @@
         <v-btn color="default" @click="changePicture">Change Picture</v-btn>
       </v-row>
 
-      <v-text-field v-model="full_name" :placeholder="[[ user.full_name ]]" :counter="100" :rules="nameRules" label="Name" required></v-text-field>
+      <v-text-field v-model="full_name" :counter="100" :rules="nameRules" label="Name" required></v-text-field>
 
-      <v-text-field v-model="email" :placeholder="[[ user.email ]]" :rules="emailRules" label="E-mail" required>{{ user.email }}</v-text-field>
+      <v-text-field v-model="email" :rules="emailRules" label="E-mail" required>{{ user.email }}</v-text-field>
 
       <v-text-field
         type="password"
@@ -38,20 +38,19 @@
 </template>
 
 <script>
+import response from '../../../mock_data/get_user_userid';
 
 export default {
   name: 'UserProfileForm',
-  props: [
-    'user'
-  ],
   data: () => ({
+    user: response,
     valid: true,
-    full_name: this.user.full_name,
+    full_name: response.full_name,
     nameRules: [
       (v) => !!v || "Name is required",
       (v) => (v && v.length <= 100) || "Name must be less than 100 characters",
     ],
-    email: this.user.email,
+    email: response.email,
     emailRules: [
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
