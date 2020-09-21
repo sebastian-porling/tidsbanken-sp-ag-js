@@ -10,20 +10,20 @@ axios.defaults.baseURL = "http://localhost:3400/";
 export const store = new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
-        currentUser: []
+        user: [] || null
     },
     getters: {
         loggedIn(state) {
             return state.token !== null;
         },
         currentUser(state) {
-            return state.currentUser !== null;
+            return state.user !== null;
         }
     },
     mutations: {
-        retrieveCurrentUser(state, user, token) {
-            state.token = token
-            state.currentUser = user
+        retrieveCurrentUser(state, user) {
+            state.currentUser = user.user
+            state.token = user.token
         },
         retrieveToken(state, token) {
             state.token = token;
@@ -40,11 +40,9 @@ export const store = new Vuex.Store({
                     password: credentials.password
                 })
                 .then(response => {
-                    const token = response.data.data.token;
-                    //const user = response.data.data.user;
-                    localStorage.setItem('access_token', token);
-                    //context.commit('retrieveCurrentUser', user)
-                    context.commit('retrieveToken', token);
+                    const user = response.data.data;
+                    localStorage.setItem('access_token', user.token);
+                    context.commit('retrieveCurrentUser', user)
                     resolve(response);
                 })
                 .catch (error => {
