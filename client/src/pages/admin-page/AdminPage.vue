@@ -18,6 +18,7 @@
             <application-settings-modal/>
             </div>
     </v-col>
+  
   </v-row>
     </v-main>
     
@@ -29,7 +30,6 @@ export default {
     name: 'AdminPage',
   components: {
           'application-settings-modal': ApplicationSettingsModal,
-
   }
 
 }
