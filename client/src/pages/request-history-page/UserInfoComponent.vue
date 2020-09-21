@@ -2,8 +2,8 @@
 <v-col>
       <v-row justify="center" align="center">
       <v-avatar color="indigo" size="60" class="my-4" v-model="profile_pic">
-          <!-- <span class="white--text headline">A</span> -->
-          <img :src="user.profile_pic" alt="profilePic">
+           <span v-if="!user.profile_pic" class="white--text headline">A</span>
+          <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
         </v-avatar>
         <v-h1 class="px-6">
             {{ user.full_name }}
@@ -22,15 +22,19 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_user_userid'
 
 export default {
     name: 'UserInfoComponent', 
-    data () {
-        return {
-            user: response
+    computed: {
+      loggedIn() {
+        return this.$store.getters.loggedIn;
+      },
+      user: {
+        get() {
+          return this.$store.state.currentUser;
         }
-    }
+      }
+    },
 }
 </script>
 

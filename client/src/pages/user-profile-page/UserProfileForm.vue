@@ -1,21 +1,21 @@
 <template>
   <v-row justify="center" align="center">
-    <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+    <v-form ref="form" v-model="valid">
 
       <v-row justify="center">
         <v-avatar color="indigo" size="120" v-model="user.profile_pic">
-          <!-- <span class="white--text headline">A</span> -->
-          <img :src="user.profile_pic" alt="profilePic">
-        </v-avatar>
+          <span v-if="!user.profile_pic" class="white--text headline">A</span>
+          <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
+        </v-avatar> 
       </v-row>
 
       <v-row justify="center" class="my-8">
         <v-btn color="default" @click="changePicture">Change Picture</v-btn>
       </v-row>
 
-      <v-text-field v-model="full_name" :counter="100" :rules="nameRules" label="Name" required></v-text-field>
+      <v-text-field v-model="user.full_name" :counter="100" :rules="nameRules" label="Name" required></v-text-field>
 
-      <v-text-field v-model="email" :rules="emailRules" label="E-mail" required>{{ user.email }}</v-text-field>
+      <v-text-field v-model="user.email" :rules="emailRules" label="E-mail" required>{{ user.email }}</v-text-field>
 
       <v-text-field
         type="password"
@@ -38,29 +38,38 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_user_userid';
+//import response from '../../../mock_data/get_user_userid';
 
 export default {
   name: 'UserProfileForm',
   data: () => ({
-    user: response,
     valid: true,
-    full_name: response.full_name,
+    full_name: '',
     nameRules: [
       (v) => !!v || "Name is required",
       (v) => (v && v.length <= 100) || "Name must be less than 100 characters",
     ],
-    email: response.email,
+    email: '',
     emailRules: [
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
-    password: "",
+    password: '',
     passwordRules: [
       (v) => !!v || "Password is required",
       (v) => (v && v.length >= 6) || "Password must be more than 6 characters",
     ],
   }),
+  computed: {
+      loggedIn() {
+        return this.$store.getters.loggedIn;
+      },
+      user: {
+        get() {
+          return this.$store.state.currentUser;
+        }
+      }
+    },
   methods: {
     saveChanges() {
       /* this.$refs.form.saveChanges(); */
