@@ -40,25 +40,22 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Tidsbanken</v-toolbar-title>
       <v-spacer></v-spacer>
-      <header-notifications />
-      <v-btn text>
+      <header-notifications v-if="loggedIn"/>
+      <v-btn v-if="loggedIn" text>
             <v-avatar color="light-blue" size="36">
-               <!--  <span class="white--text headline">UU</span> -->
-                 <img :src="user.profile_pic" alt="profilePic">
+                <span v-if="!user.profile_pic" class="white--text headline">A</span>
+                <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
             </v-avatar>
             <strong style="margin-left: 5px"><router-link to="profile" class="white--text" style="text-decoration: none;">{{ user.full_name }}</router-link></strong>
       </v-btn>
-      <v-btn outlined>
-          <router-link to="login" class="white--text" style="text-decoration: none;">Sign out</router-link>
-      </v-btn>
+      <v-btn v-if="!loggedIn" router-link to="login" outlined> Login </v-btn>
+      <v-btn v-if="loggedIn" @click="signOut" outlined> Sign Out </v-btn>
     </v-app-bar>
 
   </div>
 </template>
 
 <script>
-import response from '../../../mock_data/get_user_userid';
-
 import HeaderNotifications from './HeaderNotifications';
 export default {
     name: 'Header',
@@ -67,8 +64,25 @@ export default {
     },
     data: () => ({
         drawer: null,
-        user: response,
     }),
+    computed: {
+      loggedIn() {
+        return this.$store.getters.loggedIn;
+      },
+      user: {
+        get() {
+          return this.$store.state.currentUser;
+        }
+      }
+    },
+    methods: {
+      signOut() {
+        return this.$store.dispatch('destroyToken')
+        .then(() => {
+           this.$router.push('/login')
+         })
+      }
+    }
 }
 </script>
 
