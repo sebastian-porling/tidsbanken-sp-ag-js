@@ -30,7 +30,8 @@ public class AuthController {
                     final User presentUser = fetchedUser.get();
                     final UserRole userRole = presentUser.isAdmin() ? UserRole.ADMINISTRATOR : UserRole.USER;
                     final String jwt = jwtUtil.generateToken(presentUser, userRole.toString());
-                    return ResponseEntity.ok(new CommonResponse("User credentials approved", jwt));
+                    return ResponseEntity.ok(new CommonResponse(
+                            "User credentials approved", new LoginDTO(jwt, presentUser)));
                 } else {throw new Exception("");}
             } else {throw new Exception("");}
         } catch (Exception e) {
