@@ -34,9 +34,9 @@ public class VacationController{
         * [ ] - Add date search
         * [ } - Add between two dates search
         */
+        if (!authorizationService.isAuthorized(request)) { return unauthorized(); }
         final List<VacationRequest> allVacationRequests = vacationRequestRepository
                 .findAllByOrderByStartDesc(PageRequest.of(page.orElse(0), amount.orElse(50)));
-        if (!authorizationService.isAuthorized(request)) { return unauthorized(); }
         if (authorizationService.currentUser(request).isAdmin())
             return ResponseEntity.ok(new CommonResponse(
                     "All vacation requests", allVacationRequests));
@@ -117,6 +117,7 @@ public class VacationController{
     @DeleteMapping("/request/{request_id}")
     public ResponseEntity<CommonResponse> deleteRequest(@PathVariable("request_id") Long requestId,
                                                         HttpServletRequest request){
+        /* TODO - Is owner to delete? */
         if (authorizationService.isAuthorizedAdmin(request)) {
             if (vacationRequestRepository.existsById(requestId)) {
                 vacationRequestRepository.deleteById(requestId);
