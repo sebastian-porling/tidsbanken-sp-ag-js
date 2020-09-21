@@ -16,11 +16,11 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    @Autowired private JwtUtil jwtUtil;
+
+    @Autowired private ResponseUtility responseUtility;
 
     @PostMapping("/login")
     public ResponseEntity<CommonResponse> login(@RequestBody Credentials credentials) {
@@ -31,13 +31,12 @@ public class AuthController {
                     final User presentUser = fetchedUser.get();
                     final UserRole userRole = presentUser.isAdmin() ? UserRole.ADMINISTRATOR : UserRole.USER;
                     final String jwt = jwtUtil.generateToken(presentUser, userRole.toString());
-                    return ResponseEntity.ok(new CommonResponse(
-                            "User credentials approved", new LoginDTO(jwt, presentUser)));
+                    return responseUtility.ok("User credentials approved", new LoginDTO(jwt, presentUser));
                 } else {throw new Exception("");}
             } else {throw new Exception("");}
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new CommonResponse("Failed authentication"));
+                    .body(new CommonResponse().message("Failed authentication"));
         }
     }
 }

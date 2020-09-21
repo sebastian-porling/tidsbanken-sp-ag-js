@@ -19,15 +19,18 @@ public class CommonResponse {
         return message;
     }
 
-    public void message(String message) {
+    public CommonResponse message(String message) {
         this.message = message;
+        return this;
     }
 
     public Object getData() {
         return data;
     }
 
-    public void data(Object data) {
+    public CommonResponse data(Object data) {
         this.data = data;
+        return this;
     }
+
 }

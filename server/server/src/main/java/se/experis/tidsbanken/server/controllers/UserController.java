@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -20,186 +21,139 @@ public class UserController {
 
     @Autowired private VacationRequestRepository vacationRequestRepository;
 
-    @Autowired private AuthorizationService authorizationService;
+    @Autowired private AuthorizationService authService;
+
+    @Autowired private ResponseUtility responseUtility;
 
     @GetMapping("/user")
     public ResponseEntity<CommonResponse> getUser(HttpServletRequest request) {
-        if(!authorizationService.isAuthorized(request)) { return unauthorized(); }
+        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/user/" + authorizationService.currentUser(request).getId()));
+        headers.setLocation(URI.create("/user/" + authService.currentUser(request).getId()));
         return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
     }
 
     @PostMapping("/user")
     public ResponseEntity<CommonResponse> createUser(@RequestBody User user,
                                                      HttpServletRequest request) {
-        if (!authorizationService.isAuthorizedAdmin(request)) { return unauthorized(); }
+        if (!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.getByEmail(user.getEmail());
         if (fetchedUser.isEmpty()) {
             try {
                 userRepository.save(user);
-                return ResponseEntity
-                        .status(HttpStatus.CREATED)
-                        .body(new CommonResponse(
-                                "New user with email " + user.getEmail(),
-                                getAdminResponse(user)));
-            } catch (Exception e) { return errorMessage(e); }
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(new CommonResponse("User already exists"));
-        }
+                return responseUtility.created(
+                        "New user with email " + user.getEmail(),
+                        getAdminResponse(user));
+            } catch (Exception e) { return responseUtility.errorMessage(); }
+        } else return responseUtility.badRequest("User already exists");
     }
 
     @GetMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> getUser(@PathVariable("user_id") Long userId,
                                                   HttpServletRequest request){
-        if (!authorizationService.isAuthorized(request)) { return unauthorized(); }
+        if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.findById(userId);
         if (fetchedUser.isPresent()){
             final User user = fetchedUser.get();
             final HashMap<String, Object> data =
-                    authorizationService.isAuthorizedAdmin(request)
+                    authService.isAuthorizedAdmin(request)
                     ? getAdminResponse(user)
                     : getUserResponse(user);
-            return ResponseEntity.ok(new CommonResponse(
-                    "User fetched successfully", data));
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new CommonResponse("User not found"));
-        }
+            return responseUtility.ok("User fetched successfully", data);
+        } else return responseUtility.notFound("User not found");
     }
 
     @PatchMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> updateUser(@PathVariable("user_id") Long userId,
                                                      @RequestBody User user,
                                                      HttpServletRequest request) {
-        if (!authorizationService.isAuthorized(request)) { return unauthorized(); }
-
+        if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.findById(userId);
         if (fetchedUser.isPresent()) {
-            User updatedUser = fetchedUser.get();
-            if (user.getPassword() != null) return ResponseEntity
-                    .badRequest()
-                    .body(new CommonResponse("Not allowed to patch password"));
+            final User updatedUser = fetchedUser.get();
+            if (user.getPassword() != null) return responseUtility.badRequest("Not allowed to patch password");
             if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
             if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
             if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
             if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
             if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
-            if (authorizationService.isAuthorizedAdmin(request)) {
+            if (authService.isAuthorizedAdmin(request)) {
                 updatedUser.setAdmin(user.isAdmin());
-            } else  if (user.isAdmin() != null) return forbidden();
+            } else  if (user.isAdmin() != null) return responseUtility.forbidden();
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
                 userRepository.save(updatedUser);
-                return ResponseEntity.ok(new CommonResponse(
-                        "User updated successfully", getUserResponse(user)));
-            } catch (Exception e) {
-                return errorMessage(e);
-            }
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new CommonResponse("User not found"));
-
-        }
+                return responseUtility.ok("User updated successfully", getUserResponse(user));
+            } catch (Exception e) { return responseUtility.errorMessage(); }
+        } else return responseUtility.notFound("User not found");
     }
 
     @DeleteMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> deleteUser(@PathVariable("user_id") Long userId,
                                                      HttpServletRequest request){
-        Optional<User> fetchedUser = userRepository.findById(userId);
-        if(!authorizationService.isAuthorizedAdmin(request) &&
-                authorizationService.currentUser(request).getId().compareTo(userId) != 0) {
-            return unauthorized();
+        final Optional<User> fetchedUser = userRepository.findById(userId);
+        if(!authService.isAuthorizedAdmin(request) &&
+                authService.currentUser(request).getId().compareTo(userId) != 0) {
+            return responseUtility.forbidden();
         }
         if (fetchedUser.isPresent()) {
             final User user = fetchedUser.get();
             user.setActive(false);
             try {
                 userRepository.save(user);
-                return ResponseEntity.ok(new CommonResponse(
-                        "User deactivated successfully"));
-            } catch (Exception e) {
-                return errorMessage(e);
-            }
-
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new CommonResponse("User not found"));
-        }
+                return responseUtility.ok("User deactivated successfully", null);
+            } catch (Exception e) { return responseUtility.errorMessage(); }
+        } else return responseUtility.notFound("User not found");
     }
 
     @GetMapping("/user/{user_id}/requests")
     public ResponseEntity<CommonResponse> getUserVacationRequests(@PathVariable("user_id") Long userId,
                                                                   HttpServletRequest request){
-        if(!authorizationService.isAuthorized(request)) { return unauthorized(); }
+        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.findById(userId);
         if (fetchedUser.isPresent()){
-            CommonResponse cr;
+            Object data;
             final  List<VacationRequest> allVacationRequests =
                    vacationRequestRepository.findAllByOwner(fetchedUser.get());
             final String message = "Vacation requests for user " +
                     fetchedUser.get().getFullName() + " fetched successfully";
-            if (authorizationService.isAuthorizedAdmin(request) ||
-                    authorizationService.currentUser(request).getId().compareTo(userId) == 0) {
-                cr = new CommonResponse(message, allVacationRequests);
+            if (authService.isAuthorizedAdmin(request) ||
+                    authService.currentUser(request).getId().compareTo(userId) == 0) {
+                data = allVacationRequests;
             } else {
-                final List<VacationRequest> onlyApproved = allVacationRequests.stream()
+                data = allVacationRequests.stream()
                         .filter(VacationRequest::onlyApproved).collect(Collectors.toList());
-                cr = new CommonResponse(message, onlyApproved);
             }
-            return ResponseEntity.ok(cr);
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new CommonResponse("User not found"));
-        }
+            return responseUtility.ok(message, data);
+        } else return responseUtility.notFound("User not found");
     }
 
     @PostMapping("/user/{user_id}/update_password")
     public ResponseEntity<CommonResponse> updatePassword(@PathVariable("user_id") Long userId,
                                                          @RequestBody User user,
                                                          HttpServletRequest request) {
-        Optional<User> fetchedUser = userRepository.findById(userId);
-        if(!authorizationService.isAuthorizedAdmin(request) &&
-                authorizationService.currentUser(request).getId().compareTo(userId) != 0) {
-            return unauthorized();
+        final Optional<User> fetchedUser = userRepository.findById(userId);
+        if(!authService.isAuthorizedAdmin(request) &&
+                authService.currentUser(request).getId().compareTo(userId) != 0) {
+            return responseUtility.unauthorized();
         }
         if (fetchedUser.isPresent()) {
             final User updatedUser = fetchedUser.get();
             if (user.getPassword() != null) updatedUser.setPassword(user.getPassword());
             try {
                 userRepository.save(updatedUser);
-                return ResponseEntity.ok(new CommonResponse(
-                        "User password updated successfully"));
-            } catch (Exception e) { return errorMessage(e); }
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new CommonResponse("User not found"));
-        }
+                return responseUtility.ok("User password updated successfully", null);
+            } catch (Exception e) { return responseUtility.errorMessage(); }
+        } else return responseUtility.notFound("User not found");
     }
 
     @GetMapping("/user/all")
     public ResponseEntity<CommonResponse> getAllUsers(HttpServletRequest request) {
-        if(authorizationService.isAuthorizedAdmin(request)) {
+        if(authService.isAuthorizedAdmin(request)) {
             try{
-                return ResponseEntity.ok(
-                        new CommonResponse("All users", userRepository.findAll()));
-            } catch (Exception e) { return errorMessage(e); }
-        } else return unauthorized();
-    }
-
-    private ResponseEntity<CommonResponse> errorMessage (Exception e) {
-        System.out.println(e.getMessage());
-        return new ResponseEntity<>(
-                new CommonResponse(
-                        "Something went wrong when trying to process the request"),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                return responseUtility.ok("All users", userRepository.findAll());
+            } catch (Exception e) { return responseUtility.errorMessage(); }
+        } else return responseUtility.unauthorized();
     }
 
     private HashMap<String, Object> getUserResponse(User user) {
@@ -217,17 +171,5 @@ public class UserController {
         data.put("created_at", user.getCreatedAt());
         data.put("is_admin", user.isAdmin());
         return data;
-    }
-
-    private ResponseEntity<CommonResponse> unauthorized() {
-        return new ResponseEntity<>(
-                new CommonResponse( "Not Authorized"),
-                HttpStatus.UNAUTHORIZED);
-    }
-
-    private ResponseEntity<CommonResponse> forbidden() {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(new CommonResponse("Forbidden"));
     }
 }
