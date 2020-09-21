@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_user_userid';
+//import response from '../../../mock_data/get_user_userid';
 
 import HeaderNotifications from './HeaderNotifications';
 export default {
@@ -66,7 +66,7 @@ export default {
     },
     data: () => ({
         drawer: null,
-        user: response,
+        user: null,
     }),
     computed: {
       loggedIn() {

@@ -50,8 +50,8 @@
     methods: {
       login () {
          this.$store.dispatch('retrieveToken', {
-          email: 'stefan@tidsbanken.se',
-          password: '123456'
+          email: this.email,
+          password: this.password
          })
          .then(() => {
            this.$router.push('/dashboard')
