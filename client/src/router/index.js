@@ -5,6 +5,8 @@ import DashboardPage from '../pages/dashboard-page/DashboardPage'
 import LoginPage from '../pages/login-page/LoginPage'
 import RequestHistoryPage from '../pages/request-history-page/RequestHistoryPage'
 import UserPage from '../pages/user-profile-page/UserPage'
+import TableSelect from '../pages/admin-page/TableSelect'
+import UserTable from '../pages/admin-page/UserTable'
 
 Vue.use(Router)
 
@@ -34,6 +36,16 @@ export default new Router ({
             path:'/profile',
             name: 'User Profile',
             component: UserPage
+        },
+        {
+            path:'/requests',
+            name: 'View Requests',
+            component: TableSelect
+        },
+        {
+            path: '/users',
+            name: 'View Users',
+            component: UserTable
         }
     ]
 })
