@@ -1,5 +1,7 @@
 <template>
-  <v-row justify="center">
+  <v-main>
+        <v-row align="center" justify="space-around">
+    <v-col class="text-center" cols="10" sm="7">
        <div class="modals">
   <create-user-modal/>
   &nbsp;&nbsp;&nbsp;
@@ -15,8 +17,11 @@
     class="elevation-1"
   >
   </v-data-table>
-  
+  <br>
+    <v-btn @click="$router.push('admin')">Go Back</v-btn>
+   </v-col>
   </v-row>
+  </v-main>
 </template>
 
 <script>
