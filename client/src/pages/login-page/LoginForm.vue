@@ -36,11 +36,6 @@
     name: 'LoginForm',
     data: () => ({
       valid: true,
-      name: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 100) || 'Name must be less than 100 characters',
-      ],
       email: '',
       emailRules: [
         v => !!v || 'E-mail is required',
