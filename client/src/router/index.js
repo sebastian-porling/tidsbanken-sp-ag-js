@@ -18,24 +18,41 @@ export default new Router ({
             component: DashboardPage
         },
         {
+            path:'/dashboard',
+            name: 'Dashboard',
+            component: DashboardPage
+        },
+        {
             path:'/login',
             name: 'Login',
-            component: LoginPage
+            component: LoginPage,
+            meta: {
+                requiresVisitor: true
+            }
         },
          {
             path:'/admin',
             name: 'Admin',
-            component: AdminPage
+            component: AdminPage,
+            meta: {
+                requiresAuth: true
+            }
         }, 
         {
             path:'/history',
             name: 'Request History',
-            component: RequestHistoryPage
+            component: RequestHistoryPage,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path:'/profile',
             name: 'User Profile',
-            component: UserPage
+            component: UserPage,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path:'/requests',
