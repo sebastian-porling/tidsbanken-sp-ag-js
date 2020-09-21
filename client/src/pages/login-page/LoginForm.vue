@@ -2,8 +2,7 @@
 <v-row justify="center" align="center">
     <v-form
       ref="form"
-      v-model="valid"
-      :lazy-validation="lazy"
+      @submit.prevent="login"
     >
 
       <v-text-field
@@ -22,8 +21,9 @@
       ></v-text-field>
 
       <v-btn
+      type="submit"
+        class="submit"
         color="info"
-        @click="login"
       >
         Login
       </v-btn>
@@ -35,7 +35,6 @@
   export default {
     name: 'LoginForm',
     data: () => ({
-      valid: true,
       email: '',
       emailRules: [
         v => !!v || 'E-mail is required',
@@ -50,7 +49,13 @@
 
     methods: {
       login () {
-        this.$refs.form.login()
+         this.$store.dispatch('retrieveToken', {
+          email: 'stefan@tidsbanken.se',
+          password: '123456'
+         })
+         .then(() => {
+           this.$router.push('/dashboard')
+         })
       }
     },
   }
