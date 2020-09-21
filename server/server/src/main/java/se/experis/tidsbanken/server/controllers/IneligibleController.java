@@ -24,7 +24,8 @@ public class IneligibleController{
     private AuthorizationService authorizationService;
 
     @GetMapping("/ineligible")
-    public ResponseEntity<CommonResponse> getIneligiblePeriod(){
+    public ResponseEntity<CommonResponse> getIneligiblePeriod(HttpServletRequest request){
+        if (!authorizationService.isAuthorized(request)) { return unauthorized(); }
         try {
             return ResponseEntity.ok(
                     new CommonResponse("All ineligible periods",
