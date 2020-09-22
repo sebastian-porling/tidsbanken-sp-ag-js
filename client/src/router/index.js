@@ -15,12 +15,18 @@ export default new Router ({
         {
             path:'/',
             name: 'Dashboard',
-            component: DashboardPage
+            component: DashboardPage,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path:'/dashboard',
             name: 'Dashboard',
-            component: DashboardPage
+            component: DashboardPage,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path:'/login',

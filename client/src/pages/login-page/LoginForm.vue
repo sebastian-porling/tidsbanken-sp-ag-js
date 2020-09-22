@@ -46,7 +46,6 @@
         v => (v && v.length >= 6) || 'Password must be more than 6 characters',
       ]
     }),
-
     methods: {
       login () {
          this.$store.dispatch('retrieveToken', {
