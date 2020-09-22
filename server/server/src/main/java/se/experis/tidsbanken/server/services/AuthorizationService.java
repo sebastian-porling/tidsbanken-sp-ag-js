@@ -18,26 +18,20 @@ public class AuthorizationService {
     private JwtUtil jwtUtil;
 
     public Boolean isAuthorizedAdmin(HttpServletRequest request) {
-        try {
-            return isAuthorizedRole(request, UserRole.ADMINISTRATOR);
-        } catch (Exception e) {
-            return false;
-        }
+        try { return isAuthorizedRole(request, UserRole.ADMINISTRATOR);
+        } catch (Exception e) { return false; }
     }
 
     public Boolean isAuthorizedUser(HttpServletRequest request) {
-        try {
-            return isAuthorizedRole(request, UserRole.USER);
-        } catch (Exception e) {
-            return false;
-        }
+        try { return isAuthorizedRole(request, UserRole.USER);
+        } catch (Exception e) { return false; }
     }
 
     public Boolean isAuthorized(HttpServletRequest request) {
         try {
             final String jwt = extractToken(request);
             final String email = jwtUtil.extractEmail(jwt);
-            final User user = userRepository.getByEmail(email).get();
+            final User user = userRepository.getByEmailAndIsActiveTrue(email).get();
             return jwtUtil.validateToken(jwt, user);
         } catch (Exception e) {
             return false;
@@ -47,7 +41,7 @@ public class AuthorizationService {
     private Boolean isAuthorizedRole(HttpServletRequest request, UserRole userRole) throws Exception{
         final String jwt = extractToken(request);
         final String email = jwtUtil.extractEmail(jwt);
-        final User user = userRepository.getByEmail(email).get();
+        final User user = userRepository.getByEmailAndIsActiveTrue(email).get();
         return jwtUtil.validateToken(jwt, user, userRole.toString());
     }
 
@@ -64,9 +58,7 @@ public class AuthorizationService {
         try {
             final String jwt = extractToken(request);
             final String email = jwtUtil.extractEmail(jwt);
-            return userRepository.getByEmail(email).get();
-        } catch (Exception e) {
-            return null;
-        }
+            return userRepository.getByEmailAndIsActiveTrue(email).get();
+        } catch (Exception e) { return null; }
     }
 }
