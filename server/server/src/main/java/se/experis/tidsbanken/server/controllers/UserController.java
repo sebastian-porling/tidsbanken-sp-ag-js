@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/")
+@CrossOrigin(origins = "*", allowedHeaders = "*") 
 public class UserController {
 
     @Autowired private UserRepository userRepository;
