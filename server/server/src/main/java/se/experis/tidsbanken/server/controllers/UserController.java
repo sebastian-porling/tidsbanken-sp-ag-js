@@ -67,7 +67,9 @@ public class UserController {
     public ResponseEntity<CommonResponse> updateUser(@PathVariable("user_id") Long userId,
                                                      @RequestBody User user,
                                                      HttpServletRequest request) {
-        if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
+        if (!authService.isAuthorizedAdmin(request) &&
+                authService.currentUser(request).getId().compareTo(userId) != 0)
+        { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()) {
             final User updatedUser = fetchedUser.get();
