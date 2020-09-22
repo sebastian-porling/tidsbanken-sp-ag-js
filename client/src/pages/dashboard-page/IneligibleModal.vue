@@ -26,12 +26,47 @@
 <script>
 export default {
     name: 'IneligibleModal',
-    data() {
+ data() {
         return {
             dialog: false,
-            
-    }    
-},
+            dates: [null, null],
+            ineligible_period: {
+              period_start: null,
+              period_end: null,
+            },
+            today: new Date().toJSON().slice(0,10),
+            errorMessage: "",
+        }
+    },
+    methods: {
+      validateData() {
+        this.setDates(this.dates);
+
+        if(this.period_start != null && this.period_end != null){
+          if(this.period_start < this.period_end) {
+              this.dialog = false;
+              // Connect to api
+              alert("Inegible period has been removed from " + this.period_start + " to " + this.period_end);
+          } else {
+            this.switchDates();
+            this.dialog = false;
+            // Connect to api
+              alert("Inegible period has been removed from " + this.period_start + " to " + this.period_end);
+          }
+        } else {
+          this.errorMessage = "You need to enter a start and an end date..";
+        }
+      },
+      setDates(dates) {
+        this.period_end = dates[1];
+        this.period_start = dates[0];
+      },
+      switchDates(){
+        let temp = this.period_start;
+        this.period_start = this.period_end;
+        this.period_end = temp;
+      }
+    },    
 }
 </script>
 
