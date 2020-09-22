@@ -20,6 +20,8 @@ public class LoginDTO {
         userInfo.put("user_id", user.getId());
         userInfo.put("full_name", user.getFullName());
         userInfo.put("profile_pic", user.getProfilePic());
+        userInfo.put("is_admin", user.isAdmin());
+        userInfo.put("two_factor_auth", user.isTwoFactorAuth());
         return userInfo;
     }
 }
