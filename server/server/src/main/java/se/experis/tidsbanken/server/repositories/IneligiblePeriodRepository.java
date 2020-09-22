@@ -10,4 +10,6 @@ import java.util.List;
 public interface IneligiblePeriodRepository extends JpaRepository<IneligiblePeriod, Long> {
 
     List<IneligiblePeriod> findAllByOrderByStartDesc();
+
+    List<IneligiblePeriod> findAllByIdNot(Long id);
 }

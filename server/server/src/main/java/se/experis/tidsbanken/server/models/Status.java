@@ -1,5 +1,7 @@
 package se.experis.tidsbanken.server.models;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,7 @@ public class Status {
     private Integer id;
 
     @Column(nullable = false)
+    @NotNull
     private String status;
 
     public Status(Integer id, String status) {

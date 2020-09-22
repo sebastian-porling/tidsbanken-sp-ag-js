@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findAllByRequest(VacationRequest request);
+    List<Comment> findAllByRequestOrderByCreatedAtDesc(VacationRequest request);
 
-    Optional<Comment> findByIdAndRequest(Long commentId, VacationRequest request);
+    Optional<Comment> findByIdAndRequestOrderByCreatedAtDesc(Long commentId, VacationRequest request);
 }

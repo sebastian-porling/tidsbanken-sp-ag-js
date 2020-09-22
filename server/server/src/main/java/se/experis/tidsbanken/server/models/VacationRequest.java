@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashMap;
+import java.util.List;
 
 @Entity
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -33,10 +35,10 @@ public class VacationRequest {
     private Status status;
 
     @Column(nullable = false)
-    private Date createdAt = new java.sql.Timestamp(new Date().getTime());
+    private Date createdAt = new Date(System.currentTimeMillis());
 
     @Column(nullable = false)
-    private Date modifiedAt = new java.sql.Timestamp(new Date().getTime());
+    private Date modifiedAt = new Date(System.currentTimeMillis());
 
     @ManyToOne
     private User moderator;
@@ -83,8 +85,9 @@ public class VacationRequest {
         return getUser(owner);
 }
 
-    public void setOwner(User owner) {
+    public VacationRequest setOwner(User owner) {
         this.owner = owner;
+        return this;
     }
 
     public Status getStatus() {
@@ -148,13 +151,26 @@ public class VacationRequest {
         return userMap;
     }
 
+    @JsonIgnore
     public boolean onlyApproved() {
         return this.status.getStatus().equals("Approved");
     }
 
-    public boolean excludesInPeriod(VacationRequest ip) {
-        return (ip.start.before(this.start) && ip.end.before(this.start)) ||
-                (ip.start.after(this.end) && ip.end.after(this.end));
+    @JsonIgnore
+    public boolean isPending() {
+        return this.status.getStatus().equals("Pending");
+    }
+
+    @JsonIgnore
+    public boolean excludesInPeriod(VacationRequest vr) {
+        return (this.start.before(vr.start) && this.end.before(vr.start)) ||
+                (this.start.after(vr.end) && this.end.after(vr.end));
+    }
+
+    @JsonIgnore
+    public boolean excludesInIP(IneligiblePeriod ip) {
+        return (this.start.before(ip.getStart()) && this.end.before(ip.getStart())) ||
+                (this.start.after(ip.getEnd()) && this.end.after(ip.getEnd()));
     }
 
 }

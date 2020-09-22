@@ -8,7 +8,6 @@ import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.UserRepository;
 import se.experis.tidsbanken.server.utils.*;
 
-
 import java.util.Optional;
 
 @RestController
@@ -26,12 +25,12 @@ public class AuthController {
     public ResponseEntity<CommonResponse> login(@RequestBody Credentials credentials) {
         try {
             if (credentials.getEmail() != null && credentials.getPassword() != null) {
-               final Optional<User> fetchedUser = userRepository.getByEmail(credentials.getEmail());
+               final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(credentials.getEmail());
                 if (fetchedUser.isPresent() && fetchedUser.get().getPassword().equals(credentials.getPassword())) {
                     final User presentUser = fetchedUser.get();
                     final UserRole userRole = presentUser.isAdmin() ? UserRole.ADMINISTRATOR : UserRole.USER;
                     final String jwt = jwtUtil.generateToken(presentUser, userRole.toString());
-                    return responseUtility.ok("User credentials approved", new LoginDTO(jwt, presentUser));
+                    return responseUtility.ok("User credentials approved", new LoginDTO(jwt,presentUser));
                 } else {throw new Exception("");}
             } else {throw new Exception("");}
         } catch (Exception e) {

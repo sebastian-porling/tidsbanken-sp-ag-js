@@ -15,4 +15,6 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
     List<VacationRequest> findAllByOwner(User owner);
 
     List<VacationRequest> findAllByOrderByStartDesc(Pageable pageable);
+
+    List<VacationRequest> findAllByOwnerAndIdNot(User owner, Long id);
 }

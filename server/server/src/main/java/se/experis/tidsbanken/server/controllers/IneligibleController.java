@@ -19,13 +19,13 @@ public class IneligibleController{
 
     @Autowired private IneligiblePeriodRepository ipRepository;
 
-    @Autowired private AuthorizationService authorizationService;
+    @Autowired private AuthorizationService authService;
 
     @Autowired private ResponseUtility responseUtility;
 
     @GetMapping("/ineligible")
     public ResponseEntity<CommonResponse> getIneligiblePeriod(HttpServletRequest request){
-        if (!authorizationService.isAuthorized(request)) { return responseUtility.unauthorized(); }
+        if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         try { return responseUtility.ok("All ineligible periods",
                     ipRepository.findAllByOrderByStartDesc());
         } catch (Exception e) { return responseUtility.errorMessage(); }
@@ -34,9 +34,9 @@ public class IneligibleController{
     @PostMapping("/ineligible")
     public ResponseEntity<CommonResponse> createIneligiblePeriod(@RequestBody IneligiblePeriod ip,
                                                                  HttpServletRequest request) {
-        if(!authorizationService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
+        if(!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
         if (ipRepository.findAll().stream().allMatch(ip::excludesInPeriod)) {
-            try { ipRepository.save(ip);
+            try { ipRepository.save(ip.setModerator(authService.currentUser(request)));
                 return responseUtility.created("New period added", ip);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.badRequest("Period already exists");
@@ -45,7 +45,7 @@ public class IneligibleController{
     @GetMapping("/ineligible/{ip_id}")
     public ResponseEntity<CommonResponse> getIneligiblePeriodForId(@PathVariable("ip_id") Long ip_id,
                                                                    HttpServletRequest request){
-        if(!authorizationService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
+        if(!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
         final Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
         if (fetchedPeriod.isPresent()){
             return responseUtility.ok("Ineligible period fetched successfully", fetchedPeriod.get());
@@ -56,17 +56,19 @@ public class IneligibleController{
     public ResponseEntity<CommonResponse> updateIneligiblePeriod(@PathVariable("ip_id") Long ip_id,
                                                                  @RequestBody IneligiblePeriod ip,
                                                                  HttpServletRequest request) {
-        if(!authorizationService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
+        if(!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
         final Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
         if (fetchedPeriod.isPresent()) {
             final IneligiblePeriod updatedPeriod = fetchedPeriod.get();
             if (ip.getStart() != null) updatedPeriod.setStart(ip.getStart());
             if (ip.getEnd() != null) updatedPeriod.setEnd(ip.getEnd());
-            if (ip.getModerator() != null) updatedPeriod.setModerator(ip.getOriginalModerator());
+            if(!ipRepository.findAllByIdNot(ip_id).stream().allMatch(updatedPeriod::excludesInPeriod))
+                return responseUtility.badRequest("Patched Ineligible Period Overlaps, Try Again");
+            updatedPeriod.setModerator(authService.currentUser(request));
             updatedPeriod.setModifiedAt(new java.sql.Date(System.currentTimeMillis()));
             try {
-                ipRepository.save(updatedPeriod);
-                return responseUtility.ok("Ineligible period updated successfully", updatedPeriod);
+                IneligiblePeriod patchedIp = ipRepository.save(updatedPeriod);
+                return responseUtility.ok("Ineligible period updated successfully", patchedIp);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("Ineligible period not found");
     }
@@ -75,7 +77,7 @@ public class IneligibleController{
     public ResponseEntity<CommonResponse> deleteIneligiblePeriod(@PathVariable("ip_id")long ip_id,
                                                                  HttpServletRequest request){
         final Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
-        if(!authorizationService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
+        if(!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
         if (fetchedPeriod.isPresent()) {
             try {
                 ipRepository.deleteById(ip_id);

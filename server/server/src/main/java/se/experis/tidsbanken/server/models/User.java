@@ -2,13 +2,13 @@ package se.experis.tidsbanken.server.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.samstevens.totp.secret.DefaultSecretGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +25,7 @@ public class User {
     @Column(nullable = false)
     private Boolean isAdmin;
 
-    @Column
+    @Column(columnDefinition = "varchar(255) default null")
     private String profilePic;
 
     @Column(nullable = false)
@@ -34,10 +34,10 @@ public class User {
     @Column(nullable = false)
     private Integer vacationDays;
 
-    @Column(nullable = false)
+    @Column(nullable = false ,columnDefinition = "Integer default 0")
     private Integer usedVacationDays = 0;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive = true;
 
     @Column(nullable = false)
@@ -69,7 +69,7 @@ public class User {
         this.fullName = fullName;
     }
 
-    @JsonIgnore
+
     public String getPassword() {
         return password;
     }
