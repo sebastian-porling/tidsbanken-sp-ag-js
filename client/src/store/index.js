@@ -17,7 +17,7 @@ export const store = new Vuex.Store({
         loggedIn(state) {
             return state.token !== null;
         },
-        currentUser(state) {
+        getCurrentUser(state) {
             return state.user !== null;
         },
         getRequestHistory(state){
@@ -25,7 +25,7 @@ export const store = new Vuex.Store({
         }
     },
     mutations: {
-        retrieveCurrentUser(state, user) {
+        setCurrentUser(state, user) {
             state.currentUser = user.user
             state.token = user.token
         },
@@ -46,8 +46,8 @@ export const store = new Vuex.Store({
                 .then(response => {
                     const user = response.data.data;
                     localStorage.setItem('access_token', user.token);
-                    localStorage.setItem('user', JSON.stringify(user.user));
-                    context.commit('retrieveCurrentUser', user)
+                    localStorage.setItem('user', user.user);
+                    context.commit('setCurrentUser', user)
                     resolve(response);
                 })
                 .catch (error => {
@@ -71,7 +71,6 @@ export const store = new Vuex.Store({
                 })
                 .then(response => {
                     const requestHistory = response.data.data;
-                    console.log(requestHistory);
                     context.commit('setRequestHistory', requestHistory);
                 })
                 .catch(error => {

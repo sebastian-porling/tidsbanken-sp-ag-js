@@ -18,7 +18,6 @@
 </template>
 
 <script>
-//import response from '../../../mock_data/get_request'
  import ViewRequestModal from '../../components/shared/ViewRequestModal'
     export default {
     name: 'RequestHistoryTable',
