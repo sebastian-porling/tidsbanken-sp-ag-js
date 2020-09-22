@@ -10,7 +10,7 @@
     @click:row="launchModal"
   >
   <template v-slot:item.status="{ item }">
-      <v-chip :color="getColor(item.status)" dark>{{ item.status }}</v-chip>
+      <v-chip :color="getColor(item.status.status)" dark>{{ item.status.status }}</v-chip>
     </template>
   </v-data-table>
   <view-request-modal :active="activateModal" :request="request" @closeModal="closeModal"/>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_request'
+//import response from '../../../mock_data/get_request'
  import ViewRequestModal from '../../components/shared/ViewRequestModal'
     export default {
     name: 'RequestHistoryTable',
@@ -34,17 +34,31 @@ import response from '../../../mock_data/get_request'
             sortable: false,
             value: 'title',
           },
-          { text: 'Start', value: 'period_start'},
-          { text: 'End', value: 'period_end' },
+          { text: 'Start', value: 'start'},
+          { text: 'End', value: 'end' },
           { text: 'Status', value: 'status' },
           { 
             text: 'Created', 
             value: 'created_at'
           }
         ],
-        requests: response.data,
         activateModal: false,
         request: 0
+      }
+    },
+    created() {
+      this.$store.dispatch('retrieveRequestHistory', 1)
+    },
+    computed: {
+      user: {
+        get() {
+          return this.$store.state.currentUser;
+        }
+      },
+      requests: {
+        get() {
+          return this.$store.state.requestHistory;
+        }
       }
     },
     methods: {
