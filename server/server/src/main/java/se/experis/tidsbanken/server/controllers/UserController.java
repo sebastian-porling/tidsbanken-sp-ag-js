@@ -37,7 +37,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> createUser(@RequestBody User user,
                                                      HttpServletRequest request) {
         if (!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
-        final Optional<User> fetchedUser = userRepository.getByEmail(user.getEmail());
+        final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(user.getEmail());
         if (fetchedUser.isEmpty()) {
             try {
                 userRepository.save(user);
@@ -52,7 +52,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> getUser(@PathVariable("user_id") Long userId,
                                                   HttpServletRequest request){
         if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
-        final Optional<User> fetchedUser = userRepository.findById(userId);
+        final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()){
             final User user = fetchedUser.get();
             final HashMap<String, Object> data =
@@ -68,22 +68,22 @@ public class UserController {
                                                      @RequestBody User user,
                                                      HttpServletRequest request) {
         if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
-        final Optional<User> fetchedUser = userRepository.findById(userId);
+        final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()) {
             final User updatedUser = fetchedUser.get();
             if (user.getPassword() != null) return responseUtility.badRequest("Not allowed to patch password");
             if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
             if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
             if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
-            if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
-            if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
             if (authService.isAuthorizedAdmin(request)) {
+                if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
+                if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
                 updatedUser.setAdmin(user.isAdmin());
             } else  if (user.isAdmin() != null) return responseUtility.forbidden();
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
-                userRepository.save(updatedUser);
-                return responseUtility.ok("User updated successfully", getUserResponse(user));
+                User patchedUser = userRepository.save(updatedUser);
+                return responseUtility.ok("User updated successfully", getUserResponse(patchedUser));
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");
     }
@@ -91,7 +91,7 @@ public class UserController {
     @DeleteMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> deleteUser(@PathVariable("user_id") Long userId,
                                                      HttpServletRequest request){
-        final Optional<User> fetchedUser = userRepository.findById(userId);
+        final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if(!authService.isAuthorizedAdmin(request) &&
                 authService.currentUser(request).getId().compareTo(userId) != 0) {
             return responseUtility.forbidden();
@@ -110,7 +110,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> getUserVacationRequests(@PathVariable("user_id") Long userId,
                                                                   HttpServletRequest request){
         if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
-        final Optional<User> fetchedUser = userRepository.findById(userId);
+        final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()){
             Object data;
             final  List<VacationRequest> allVacationRequests =
@@ -132,7 +132,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> updatePassword(@PathVariable("user_id") Long userId,
                                                          @RequestBody User user,
                                                          HttpServletRequest request) {
-        final Optional<User> fetchedUser = userRepository.findById(userId);
+        final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if(!authService.isAuthorizedAdmin(request) &&
                 authService.currentUser(request).getId().compareTo(userId) != 0) {
             return responseUtility.unauthorized();
@@ -151,25 +151,26 @@ public class UserController {
     public ResponseEntity<CommonResponse> getAllUsers(HttpServletRequest request) {
         if(authService.isAuthorizedAdmin(request)) {
             try{
-                return responseUtility.ok("All users", userRepository.findAll());
+                return responseUtility.ok("All users", userRepository.findAllByIsActiveTrue());
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.unauthorized();
     }
 
     private HashMap<String, Object> getUserResponse(User user) {
         final HashMap<String, Object> data = new HashMap<>();
-        data.put("email", user.getEmail());
         data.put("full_name", user.getFullName());
         data.put("profile_pic", user.getProfilePic());
-        data.put("vacation_days", user.getVacationDays());
-        data.put("used_vacation_days", user.getUsedVacationDays());
         return data;
     }
 
     private HashMap<String, Object> getAdminResponse(User user) {
         final HashMap<String, Object> data = getUserResponse(user);
+        data.put("user_id", user.getId());
+        data.put("email", user.getEmail());
         data.put("created_at", user.getCreatedAt());
         data.put("is_admin", user.isAdmin());
+        data.put("vacation_days", user.getVacationDays());
+        data.put("used_vacation_days", user.getUsedVacationDays());
         return data;
     }
 }
