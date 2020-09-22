@@ -1,6 +1,8 @@
 package se.experis.tidsbanken.server.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +16,7 @@ public class Comment {
     private Long id;
 
     @Column(nullable = false)
+    @NonNull
     private String message;
 
     @ManyToOne
@@ -53,6 +56,11 @@ public class Comment {
         return user;
     }
 
+    @JsonIgnore
+    public User getOriginalUser(){
+        return this.user;
+    }
+
     @JsonProperty("created_at")
     public Date getCreatedAt() {
         return createdAt;
@@ -63,4 +71,21 @@ public class Comment {
         return modifiedAt;
     }
 
+    public Comment setUser(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public Comment setRequest(VacationRequest request) {
+        this.request = request;
+        return this;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void updateModifiedAt() {
+        this.modifiedAt = new java.sql.Timestamp(new Date().getTime());
+    }
 }

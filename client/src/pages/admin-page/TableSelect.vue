@@ -1,7 +1,6 @@
 <template>
 <v-main>
-        <v-row align="center" justify="space-around">
-    <v-col class="text-center" cols="10" sm="7">
+     <v-row justify=“center” align=“center”>
       <v-data-table
     :headers="headers"
     :items="requests"
@@ -16,10 +15,8 @@
     </template>
   </v-data-table>
   <view-request-modal :active="activateModal" :request="request" @closeModal="closeModal"/>
- <br>
-    <v-btn @click="$router.push('admin')">Go Back</v-btn>
-   </v-col>
-  </v-row>
+
+</v-row>
   </v-main>
   
 </template>
