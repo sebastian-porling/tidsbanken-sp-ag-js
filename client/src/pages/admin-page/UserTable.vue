@@ -1,7 +1,6 @@
 <template>
   <v-main>
-        <v-row align="center" justify="space-around">
-    <v-col class="text-center" cols="10" sm="7">
+<v-row justify=“center” align=“center”>
        <div class="modals">
   <create-user-modal/>
   &nbsp;&nbsp;&nbsp;
@@ -17,10 +16,7 @@
     class="elevation-1"
   >
   </v-data-table>
-  <br>
-    <v-btn @click="$router.push('admin')">Go Back</v-btn>
-   </v-col>
-  </v-row>
+</v-row>
   </v-main>
 </template>
 
@@ -58,6 +54,7 @@ import EditUserModal from '@/pages/admin-page/EditUserModal'
 <style>
 .modals{
     padding:2%;
-    padding-bottom: 4%;
+    padding-bottom: 2%;
+
 }
 </style>
