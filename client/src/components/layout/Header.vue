@@ -21,7 +21,7 @@
             <v-list-item-title>Request History</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item router-link to="admin" v-if="user.is_admin">
+        <v-list-item router-link to="admin" v-if="user && user.is_admin">
           <v-list-item-action>
             <v-icon>mdi-head-minus</v-icon>
           </v-list-item-action>
