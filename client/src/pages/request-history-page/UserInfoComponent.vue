@@ -5,17 +5,17 @@
            <span v-if="!user.profile_pic" class="white--text headline">A</span>
           <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
         </v-avatar>
-        <v-h1 class="px-6">
+        <h1 class="px-6">
             {{ user.full_name }}
-        </v-h1>
+        </h1>
   </v-row>
     <v-row justify="center" align="center">
-        <v-h3>
+        <h3>
             Vacation days: 
-            <v-h2 v-model="used_vacation_days">{{ user.used_vacation_days }}</v-h2>
+            <h2>{{ user.used_vacation_days }}</h2>
             /
-            <v-h2 v-model="vacation_days">{{ user.vacation_days }}</v-h2>
-        </v-h3>
+            <h2>{{ user.vacation_days }}</h2>
+        </h3>
     </v-row>
 </v-col>
 
