@@ -60,7 +60,6 @@ export default {
     computed: {
         user: {
             get() {
-              
                 return this.$store.getters.getCurrentUser;
             }
         },

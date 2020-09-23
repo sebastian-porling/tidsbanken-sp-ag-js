@@ -23,7 +23,7 @@
         <h2 class="set">Setting</h2>
         <h2 class="val">Value</h2>
 
-        <v-divider class="mx-4" :inset="inset" horizontal></v-divider>
+        <v-divider class="mx-4"  horizontal></v-divider>
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="3">
