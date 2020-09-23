@@ -46,6 +46,20 @@ public class User {
     @Column(nullable = false)
     private Date modifiedAt = new java.sql.Timestamp(new Date().getTime());
 
+    @Column(columnDefinition = "varchar(255) default null")
+    private String secret;
+
+    @JsonIgnore
+    public String generateSecret() {
+        this.secret = new DefaultSecretGenerator().generate();
+        return this.secret;
+    }
+
+    @JsonIgnore
+    public String getSecret() {
+        return this.secret;
+    }
+
     public User() {}
 
     public Long getId() {
