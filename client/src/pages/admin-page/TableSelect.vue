@@ -1,6 +1,10 @@
 <template>
-<v-main>
-     <v-row justify=“center” align=“center”>
+<v-container>
+  <v-row>
+    <h1>Vacations request from all users</h1>
+  </v-row>
+  <v-row>
+    
       <v-data-table
     :headers="headers"
     :items="requests"
@@ -11,21 +15,18 @@
     @click:row="launchModal"
   >
   <template v-slot:item.status="{ item }">
-      <v-chip :color="getColor(item.status)" dark>{{ item.status }}</v-chip>
+      <v-chip :color="getColor(item.status.status)" dark>{{ item.status.status }}</v-chip>
     </template>
   </v-data-table>
-  <view-request-modal :active="activateModal" :request="request" @closeModal="closeModal"/>
-
-</v-row>
-  </v-main>
-  
+  <view-request-modal :active="activateModal" :request="request"  @closeModal="closeModal"/>
+  </v-row>
+</v-container>
 </template>
 
 <script>
-import response from '../../../mock_data/get_request'
  import ViewRequestModal from '../../components/shared/ViewRequestModal'
     export default {
-    name: 'TableSelect',
+    name: 'RequestHistoryTable',
     components: {
        'view-request-modal': ViewRequestModal
      },
@@ -38,13 +39,31 @@ import response from '../../../mock_data/get_request'
             sortable: false,
             value: 'title',
           },
-          { text: 'Start', value: 'period_start'},
-          { text: 'End', value: 'period_end' },
-          { text: 'Status', value: 'status' }
+          { text: 'Start', value: 'start'},
+          { text: 'End', value: 'end' },
+          { text: 'Status', value: 'status' },
+          { 
+            text: 'Created', 
+            value: 'created_at'
+          }
         ],
-        requests: response.data,
         activateModal: false,
-        request: 0
+        request: {}
+      }
+    },
+    created() {
+      this.$store.dispatch('retrieveAllRequests')
+    },
+    computed: {
+      user: {
+        get() {
+          return this.$store.state.user;
+        }
+      },
+      requests: {
+        get() {
+          return this.$store.getters.getAllRequests;
+        }
       }
     },
     methods: {
@@ -59,12 +78,13 @@ import response from '../../../mock_data/get_request'
           }
       },
       launchModal(value) {
-        console.log("Request with id " + value.request_id + " is clicked")
-        this.request = value.request_id;
+        this.request = value; 
+        this.$store.dispatch('retrieveComments', value.id)
+        console.log(this.request);
         this.activateModal = true;
       },
       closeModal() {
-        this.request = 0;
+        this.request = {};
         this.activateModal = false;
       }
     },
@@ -72,4 +92,5 @@ import response from '../../../mock_data/get_request'
 </script>
 
 <style>
+
 </style>

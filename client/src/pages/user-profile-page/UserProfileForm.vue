@@ -38,8 +38,6 @@
 </template>
 
 <script>
-//import response from '../../../mock_data/get_user_userid';
-
 export default {
   name: 'UserProfileForm',
   data: () => ({
@@ -66,7 +64,7 @@ export default {
       },
       user: {
         get() {
-          return this.$store.state.currentUser;
+          return this.$store.getters.getCurrentUser;
         }
       }
     },

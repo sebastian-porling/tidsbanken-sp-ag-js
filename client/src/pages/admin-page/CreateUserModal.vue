@@ -1,7 +1,8 @@
 <template>
   <v-dialog v-model="dialog" width="600px">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn v-bind="attrs" v-on="on">Create User</v-btn>
+      <h1> Users of Tidsbanken </h1>
+      <v-btn v-bind="attrs" fab v-on="on" color="success">+</v-btn>
     </template>
     <v-card>
       <v-card-title>

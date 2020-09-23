@@ -14,6 +14,8 @@ export const store = new Vuex.Store({
     requestHistory: [],
     comments: [],
     qrCode: null,
+    allRequests: [],
+    allUsers: [],
   },
   getters: {
     loggedIn(state) {
@@ -27,6 +29,12 @@ export const store = new Vuex.Store({
     },
     getComments(state) {
         return state.comments;
+    },
+    getAllRequests(state) {
+        return state.allRequests;
+    },
+    getAllUsers(state) {
+        return state.allUsers;
     }
   },
   mutations: {
@@ -46,6 +54,12 @@ export const store = new Vuex.Store({
     setComments(state, comments) {
       state.comments = comments;
     },
+    setAllRequests(state, requests) {
+        state.allRequests = requests;
+    },
+    setAllUsers(state, users) {
+        state.allUsers = users;
+    }
 },
     actions: {
       retrieveToken(context, credentials) {
@@ -60,7 +74,7 @@ export const store = new Vuex.Store({
               const data = response.data.data;
               localStorage.setItem("access_token", data.token);
               localStorage.setItem("user", JSON.stringify(data.user));
-              context.commit("retrieveCurrentUser", data);
+              context.commit("setCurrentUser", data);
               resolve(response);
             })
             .catch((error) => {
@@ -107,21 +121,51 @@ export const store = new Vuex.Store({
             console.log(error);
           });
       },
-      retrieveComments(context, requestId) {
+      retrieveAllRequests(context) {
         axios
-          .get(`request/${requestId}/comment`, {
+          .get(`/request`, {
             headers: {
               authorization: `Bearer ${this.state.token}`,
             },
           })
           .then((response) => {
-            const comments = response.data.data;
-            context.commit("setComments", comments);
+            const allRequests = response.data.data;
+            context.commit("setAllRequests", allRequests);
           })
           .catch((error) => {
             console.log(error);
           });
       },
+      retrieveAllUsers(context) {
+        axios
+          .get(`/user/all`, {
+            headers: {
+              authorization: `Bearer ${this.state.token}`,
+            },
+          })
+          .then((response) => {
+            const allUsers = response.data.data;
+            context.commit("setAllUsers", allUsers);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      },
+    },
+    retrieveComments(context, requestId) {
+      axios
+        .get(`request/${requestId}/comment`, {
+          headers: {
+            authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((response) => {
+          const comments = response.data.data;
+          context.commit("setComments", comments);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     
   });
