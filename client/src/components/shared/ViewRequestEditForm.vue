@@ -2,8 +2,8 @@
   <v-card>
         <v-card-title>
             <span class="headline">{{ request.title }}</span>
-            <v-chip class="ma-2" :color="getColor(request.status)" text-color="white">
-                    {{ request.status }}
+            <v-chip class="ma-2" :color="getColor(request.status.status)" text-color="white">
+                    {{ request.status.status }}
                 </v-chip>
         </v-card-title>
         <v-card-text>
@@ -12,11 +12,11 @@
                     <v-col cols="12">
                         <v-btn text>
                             <v-avatar color="light-blue" size="36">
-                                <!-- <span class="white--text headline">UU</span> -->
-                                <img :src="request.owner.profile_pic" alt="profilePic">
+                                <span v-if="!request.owner.profile_pic" class="white--text headline">UU</span>
+                                <img v-if="request.owner.profile_pic" :src="request.owner.profile_pic" alt="profilePic">
                             </v-avatar>
                             <strong style="margin-left: 5px">
-                                {{ request.owner.name }}</strong
+                                {{ request.owner.full_name }}</strong
                             >
                         </v-btn>
                     </v-col>
@@ -33,7 +33,7 @@
                         <v-text-field
                             type="date"
                             label="Start*"
-                            v-model="period_start"
+                            v-model="start"
                             :min="today" 
                             :rules="startRules"
                             required
@@ -43,7 +43,7 @@
                         <v-text-field
                             type="date"
                             label="End*"
-                            v-model="period_end"
+                            v-model="end"
                             :min="today" 
                             :rules="endRules"
                             required
@@ -65,30 +65,30 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_request_id';
-
 export default {
     name: 'ViewRequestEditForm',
     data () {
         return {
-            request: response.data,
             today: new Date().toJSON().slice(0,10),
             valid: true,
-            title: response.data.title,
+            title: this.request.title,
             titleRules: [
               v => (v && v.length >= 10) || 'Title must be 10 characters or more',
             ],
-            period_start: response.data.period_start,
+            start: this.request.start,
             startRules: [
               v => !!v || "Start date is required",
             ],
-            period_end: response.data.period_end,
+            end: this.request.end,
             endRules: [
               v => !!v || "Start date is required",
-              v => (v && v > this.period_start) || "End date can not be before start date"
+              v => (v && v > this.start) || "End date can not be before start date"
             ]
         }
     },
+    props: [
+        'request'
+    ],
     methods: {
         closeModal() {
             this.$emit('closeModal');

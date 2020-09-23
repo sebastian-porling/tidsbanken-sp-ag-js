@@ -41,7 +41,7 @@ export default new Router ({
             name: 'Admin',
             component: AdminPage,
             meta: {
-                requiresAuth: true
+                requiresAdmin: true
             }
         }, 
         {
