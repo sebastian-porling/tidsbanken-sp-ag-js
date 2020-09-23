@@ -40,12 +40,12 @@ public class AuthController {
                         final UserRole userRole = presentUser.isAdmin() ? UserRole.ADMINISTRATOR : UserRole.USER;
                         final String jwt = jwtUtil.generateToken(presentUser, userRole.toString());
                         return responseUtility.ok("User credentials approved", new LoginDTO(jwt,presentUser));
-                    } else { throw new Exception(""); }
+                    } else { throw new Exception("Wrong code!"); }
                 } else { throw new Exception(""); }
             } else { throw new Exception(""); }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new CommonResponse().message("Failed authentication"));
+                    .body(new CommonResponse().message("Failed authentication " + e.getMessage()));
         }
     }
 }
