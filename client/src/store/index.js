@@ -22,6 +22,12 @@ export const store = new Vuex.Store({
     getCurrentUser(state) {
       return state.user;
     },
+    getRequestHistory(state) {
+        return state.requestHistory;
+    },
+    getComments(state) {
+        return state.comments;
+    }
     },
     mutations: {
         setCurrentUser(state, user) {

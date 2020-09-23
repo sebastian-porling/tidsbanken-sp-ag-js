@@ -1,7 +1,7 @@
 <template>
 <v-col>
       <v-row justify="center" align="center">
-      <v-avatar color="indigo" size="60" class="my-4" v-model="profile_pic">
+      <v-avatar color="indigo" size="60" class="my-4" v-model="user.profile_pic">
            <span v-if="!user.profile_pic" class="white--text headline">A</span>
           <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
         </v-avatar>
@@ -31,7 +31,6 @@ export default {
       },
       user: {
         get() {
-          console.log(this.$store.state.user);
           return this.$store.state.user;
         }
       }
