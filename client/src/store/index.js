@@ -22,6 +22,7 @@ export const store = new Vuex.Store({
     getCurrentUser(state) {
       return state.user;
     },
+    },
     mutations: {
         setCurrentUser(state, user) {
             state.user = user.user
@@ -96,22 +97,21 @@ export const store = new Vuex.Store({
                 .catch(error => {
                     console.log(error);
                 })
-        }
-    },
-    retrieveComments(context, requestId) {
-      axios
-        .get(`request/${requestId}/comment`, {
-          headers: {
-            authorization: `Bearer ${this.state.token}`,
+        },
+        retrieveComments(context, requestId) {
+            axios
+              .get(`request/${requestId}/comment`, {
+                headers: {
+                  authorization: `Bearer ${this.state.token}`,
+                },
+              })
+              .then((response) => {
+                const comments = response.data.data;
+                context.commit("setComments", comments);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           },
-        })
-        .then((response) => {
-          const comments = response.data.data;
-          context.commit("setComments", comments);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-  },
+        },
 });
