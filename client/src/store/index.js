@@ -10,7 +10,7 @@ axios.defaults.baseURL = "http://localhost:3400/";
 export const store = new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
-        user: localStorage.getItem('user') || null,
+        user: JSON.parse(localStorage.getItem('user')) || null,
         requestHistory: [],
         qrCode: null
     },
@@ -18,16 +18,16 @@ export const store = new Vuex.Store({
         loggedIn(state) {
             return state.token !== null;
         },
-        currentUser(state) {
-            return state.user !== null;
+        getCurrentUser(state) {
+            return state.user;
         },
         getRequestHistory(state){
             return state.requestHistory
         }
     },
     mutations: {
-        retrieveCurrentUser(state, user) {
-            state.currentUser = user.user
+        setCurrentUser(state, user) {
+            state.user = user.user
             state.token = user.token
         },
         multiAuthQrCode(state, qrCode) {
@@ -91,7 +91,6 @@ export const store = new Vuex.Store({
                 })
                 .then(response => {
                     const requestHistory = response.data.data;
-                    console.log(requestHistory);
                     context.commit('setRequestHistory', requestHistory);
                 })
                 .catch(error => {
