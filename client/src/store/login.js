@@ -15,6 +15,9 @@ export default {
         },
         getToken(state) {
             return state.token;
+        },
+        getQrCode(state) {
+            return state.qrCode;
         }
     },
     mutations: {
