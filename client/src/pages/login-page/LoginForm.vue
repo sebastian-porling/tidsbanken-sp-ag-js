@@ -60,7 +60,7 @@
           password: this.password
          })
          .then(() => {
-           this.qrCode = `data:image/png;base64, ${this.$store.state.qrCode}`;
+           this.qrCode = `data:image/png;base64, ${this.$store.getters.getQrCode}`;
          })
          .catch((e) => {
            if(e.data.message.includes('code')) {
