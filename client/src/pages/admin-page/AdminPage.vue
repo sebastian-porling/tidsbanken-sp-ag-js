@@ -78,7 +78,7 @@ export default {
   },
   data() {
     return {
-      activeTable: null,
+      activeTable: 'requests',
       activateModal: null,
     };
   },
