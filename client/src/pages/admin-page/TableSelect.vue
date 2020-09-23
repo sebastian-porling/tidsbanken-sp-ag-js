@@ -45,7 +45,8 @@
           { 
             text: 'Created', 
             value: 'created_at'
-          }
+          },
+          { text: 'Owner', value: 'owner.full_name' },
         ],
         activateModal: false,
         request: {}
