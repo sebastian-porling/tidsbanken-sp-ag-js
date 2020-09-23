@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class VacationController{
 
     @Autowired private VacationRequestRepository vrRepository;
