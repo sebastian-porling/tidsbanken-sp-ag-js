@@ -46,7 +46,7 @@
       }
     },
     created() {
-      this.$store.dispatch('retrieveRequestHistory', 1)
+      this.$store.dispatch('retrieveRequestHistory')
     },
     computed: {
       user: {
@@ -73,6 +73,7 @@
       },
       launchModal(value) {
         this.request = value; 
+        this.$store.dispatch('retrieveComments', value.id)
         console.log(this.request);
         this.activateModal = true;
       },

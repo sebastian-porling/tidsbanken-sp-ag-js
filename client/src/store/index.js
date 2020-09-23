@@ -1,6 +1,6 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
-import axios from 'axios';
+import Vuex from "vuex";
+import Vue from "vue";
+import axios from "axios";
 
 // Load vuex
 Vue.use(Vuex);
@@ -8,22 +8,19 @@ axios.defaults.baseURL = "http://localhost:3400/";
 
 // Create store
 export const store = new Vuex.Store({
-    state: {
-        token: localStorage.getItem('access_token') || null,
-        user: JSON.parse(localStorage.getItem('user')) || null,
-        requestHistory: [],
-        qrCode: null
+  state: {
+    token: localStorage.getItem("access_token") || null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    requestHistory: [],
+    comments: [],
+    qrCode: null
+  },
+  getters: {
+    loggedIn(state) {
+      return state.token !== null;
     },
-    getters: {
-        loggedIn(state) {
-            return state.token !== null;
-        },
-        getCurrentUser(state) {
-            return state.user;
-        },
-        getRequestHistory(state){
-            return state.requestHistory
-        }
+    getCurrentUser(state) {
+      return state.user;
     },
     mutations: {
         setCurrentUser(state, user) {
@@ -38,7 +35,10 @@ export const store = new Vuex.Store({
         },
         setRequestHistory(state, requests) {
             state.requestHistory = requests;
-        }
+        },
+        setComments(state, comments) {
+            state.comments = comments;
+        },
     },
     actions: {
         retrieveToken(context, credentials) {
@@ -83,8 +83,8 @@ export const store = new Vuex.Store({
                 context.commit('destroyToken');
             }
         },
-        retrieveRequestHistory(context, userid) {
-                axios.get(`user/${userid}/requests`, {
+        retrieveRequestHistory(context, userId) {
+                axios.get(`user/${userId}/requests`, {
                     headers: {
                         'authorization': `Bearer ${this.state.token}`
                     }
@@ -96,7 +96,22 @@ export const store = new Vuex.Store({
                 .catch(error => {
                     console.log(error);
                 })
-
         }
-    }
+    },
+    retrieveComments(context, requestId) {
+      axios
+        .get(`request/${requestId}/comment`, {
+          headers: {
+            authorization: `Bearer ${this.state.token}`,
+          },
+        })
+        .then((response) => {
+          const comments = response.data.data;
+          context.commit("setComments", comments);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
 });
