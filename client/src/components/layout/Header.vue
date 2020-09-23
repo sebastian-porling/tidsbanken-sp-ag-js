@@ -71,7 +71,7 @@ export default {
       },
       user: {
         get() {
-          return this.$store.state.currentUser;
+          return this.$store.getters.getCurrentUser;
         }
       }
     },

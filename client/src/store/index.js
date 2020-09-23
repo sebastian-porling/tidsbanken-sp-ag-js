@@ -10,7 +10,7 @@ axios.defaults.baseURL = "http://localhost:3400/";
 export const store = new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
-        user: localStorage.getItem('user') || null,
+        user: JSON.parse(localStorage.getItem('user')) || null,
         requestHistory: [],
     },
     getters: {
@@ -18,7 +18,7 @@ export const store = new Vuex.Store({
             return state.token !== null;
         },
         getCurrentUser(state) {
-            return state.user !== null;
+            return state.user;
         },
         getRequestHistory(state){
             return state.requestHistory
@@ -26,7 +26,7 @@ export const store = new Vuex.Store({
     },
     mutations: {
         setCurrentUser(state, user) {
-            state.currentUser = user.user
+            state.user = user.user
             state.token = user.token
         },
         destoyToken(state) {
@@ -46,7 +46,7 @@ export const store = new Vuex.Store({
                 .then(response => {
                     const user = response.data.data;
                     localStorage.setItem('access_token', user.token);
-                    localStorage.setItem('user', user.user);
+                    localStorage.setItem('user', JSON.stringify(user.user));
                     context.commit('setCurrentUser', user)
                     resolve(response);
                 })

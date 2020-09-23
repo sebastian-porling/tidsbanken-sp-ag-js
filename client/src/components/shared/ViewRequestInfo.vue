@@ -2,8 +2,8 @@
     <v-card>
         <v-card-title>
             <span class="headline">{{ request.title }}</span>
-                <v-chip class="ma-2" :color="getColor(request.status)" text-color="white">
-                    {{ request.status }}
+                <v-chip class="ma-2" :color="getColor(request.status.status)" text-color="white">
+                    {{ request.status.status }}
                 </v-chip>
         </v-card-title>
         <v-card-text>
@@ -12,22 +12,21 @@
                     <v-col cols="12">
                         <v-btn text>
                             <v-avatar color="light-blue" size="36">
-                                <!-- <span class="white--text headline">UU</span> -->
-                                <img :src="request.owner.profile_pic" alt="profilePic">
+                                <span v-if="!request.owner.profile_pic" class="white--text headline">UU</span>
+                                <img v-if="request.owner.profile_pic" :src="request.owner.profile_pic" alt="profilePic">
                             </v-avatar>
                             <router-link to="profile" style="text-decoration: none;">
                                 <strong style="margin-left: 5px">
-                                {{ request.owner.name }}
+                                {{ request.owner.full_name }}
                                 </strong>
                             </router-link>
                         </v-btn>
                     </v-col>
-                    <!-- Not implemented period start and end -->
                     <v-col cols="12" sm="6" md="6">
                         <v-text-field
                             type="date"
                             label="Start"
-                            v-model="period_start"
+                            :value="request.start | formatDate"
                             disabled
                         ></v-text-field>
                     </v-col>
@@ -35,12 +34,12 @@
                         <v-text-field
                             type="date"
                             label="End"
-                            v-model="period_end"
+                            :value="request.end | formatDate"
                             disabled
                         ></v-text-field>
                     </v-col>
                     <v-col cols="12">
-                        <view-request-comments :request_id="request_id" />
+                        <view-request-comments :request_id="request.id" />
                         <view-request-comment-form />
                     </v-col>
                 </v-row>
@@ -57,7 +56,7 @@
 <script>
 import ViewRequestCommentForm from './ViewRequestCommentForm';
 import ViewRequestComments from './ViewRequestComments';
-import response from '../../../mock_data/get_request_id';
+
 
 export default {
     name: "ViewRequestInfo",
@@ -65,15 +64,16 @@ export default {
         'view-request-comment-form': ViewRequestCommentForm,
         'view-request-comments': ViewRequestComments
     },
-    data () {
-        return {
-            request: response.data,
-            period_start: response.data.period_start,
-            period_end: response.data.period_end
+    filters: {
+        formatDate: (date) => {
+            if(!date){
+                return ''
+            } 
+            return date.substring(0, 10)
         }
     },
     props: [
-        'request_id'
+        'request'
     ],
     methods: {
         closeModal() {
