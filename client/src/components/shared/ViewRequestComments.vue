@@ -1,6 +1,6 @@
 <template>
     <v-list style="max-height: 225px" class="overflow-y-auto">
-        <v-list-item v-for="comment in data" :key="comment.comment_id">
+        <v-list-item v-for="comment in comments" :key="comment.comment_id">
             <v-list-item-avatar>
                 <v-avatar color="light-blue" size="36">
                     <img v-if="comment.user.profile_pic" :src="comment.user.profile_pic" :alt="comment.user.name | initials">
@@ -10,8 +10,8 @@
             <v-list-item-content>
                 <v-list-item-title>{{comment.user.name}}</v-list-item-title>
                 <v-list-item-subtitle>
-                    <p>{{comment.modified_at}}</p>
-                    <p style="color: black;">{{comment.message}}</p>
+                    <p>{{comment.modified_at | formatDate}}</p>
+                    <p class="text-wrap" style="color: black;">{{comment.message}}</p>
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
@@ -19,16 +19,17 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_request_id_comments';
 export default {
-    data() {
-        return {
-            data: response.data
-        }
-    },
     props: [
         'request_id'
     ],
+    computed: {
+      comments: {
+        get() {
+          return this.$store.getters.getComments;
+        }
+      }
+    },
     filters: {
         initials: (data) => {
             if (!data) return 'UU';
@@ -37,6 +38,12 @@ export default {
             if(data.length < 2) return 'UU';
             return  data[0].charAt(0).toUpperCase() + 
                     data[1].charAt(0).toUpperCase();
+        },
+        formatDate: (date) => {
+            if(!date){
+                return ''
+            } 
+            return date.substring(0, 10) + " at " + date.substring(11, 16)
         }
     }
 };
