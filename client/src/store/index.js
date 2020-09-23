@@ -53,7 +53,7 @@ export const store = new Vuex.Store({
                     const data = response.data.data;
                     localStorage.setItem('access_token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    context.commit('retrieveCurrentUser', data);
+                    context.commit('setCurrentUser', data);
                     resolve(response);
                 })
                 .catch (error => {

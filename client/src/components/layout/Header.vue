@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
       <v-navigation-drawer
       v-model="drawer"
       app

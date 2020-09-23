@@ -22,6 +22,8 @@ public class LoginDTO {
         userInfo.put("profile_pic", user.getProfilePic());
         userInfo.put("is_admin", user.isAdmin());
         userInfo.put("two_factor_auth", user.isTwoFactorAuth());
+        userInfo.put("vacation_days", user.getVacationDays());
+        userInfo.put("used_vacation_days", user.getUsedVacationDays());
         return userInfo;
     }
 }

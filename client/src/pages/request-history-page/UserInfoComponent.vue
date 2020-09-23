@@ -31,7 +31,8 @@ export default {
       },
       user: {
         get() {
-          return this.$store.getters.getCurrentUser;
+          console.log(this.$store.state.user);
+          return this.$store.state.user;
         }
       }
     },
