@@ -36,7 +36,7 @@ public class CommentController{
             if (vacationRequestOp.isPresent()) {
                 final VacationRequest vr = vacationRequestOp.get();
                 if (isRequestOwner(vr, request) || authService.isAuthorizedAdmin(request)) {
-                    final List<Comment> comments = commentRepository.findAllByRequest(vr);
+                    final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
                     return responseUtility.ok("All Comments For Request: " + vr.getId(), comments);
                 } else return responseUtility.forbidden();
             } else return responseUtility.notFound("Vacation Request Not Found");
@@ -73,7 +73,7 @@ public class CommentController{
             if (!authService.isAuthorizedAdmin(request) && !isRequestOwner(vrOp.get(), request))
                 return responseUtility.forbidden();
             try {
-                final Optional<Comment> commentOp = commentRepository.findByIdAndRequest(commentId, vrOp.get());
+                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
                 return commentOp.map(comment -> responseUtility
                         .ok("Successfully retrieved comment", comment))
                         .orElseGet(() -> responseUtility.notFound("Comment Not Found"));
@@ -90,14 +90,14 @@ public class CommentController{
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if(vrOp.isPresent()) {
             try {
-                final Optional<Comment> commentOp = commentRepository.findByIdAndRequest(commentId, vrOp.get());
+                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
                 if (commentOp.isPresent()) {
                     final Comment patchComment = commentOp.get();
                     if(isCommentOwner(patchComment, request) && isPastTwentyFourHours(patchComment)) {
                         if(comment.getMessage() != null) patchComment.setMessage(comment.getMessage());
                         patchComment.updateModifiedAt();
-                        commentRepository.save(patchComment);
-                        return responseUtility.ok("Updated", null);
+                        Comment updatedComment = commentRepository.save(patchComment);
+                        return responseUtility.ok("Updated", updatedComment);
                     } else return responseUtility.forbidden();
                 } else return responseUtility.notFound("Comment Not Found");
             } catch (Exception e) { return responseUtility.errorMessage(); }
@@ -111,7 +111,7 @@ public class CommentController{
         if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if (vrOp.isPresent()) {
-            final Optional<Comment> commentOp = commentRepository.findByIdAndRequest(commentId, vrOp.get());
+            final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
             if (commentOp.isPresent()) {
                 if (!authService.isAuthorizedAdmin(request) && !isCommentOwner(commentOp.get(), request))
                     return responseUtility.forbidden();

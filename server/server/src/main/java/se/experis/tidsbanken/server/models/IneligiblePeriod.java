@@ -58,6 +58,7 @@ public class IneligiblePeriod {
         final HashMap<String, Object> moderator = new HashMap<>();
         moderator.put("id", this.moderator.getId());
         moderator.put("email", this.moderator.getEmail());
+        moderator.put("full_name", this.moderator.getFullName());
         moderator.put("profile_pic", this.moderator.getProfilePic());
         return moderator;
     }
@@ -67,8 +68,9 @@ public class IneligiblePeriod {
         return this.moderator;
     }
 
-    public void setModerator(User moderator) {
+    public IneligiblePeriod setModerator(User moderator) {
         this.moderator = moderator;
+        return this;
     }
 
     @JsonProperty("created_at")

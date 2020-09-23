@@ -18,55 +18,45 @@ public class AuthorizationService {
     private JwtUtil jwtUtil;
 
     public Boolean isAuthorizedAdmin(HttpServletRequest request) {
-        try {
-            return isAuthorizedRole(request, UserRole.ADMINISTRATOR);
-        } catch (Exception e) {
-            return false;
-        }
+        try { return isAuthorizedRole(request, UserRole.ADMINISTRATOR);
+        } catch (Exception e) { return false; }
     }
 
     public Boolean isAuthorizedUser(HttpServletRequest request) {
-        try {
-            return isAuthorizedRole(request, UserRole.USER);
-        } catch (Exception e) {
-            return false;
-        }
+        try { return isAuthorizedRole(request, UserRole.USER);
+        } catch (Exception e) { return false; }
     }
 
     public Boolean isAuthorized(HttpServletRequest request) {
         try {
             final String jwt = extractToken(request);
             final String email = jwtUtil.extractEmail(jwt);
-            final User user = userRepository.getByEmail(email).get();
+            final User user = userRepository.getByEmailAndIsActiveTrue(email).get();
             return jwtUtil.validateToken(jwt, user);
-        } catch (Exception e) {
-            return false;
-        }
+        } catch (Exception e) { return false; }
     }
 
     private Boolean isAuthorizedRole(HttpServletRequest request, UserRole userRole) throws Exception{
-        final String jwt = extractToken(request);
-        final String email = jwtUtil.extractEmail(jwt);
-        final User user = userRepository.getByEmail(email).get();
-        return jwtUtil.validateToken(jwt, user, userRole.toString());
+        try{
+            final String jwt = extractToken(request);
+            final String email = jwtUtil.extractEmail(jwt);
+            final User user = userRepository.getByEmailAndIsActiveTrue(email).get();
+            return jwtUtil.validateToken(jwt, user, userRole.toString());
+        }catch (Exception e) { return false; }
     }
 
     private String extractToken(HttpServletRequest request) throws Exception{
         final String authorizationHeader = request.getHeader("Authorization");
-        String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-        }
-        return jwt;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
+            return authorizationHeader.substring(7);
+        return null;
     }
 
     public User currentUser(HttpServletRequest request) {
         try {
             final String jwt = extractToken(request);
             final String email = jwtUtil.extractEmail(jwt);
-            return userRepository.getByEmail(email).get();
-        } catch (Exception e) {
-            return null;
-        }
+            return userRepository.getByEmailAndIsActiveTrue(email).get();
+        } catch (Exception e) { return null; }
     }
 }
