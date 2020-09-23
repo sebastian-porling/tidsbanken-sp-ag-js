@@ -8,7 +8,8 @@ Vue.config.productionTip = false
 
 // Redirects user to other page if not authorized
 router.beforeEach((to, from, next) => {
-  // Page requires the user to be logged in, the user is not, redirects
+
+  // Page requires the user to be logged in, if the user is not, redirects
   if(to.matched.some(record => record.meta.requiresAuth)) {
     if (!store.getters.loggedIn){
       next({
@@ -18,7 +19,8 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } 
-    // Page require the user to not be logged in, the user is though, redirects
+
+  // Page require the user to not be logged in, if the user is though, redirects
   else if (to.matched.some(record => record.meta.requiresVisitor)) {
     if (store.getters.loggedIn){
       next({
@@ -27,9 +29,23 @@ router.beforeEach((to, from, next) => {
     } else {
       next ()
     }
-  } else {
+  } 
+
+   // Page requires admin
+   else if (to.matched.some(record => record.meta.requiresAdmin)) {
+    if (!store.getters.getCurrentUser.is_admin){
+      next({
+        name: 'Dashboard',
+      })
+    } else {
+      next ()
+    }
+  } 
+  
+  else {
     next ()
   }
+
 })
 
 new Vue({
