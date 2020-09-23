@@ -54,13 +54,14 @@ export default {
     created() {
         this.$store.dispatch(
             "retrieveRequestHistory",
-            this.$store.state.user.id
+            this.$store.getters.getCurrentUser.id
         );
     },
     computed: {
         user: {
             get() {
-                return this.$store.state.user;
+              
+                return this.$store.getters.getCurrentUser;
             }
         },
         requests: {
