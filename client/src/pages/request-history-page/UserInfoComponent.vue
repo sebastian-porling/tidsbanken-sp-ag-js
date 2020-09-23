@@ -40,5 +40,7 @@ export default {
 </script>
 
 <style>
-
+h3, h2 {
+  display: inline;
+}
 </style>
