@@ -107,20 +107,21 @@ export const store = new Vuex.Store({
             console.log(error);
           });
       },
+      retrieveComments(context, requestId) {
+        axios
+          .get(`request/${requestId}/comment`, {
+            headers: {
+              authorization: `Bearer ${this.state.token}`,
+            },
+          })
+          .then((response) => {
+            const comments = response.data.data;
+            context.commit("setComments", comments);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      },
     },
-    retrieveComments(context, requestId) {
-      axios
-        .get(`request/${requestId}/comment`, {
-          headers: {
-            authorization: `Bearer ${this.state.token}`,
-          },
-        })
-        .then((response) => {
-          const comments = response.data.data;
-          context.commit("setComments", comments);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    
   });

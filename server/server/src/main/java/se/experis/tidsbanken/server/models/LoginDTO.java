@@ -17,11 +17,13 @@ public class LoginDTO {
 
     public HashMap<String, Object> getUser() {
         final HashMap<String, Object> userInfo = new HashMap<>();
-        userInfo.put("user_id", user.getId());
+        userInfo.put("id", user.getId());
         userInfo.put("full_name", user.getFullName());
         userInfo.put("profile_pic", user.getProfilePic());
         userInfo.put("is_admin", user.isAdmin());
         userInfo.put("two_factor_auth", user.isTwoFactorAuth());
+        userInfo.put("vacation_days", user.getVacationDays());
+        userInfo.put("used_vacation_days", user.getUsedVacationDays());
         return userInfo;
     }
 }
