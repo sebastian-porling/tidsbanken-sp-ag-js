@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CommentController{
 
     @Autowired private CommentRepository commentRepository;

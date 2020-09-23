@@ -47,7 +47,7 @@ INSERT INTO vacation_request
 
     (TO_DATE('15/09/2020', 'DD/MM/YYYY'), null, TO_DATE('15/09/2020', 'DD/MM/YYYY'),
     TO_DATE('30/01/2021', 'DD/MM/YYYY'), TO_DATE('15/01/2021', 'DD/MM/YYYY'),
-    'Two Week China Trip', null, 3, 1);
+    'Two Week China Trip', null, 2, 1);
 
 /* Comments */
 
