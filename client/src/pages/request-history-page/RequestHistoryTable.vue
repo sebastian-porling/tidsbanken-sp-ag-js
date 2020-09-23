@@ -13,12 +13,11 @@
       <v-chip :color="getColor(item.status.status)" dark>{{ item.status.status }}</v-chip>
     </template>
   </v-data-table>
-  <view-request-modal :active="activateModal" :request="request" @closeModal="closeModal"/>
+  <view-request-modal :active="activateModal" :request="request"  @closeModal="closeModal"/>
   </v-row>
 </template>
 
 <script>
-//import response from '../../../mock_data/get_request'
  import ViewRequestModal from '../../components/shared/ViewRequestModal'
     export default {
     name: 'RequestHistoryTable',
@@ -43,7 +42,7 @@
           }
         ],
         activateModal: false,
-        request: 0
+        request: {}
       }
     },
     created() {
@@ -52,12 +51,12 @@
     computed: {
       user: {
         get() {
-          return this.$store.state.currentUser;
+          return this.$store.state.user;
         }
       },
       requests: {
         get() {
-          return this.$store.state.requestHistory;
+          return this.$store.getters.getRequestHistory;
         }
       }
     },
@@ -73,11 +72,12 @@
           }
       },
       launchModal(value) {
-        this.request = value.request_id;
+        this.request = value; 
+        console.log(this.request);
         this.activateModal = true;
       },
       closeModal() {
-        this.request = 0;
+        this.request = {};
         this.activateModal = false;
       }
     },

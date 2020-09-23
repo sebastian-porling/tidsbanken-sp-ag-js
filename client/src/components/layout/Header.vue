@@ -46,7 +46,7 @@
                 <span v-if="!user.profile_pic" class="white--text headline">A</span>
                 <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
             </v-avatar>
-            <strong style="margin-left: 5px"><router-link to="profile" class="white--text" style="text-decoration: none;">{{ user.full_name }}</router-link></strong>
+            <router-link to="profile" class="white--text" style="text-decoration: none;"><strong style="margin-left: 5px">{{ user.full_name }}</strong></router-link>
       </v-btn>
       <v-btn v-if="!loggedIn" router-link to="login" outlined> Login </v-btn>
       <v-btn v-if="loggedIn" @click="signOut" outlined> Sign Out </v-btn>
@@ -71,7 +71,7 @@ export default {
       },
       user: {
         get() {
-          return this.$store.state.currentUser;
+          return this.$store.getters.getCurrentUser;
         }
       }
     },
