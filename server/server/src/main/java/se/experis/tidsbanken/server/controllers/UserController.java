@@ -85,7 +85,7 @@ public class UserController {
             } else  if (user.isAdmin() != null) return responseUtility.forbidden();
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
-                User patchedUser = userRepository.save(updatedUser);
+                final User patchedUser = userRepository.save(updatedUser);
                 return responseUtility.ok("User updated successfully", getUserResponse(patchedUser));
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");
