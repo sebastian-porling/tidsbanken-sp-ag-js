@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  name: "CreateUserModal",
+  name: "EditUserModal",
   data() {
     return {
       valid: true,
@@ -66,6 +66,9 @@ export default {
     closeModal() {
       this.$emit("closeModal");
     },
+    changeMode() {
+      this.$emit("changeMode");
+    },
     submit() {
       if (this.valid) {
         this.$store
@@ -83,10 +86,7 @@ export default {
             alert(error.data.message);
           });
       }
-    },
-    changeMode() {
-            this.$emit("changeMode");
-    },
+    }
   },
 };
 </script>
