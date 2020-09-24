@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Controller
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SettingsController {
 
     @Autowired private ResponseUtility responseUtility;
@@ -62,7 +63,7 @@ public class SettingsController {
                                                      HttpServletRequest request){
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
         try {
-            Optional<Setting> settingOp = settingRepository.findById(settingId);
+            final Optional<Setting> settingOp = settingRepository.findById(settingId);
             if (settingOp.isPresent())
                 return responseUtility.ok("Setting found", settingOp.get());
             return responseUtility.notFound("Setting with id: " + settingId + " Not found!");
@@ -74,7 +75,7 @@ public class SettingsController {
                                                         HttpServletRequest request){
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
         try {
-            Optional<Setting> settingOp = settingRepository.findById(settingId);
+            final Optional<Setting> settingOp = settingRepository.findById(settingId);
             if (settingOp.isPresent()) {
                 settingRepository.delete(settingOp.get());
                 return responseUtility.ok("Setting deleted", null);
