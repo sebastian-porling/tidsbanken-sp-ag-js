@@ -1,32 +1,41 @@
 <template>
-    <v-form v-model="valid">
-        <v-textarea v-model="comment" name="input-7-4" label="Comment" :counter="250" :rules="rules"></v-textarea>
-        <v-container class="d-flex flex-row-reverse">
-            <v-btn color="green darken-1" text :disabled="!valid" @click="submit">
-                Submit
-            </v-btn>
-        </v-container>
-    </v-form>
+  <v-form v-model="valid">
+    <v-textarea v-model="comment" name="input-7-4" label="Comment" :counter="250" :rules="rules"></v-textarea>
+    <v-container class="d-flex flex-row-reverse">
+      <v-btn color="green darken-1" text :disabled="!valid" @click="submit">Submit</v-btn>
+    </v-container>
+  </v-form>
 </template>
 
 <script>
 export default {
-    name: 'ViewRequestCommentForm',
-    data () {
-        return {
-    valid: true,
-    comment: "",
-    rules: [v => v.length <= 250 || 'Max 250 characters'],
-        }
-    },
-    methods: {
-        submit() {
+  name: "ViewRequestCommentForm",
+  props: [
+      'request_id'
+  ],
+  data() {
+    return {
+      valid: true,
+      comment: "",
+      rules: [(v) => v.length <= 250 || "Max 250 characters"],
+    };
+  },
+  methods: {
+    submit() {
+      if (this.valid) {
+        this.$store
+          .dispatch("createComment", this.request_id, this.comment)
+          .then(() => {
             this.comment = "";
-            // Do stuff
-            alert("Commented!")
-        }
-    }
-
+            this.dialog = false;
+            console.log(this.comment);
+          })
+          .catch((error) => {
+            alert(error.data.message);
+          });
+      }
+    },
+  },
 };
 </script>
 

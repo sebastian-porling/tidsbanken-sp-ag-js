@@ -40,7 +40,7 @@
                     </v-col>
                     <v-col cols="12">
                         <view-request-comments :request_id="request.id" />
-                        <view-request-comment-form />
+                        <view-request-comment-form :request_id="request.id" />
                     </v-col>
                 </v-row>
             </v-container>
