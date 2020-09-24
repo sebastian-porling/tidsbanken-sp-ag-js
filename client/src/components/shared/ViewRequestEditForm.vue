@@ -115,7 +115,6 @@ export default {
                end: this.end,
            }).then(() => {
                this.changeMode();
-               this.closeModal();
            }).catch(error => {
                alert(error.data.message);
            })

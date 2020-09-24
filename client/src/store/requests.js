@@ -1,4 +1,5 @@
 import axios from "axios";
+import Vue from 'vue';
 axios.defaults.baseURL = "http://localhost:3400/";
 
 export default {
@@ -16,7 +17,7 @@ export default {
         },
         updateRequests(state, request) {
             const index = state.allRequests.findIndex(x => x.id == request.id)
-            state.allRequests[index] = request;
+            Vue.set(state.allRequests, index, request);
         }
     },
     actions: {
