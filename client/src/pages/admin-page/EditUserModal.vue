@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="active" width="600px">
+  <v-dialog v-model="active" presistent width="600px">
     <v-card>
       <v-card-title>
         <span class="headline">Edit user</span>
