@@ -36,11 +36,11 @@ export default {
                     console.log(error);
                 });
         },
-        createComment(context, requestId, comment) {
+        createComment(context, requestId, message) {
             return new Promise((resolve, reject) => {
               axios
                 .post(`request/${requestId}/comment`, {
-                    message: comment
+                    message
                 }, {
                   headers: {
                     authorization: `Bearer ${context.rootGetters.getToken}`,
@@ -48,7 +48,7 @@ export default {
                 })
                 .then((response) => {
                   const comment = response.data.data;
-                  context.commit("updateAllUsers", comment);
+                  context.commit("updateComments", comment);
                   resolve(response);
                 })
                 .catch((error) => {

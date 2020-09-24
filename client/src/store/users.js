@@ -72,5 +72,21 @@ export default {
             });
         });
       },
+      changePassword(context, userId, password) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`user/${userId}/update_password`, password, {
+              headers: {
+                authorization: `Bearer ${context.rootGetters.getToken}`,
+              },
+            })
+            .then((response) => {
+              resolve(response);
+            })
+            .catch((error) => {
+              reject(error.response);
+            });
+        });
+      },
   },
 };

@@ -1,5 +1,4 @@
 <template>
-  <v-dialog v-model="active" width="600px">
     <v-card>
       <v-card-title>
         <span class="headline">Edit user</span>
@@ -15,13 +14,15 @@
             </v-col>
             <br />
             <v-col cols="10">
-              <v-text-field v-model="user.vacation_days" label="Number of vacation days*" required :rules="daysRules"></v-text-field>
+              <v-text-field
+                v-model="user.vacation_days"
+                label="Number of vacation days*"
+                required
+                :rules="daysRules"
+              ></v-text-field>
             </v-col>
             <v-col cols="10">
-                <v-switch
-                v-model="user.is_admin"
-                label="Admin"
-                ></v-switch>
+              <v-switch v-model="user.is_admin" label="Admin"></v-switch>
             </v-col>
           </v-row>
         </v-form>
@@ -29,12 +30,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="grey darken-1" text>Change password</v-btn>
+        <v-btn color="grey darken-1" text @click="changeMode">Change password</v-btn>
         <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
         <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>
 </template>
 
 <script>
@@ -54,21 +54,20 @@ export default {
       ],
       daysRules: [
         (v) => !!v || "Vacation days is required",
-        (v) => (v && parseInt(v) > 0 ) || "Has to be more than 1",
-        (v) => (v && parseInt(v) <= 30 ) || "Maxmum amount of days per year is 30"
-      ], 
-    }
+        (v) => (v && parseInt(v) > 0) || "Has to be more than 1",
+        (v) =>
+          (v && parseInt(v) <= 30) || "Maxmum amount of days per year is 30",
+      ],
+      changePassword: false,
+    };
   },
-  props: [
-    'active',
-    'user'
-  ],
-    methods: {
-      closeModal() {
-            this.$emit("closeModal");
-        },
-      submit() {
-        if (this.valid) {
+  props: ["user"],
+  methods: {
+    closeModal() {
+      this.$emit("closeModal");
+    },
+    submit() {
+      if (this.valid) {
         this.$store
           .dispatch("updateUser", {
             id: this.user.id,
@@ -84,8 +83,11 @@ export default {
             alert(error.data.message);
           });
       }
-      }    
-    }
+    },
+    changeMode() {
+            this.$emit("changeMode");
+    },
+  },
 };
 </script>
 
