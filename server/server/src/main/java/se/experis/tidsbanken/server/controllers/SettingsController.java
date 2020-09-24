@@ -1,19 +1,86 @@
 package se.experis.tidsbanken.server.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import se.experis.tidsbanken.server.models.CommonResponse;
+import se.experis.tidsbanken.server.models.Setting;
+import se.experis.tidsbanken.server.repositories.SettingRepository;
+import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.utils.ResponseUtility;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+
 @Controller
 public class SettingsController {
-    /*
-    @GetMapping("/settings")
 
-    @PostMapping("/settings")
+    @Autowired private ResponseUtility responseUtility;
 
-    @PatchMapping("/settings")
+    @Autowired private SettingRepository settingRepository;
 
-    @GetMapping("/settings/:settings_id")
+    @Autowired private AuthorizationService authService;
 
-    @DeleteMapping("/settings/:settings_id")
-    */
+    @GetMapping("/setting")
+    public ResponseEntity<CommonResponse> getSettings(HttpServletRequest request){
+        if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
+        try{
+            return responseUtility.ok("All settings", settingRepository.findAll());
+        } catch (Exception e) { return responseUtility.errorMessage(); }
+    }
+
+    @PostMapping("/setting")
+    public ResponseEntity<CommonResponse> createSetting(@RequestBody Setting setting, HttpServletRequest request){
+        if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
+        try {
+            if (!settingRepository.existsByKey(setting.getKey()))
+                return responseUtility.created("Setting added", settingRepository.save(setting));
+            return responseUtility.badRequest("Setting already exists");
+        }catch (Exception e) { return responseUtility.errorMessage(); }
+    }
+
+    @PatchMapping("/setting/{setting_id}")
+    public ResponseEntity<CommonResponse> updateSetting(@PathVariable("setting_id") String settingId,
+                                                        @RequestBody Setting setting,
+                                                        HttpServletRequest request){
+        if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
+        try {
+            final Optional<Setting> settingOp = settingRepository.findById(settingId);
+            if (settingOp.isPresent()){
+                final Setting settingPayload = settingOp.get();
+                if (setting.getKey() != null) settingPayload.setKey(setting.getKey());
+                if (setting.getValue() != null) settingPayload.setValue(setting.getValue());
+                return responseUtility.ok("Setting updated", settingRepository.save(settingPayload));
+            } else return responseUtility.notFound("Setting not found");
+        } catch(Exception e) { return responseUtility.errorMessage(); }
+    }
+
+    @GetMapping("/setting/{setting_id}")
+    public ResponseEntity<CommonResponse> getSetting(@PathVariable("setting_id") String settingId,
+                                                     HttpServletRequest request){
+        if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
+        try {
+            Optional<Setting> settingOp = settingRepository.findById(settingId);
+            if (settingOp.isPresent())
+                return responseUtility.ok("Setting found", settingOp.get());
+            return responseUtility.notFound("Setting with id: " + settingId + " Not found!");
+        } catch(Exception e) { return responseUtility.errorMessage(); }
+    }
+
+    @DeleteMapping("/setting/{setting_id}")
+    public ResponseEntity<CommonResponse> deleteSetting(@PathVariable("setting_id") String settingId,
+                                                        HttpServletRequest request){
+        if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
+        try {
+            Optional<Setting> settingOp = settingRepository.findById(settingId);
+            if (settingOp.isPresent()) {
+                settingRepository.delete(settingOp.get());
+                return responseUtility.ok("Setting deleted", null);
+            }
+            return responseUtility.notFound("Setting with id: " + settingId + " Not found!");
+        } catch(Exception e) { return responseUtility.errorMessage(); }
+    }
+
 }
