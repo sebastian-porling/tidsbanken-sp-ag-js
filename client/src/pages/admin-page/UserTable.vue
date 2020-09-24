@@ -66,8 +66,4 @@ export default {
 </script>
 
 <style>
-.modals {
-  padding: 2%;
-  padding-bottom: 2%;
-}
 </style>

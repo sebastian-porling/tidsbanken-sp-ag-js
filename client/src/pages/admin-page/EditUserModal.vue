@@ -13,9 +13,6 @@
             <v-col cols="10">
               <v-text-field v-model="user.email" label="Email*" required :rules="emailRules"></v-text-field>
             </v-col>
-            <v-col cols="10">
-              <v-text-field v-model="password" label="Password*" required :rules="passwordRules"></v-text-field>
-            </v-col>
             <br />
             <v-col cols="10">
               <v-text-field v-model="user.vacation_days" label="Number of vacation days*" required :rules="daysRules"></v-text-field>
@@ -32,6 +29,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn color="grey darken-1" text>Change password</v-btn>
         <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
         <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
       </v-card-actions>
@@ -54,17 +52,11 @@ export default {
         (v) => !!v || "E-mail is required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
-      password: "",
-      passwordRules: [
-        (v) => !!v || "Password is required",
-        (v) =>
-          (v && v.length >= 6) || "Password must be more than 6 characters",
-      ],
       daysRules: [
         (v) => !!v || "Vacation days is required",
-        (v) => (v && v > 0 ) || "Can't be 0",
-        (v) => (v && v > 30 ) || "Maxmum amount of days per year is 30"
-      ],
+        (v) => (v && parseInt(v) > 0 ) || "Has to be more than 1",
+        (v) => (v && parseInt(v) <= 30 ) || "Maxmum amount of days per year is 30"
+      ], 
     }
   },
   props: [
@@ -75,15 +67,23 @@ export default {
       closeModal() {
             this.$emit("closeModal");
         },
-        openModal() {
-            this.dialog = true;
-        },
       submit() {
         if (this.valid) {
-          // connect to api
-          this.dialog = false;
-          alert("User added");
-        }
+        this.$store
+          .dispatch("updateUser", {
+            id: this.user.id,
+            full_name: this.user.full_name,
+            email: this.user.email,
+            vacation_days: this.user.vacation_days,
+            is_admin: this.user.is_admin,
+          })
+          .then(() => {
+            this.active = false;
+          })
+          .catch((error) => {
+            alert(error.data.message);
+          });
+      }
       }    
     }
 };

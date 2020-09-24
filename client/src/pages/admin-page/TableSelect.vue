@@ -80,7 +80,6 @@
       },
       launchModal(value) {
         this.request = value; 
-        console.log(value);
         this.$store.dispatch('retrieveComments', value.id)
         this.activateModal = true;
       },

@@ -54,5 +54,23 @@ export default {
           });
       });
     },
+    updateUser(context, user) {
+        return new Promise((resolve, reject) => {
+          axios
+            .patch(`user/${user.id}`, user, {
+              headers: {
+                authorization: `Bearer ${context.rootGetters.getToken}`,
+              },
+            })
+            .then((response) => {
+              const updUser = response.data.data;
+              context.commit("updateAllUsers", updUser);
+              resolve(response);
+            })
+            .catch((error) => {
+              reject(error.response);
+            });
+        });
+      },
   },
 };
