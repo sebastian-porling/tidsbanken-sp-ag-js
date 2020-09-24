@@ -48,7 +48,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-            <v-btn color="primary darken-1" text @click="changeMode">Edit</v-btn>
+            <v-btn color="primary darken-1" text @click="changeMode" >Edit</v-btn>
         </v-card-actions>
     </v-card>
 </template>
