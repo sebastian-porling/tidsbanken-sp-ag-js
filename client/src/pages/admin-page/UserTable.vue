@@ -54,7 +54,6 @@ export default {
   methods: {
     launchModal(value) {
       this.user = value;
-      console.log(this.user);
       this.activateModal = true;
     },
     closeModal() {

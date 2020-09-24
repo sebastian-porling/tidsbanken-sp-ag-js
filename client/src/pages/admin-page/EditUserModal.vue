@@ -80,7 +80,7 @@ export default {
             is_admin: this.user.is_admin,
           })
           .then(() => {
-            this.active = false;
+            this.closeModal();
           })
           .catch((error) => {
             alert(error.data.message);

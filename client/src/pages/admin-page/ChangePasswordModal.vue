@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <span class="headline">Edit password for user {{ user.full_name }}</span>
+      <span class="headline">Edit password for {{ user.full_name }}</span>
     </v-card-title>
     <v-card-text>
       <v-form v-model="valid">
@@ -41,7 +41,7 @@ export default {
       ],
     };
   },
-  prop: ["user"],
+  props: ["user"],
   methods: {
     closeModal() {
       this.$emit("closeModal");
@@ -51,8 +51,6 @@ export default {
     },
     submit() {
       if (this.valid) {
-        console.log(this.user.id);
-        console.log(this.password);
         this.$store
           .dispatch("changePassword", this.user.id, this.password)
           .then(() => {
