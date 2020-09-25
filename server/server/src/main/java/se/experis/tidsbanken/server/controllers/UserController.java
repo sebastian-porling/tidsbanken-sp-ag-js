@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ public class UserController {
 
     @Autowired private ResponseUtility responseUtility;
 
+    @Autowired private NotificationObserver observer;
+
     @GetMapping("/user")
     public ResponseEntity<CommonResponse> getUser(HttpServletRequest request) {
         if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
@@ -41,10 +44,9 @@ public class UserController {
         final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(user.getEmail());
         if (fetchedUser.isEmpty()) {
             try {
-                userRepository.save(user);
                 return responseUtility.created(
                         "New user with email " + user.getEmail(),
-                        getAdminResponse(user));
+                        userRepository.save(user));
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.badRequest("User already exists");
     }
@@ -55,12 +57,10 @@ public class UserController {
         if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()){
-            final User user = fetchedUser.get();
-            final HashMap<String, Object> data =
-                    authService.isAuthorizedAdmin(request)
-                    ? getAdminResponse(user)
-                    : getUserResponse(user);
-            return responseUtility.ok("User fetched successfully", data);
+            return responseUtility
+                    .ok("User fetched successfully", authService.isAuthorizedAdmin(request)
+                            ? getAdminResponse(fetchedUser.get())
+                            : getUserResponse(fetchedUser.get()));
         } else return responseUtility.notFound("User not found");
     }
 
@@ -86,6 +86,8 @@ public class UserController {
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
                 final User patchedUser = userRepository.save(updatedUser);
+                if (authService.isAuthorizedAdmin(request))
+                    observer.sendNotification("Your account have been modified!", updatedUser);
                 return responseUtility.ok("User updated successfully", getUserResponse(patchedUser));
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");
@@ -116,7 +118,7 @@ public class UserController {
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()){
             Object data;
-            final  List<VacationRequest> allVacationRequests =
+            final List<VacationRequest> allVacationRequests =
                    vacationRequestRepository.findAllByOwner(fetchedUser.get());
             final String message = "Vacation requests for user " +
                     fetchedUser.get().getFullName() + " fetched successfully";
@@ -145,6 +147,8 @@ public class UserController {
             if (user.getPassword() != null) updatedUser.setPassword(user.getPassword());
             try {
                 userRepository.save(updatedUser);
+                if(authService.isAuthorizedAdmin(request) && !authService.currentUser(request).getId().equals(user.getId()))
+                    observer.sendNotification("Your password have been updated!", updatedUser);
                 return responseUtility.ok("User password updated successfully", null);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");

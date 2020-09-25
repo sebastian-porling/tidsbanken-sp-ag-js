@@ -10,11 +10,13 @@ import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.CommentRepository;
 import se.experis.tidsbanken.server.repositories.VacationRequestRepository;
 import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -27,6 +29,8 @@ public class CommentController{
     @Autowired private AuthorizationService authService;
 
     @Autowired private ResponseUtility responseUtility;
+
+    @Autowired private NotificationObserver observer;
 
     @GetMapping("/request/{request_id}/comment")
     public ResponseEntity<CommonResponse> getComments(@PathVariable("request_id") Long requestId,
@@ -56,8 +60,9 @@ public class CommentController{
                 final User currentUser = authService.currentUser(request);
                 if (isRequestOwner(vr, request) || authService.isAuthorizedAdmin(request)) {
                     try{
-                        return responseUtility.ok("Saved Comment",
-                                commentRepository.save(comment.setUser(currentUser).setRequest(vr)));
+                        final Comment saved = commentRepository.save(comment.setUser(currentUser).setRequest(vr));
+                        notifyUsers(vr, currentUser, " has commented on ");
+                        return responseUtility.ok("Saved Comment", saved);
                     } catch (Exception e) { return responseUtility.errorMessage(); }
                 } else return responseUtility.forbidden();
             } else return responseUtility.notFound("Vacation Request Not Found");
@@ -97,7 +102,8 @@ public class CommentController{
                     if(isCommentOwner(patchComment, request) && isPastTwentyFourHours(patchComment)) {
                         if(comment.getMessage() != null) patchComment.setMessage(comment.getMessage());
                         patchComment.updateModifiedAt();
-                        Comment updatedComment = commentRepository.save(patchComment);
+                        final Comment updatedComment = commentRepository.save(patchComment);
+                        notifyUsers(vrOp.get(), authService.currentUser(request), " has updated their comment on ");
                         return responseUtility.ok("Updated", updatedComment);
                     } else return responseUtility.forbidden();
                 } else return responseUtility.notFound("Comment Not Found");
@@ -118,6 +124,7 @@ public class CommentController{
                     return responseUtility.forbidden();
                 if (isPastTwentyFourHours(commentOp.get())) {
                     commentRepository.delete(commentOp.get());
+                    notifyUsers(vrOp.get(), authService.currentUser(request), " has deleted their comment on ");
                     return responseUtility.ok("Deleted", null);
                 } else return responseUtility.badRequest("Can't delete older than 24 hours");
             } else return responseUtility.notFound("Comment Not Found");
@@ -135,5 +142,15 @@ public class CommentController{
     private boolean isPastTwentyFourHours(Comment comment) {
         final long DAY = 24 * 60 * 60 * 1000;
         return comment.getCreatedAt().getTime() > System.currentTimeMillis() - DAY;
+    }
+
+    private void notifyUsers(VacationRequest vr, User performer, String message) {
+        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
+        final List<User> users = comments.stream().map(Comment::getOriginalUser).collect(Collectors.toList());
+        users.add(vr.getOriginalOwner());
+        if(vr.getOriginalModerator() != null) users.add(vr.getOriginalModerator());
+        users.stream().distinct().filter(u -> !u.getId().equals(performer.getId())).forEach(u -> {
+            observer.sendNotification(performer.getFullName() + message + vr.getTitle(), u);
+        });
     }
 }
