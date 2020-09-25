@@ -13,6 +13,11 @@ export default {
   name: 'App',
   components: {
     Header
+  },
+  created() {
+    if(this.$store.getters.loggedIn) {
+      this.$store.dispatch('establishClientSocket');
+    }
   }
 }
 </script>
