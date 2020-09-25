@@ -25,7 +25,7 @@
 
 <script>
 export default {
-    name: 'IneligibleModal',
+    name: 'DeleteIneligibleModal',
  data() {
         return {
             dialog: false,
