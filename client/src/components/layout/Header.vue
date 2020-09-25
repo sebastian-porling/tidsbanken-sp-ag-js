@@ -5,7 +5,7 @@
       app
     >
       <v-list dense>
-        <v-list-item router-link to="/">
+        <v-list-item router-link :to="{ name: 'Dashboard' }">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
@@ -13,7 +13,7 @@
             <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item router-link to="history">
+        <v-list-item router-link :to="{ name: 'RequestHistory', params: { id:user.id } }">
           <v-list-item-action>
             <v-icon>mdi-history</v-icon>
           </v-list-item-action>
@@ -21,7 +21,7 @@
             <v-list-item-title>Request History</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item router-link to="admin" v-if="user && user.is_admin">
+        <v-list-item router-link :to="{ name: 'Admin' }" v-if="user && user.is_admin">
           <v-list-item-action>
             <v-icon>mdi-head-minus</v-icon>
           </v-list-item-action>
@@ -46,9 +46,9 @@
                 <span v-if="!user.profile_pic" class="white--text headline">A</span>
                 <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
             </v-avatar>
-            <router-link to="profile" class="white--text" style="text-decoration: none;"><strong style="margin-left: 5px">{{ user.full_name }}</strong></router-link>
+            <router-link :to="{ name: 'UserProfile' }" class="white--text" style="text-decoration: none;"><strong style="margin-left: 5px">{{ user.full_name }}</strong></router-link>
       </v-btn>
-      <v-btn v-if="!loggedIn" router-link to="login" outlined> Login </v-btn>
+      <v-btn v-if="!loggedIn" router-link :to="{ name: 'Login' }" outlined> Login </v-btn>
       <v-btn v-if="loggedIn" @click="signOut" outlined> Sign Out </v-btn>
     </v-app-bar>
 
@@ -73,7 +73,7 @@ export default {
         get() {
           return this.$store.getters.getCurrentUser;
         }
-      }
+      },
     },
     methods: {
       signOut() {
