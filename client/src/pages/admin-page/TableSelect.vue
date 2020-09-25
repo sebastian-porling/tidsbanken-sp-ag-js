@@ -81,7 +81,6 @@
       launchModal(value) {
         this.request = value; 
         this.$store.dispatch('retrieveComments', value.id)
-        console.log(this.request);
         this.activateModal = true;
       },
       closeModal() {

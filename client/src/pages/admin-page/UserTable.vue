@@ -1,7 +1,7 @@
 <template>
   <v-main>
     <v-row>
-      <edit-user-modal :active="activateModal" :user="user" @closeModal="closeModal" />
+      <user-modal :active="activateModal" :user="user" @closeModal="closeModal" />
       <create-user-modal />
     </v-row>
     <v-row>      
@@ -18,12 +18,12 @@
 
 <script>
 import CreateUserModal from "@/pages/admin-page/CreateUserModal";
-import EditUserModal from "@/pages/admin-page/EditUserModal";
+import UserModal from "@/pages/admin-page/UserModal";
 export default {
   name: "UserTable",
   components: {
     "create-user-modal": CreateUserModal,
-    "edit-user-modal": EditUserModal,
+    "user-modal": UserModal,
   },
   data() {
     return {
@@ -54,7 +54,6 @@ export default {
   methods: {
     launchModal(value) {
       this.user = value;
-      console.log(this.user);
       this.activateModal = true;
     },
     closeModal() {
@@ -66,8 +65,4 @@ export default {
 </script>
 
 <style>
-.modals {
-  padding: 2%;
-  padding-bottom: 2%;
-}
 </style>
