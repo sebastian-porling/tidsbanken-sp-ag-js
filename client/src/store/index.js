@@ -7,6 +7,7 @@ import requestHistory from "./requestHistory";
 import requests from "./requests";
 import users from "./users";
 import settings from "./settings";
+import notifications from "./notifications";
 import ineligible from "./ineligible";
 
 // Load vuex
@@ -21,6 +22,7 @@ export const store = new Vuex.Store({
         requests,
         users,
         settings,
+        notifications,
         ineligible,
     ]
 });

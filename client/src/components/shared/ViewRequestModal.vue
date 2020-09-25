@@ -1,7 +1,9 @@
 <template>
     <v-dialog v-model="active" persistent width="600px">
-        <view-request-info :request="request" v-show='!this.editMode' @closeModal='closeModal' @changeMode='changeMode'/>
-        <view-request-edit-form v-show='this.editMode' :request="request" @closeModal='closeModal' @changeMode='changeMode'/>
+        <div v-if="request">
+            <view-request-info :request="request" v-show='!this.editMode' @closeModal='closeModal' @changeMode='changeMode'/>
+            <view-request-edit-form v-show='this.editMode' :request="request" @closeModal='closeModal' @changeMode='changeMode'/>
+        </div>
     </v-dialog>
 </template>
 

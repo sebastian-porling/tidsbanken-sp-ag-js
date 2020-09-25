@@ -100,3 +100,8 @@ INSERT INTO ineligible_period (created_at, modified_at, start, end, moderator_id
 
     (TO_DATE('15/09/2020', 'DD/MM/YYYY'), TO_DATE('15/09/2020', 'DD/MM/YYYY'),
     TO_DATE('01/11/2020','DD/MM/YYYY'), TO_DATE('10/11/2020','DD/MM/YYYY'), 2);
+
+/* Notification */
+INSERT INTO notification (message, user_id) VALUES
+    ('The Vacation Request: "Christmas Vacation" have been approved', 2),
+    ('The Vacation Request: "Christmas Vacation" have been commented.', 2);
