@@ -1,5 +1,4 @@
 import axios from "axios";
-import Vue from 'vue';
 
 axios.defaults.baseURL = "http://localhost:3400/";
 export default {
@@ -16,8 +15,7 @@ export default {
             state.comments = comments;
         },
         updateComments(state, comment) {
-            const index = state.comments.findIndex(x => x.id == comment.id)
-            Vue.set(state.omments, index, comment);
+            state.comments = [...state.comments, comment]
         }
     },
     actions: {
@@ -36,7 +34,7 @@ export default {
                     console.log(error);
                 });
         },
-        createComment(context, requestId, message) {
+        createComment(context, {requestId, message}) {
             return new Promise((resolve, reject) => {
               axios
                 .post(`request/${requestId}/comment`, {

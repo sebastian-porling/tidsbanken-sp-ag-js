@@ -23,10 +23,11 @@ export default {
   methods: {
     submit() {
       if (this.valid) {
-        console.log(this.comment);
-      
         this.$store
-          .dispatch("createComment", this.request_id, this.comment)
+          .dispatch("createComment", {
+            requestId: this.request_id, 
+            message: this.comment
+            })
           .then(() => {
             this.comment = "";
             this.dialog = false;
