@@ -88,7 +88,6 @@ export default {
     },
     launchModal(value) {
       this.user = value;
-      console.log(this.user);
       this.activateModal = true;
     },
     closeModal() {

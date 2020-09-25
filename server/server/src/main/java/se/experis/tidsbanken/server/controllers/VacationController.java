@@ -64,7 +64,7 @@ public class VacationController{
         if (!vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
                 !ips.stream().allMatch(vacationRequest::excludesInIP)) {
             try {
-                VacationRequest vr = vrRepository
+                final VacationRequest vr = vrRepository
                         .save(vacationRequest.setStatus(StatusType.PENDING.getStatus()).setOwner(currentUser));
                 return responseUtility.created("Created", vr);
             } catch (Exception e) { return responseUtility.errorMessage(); }
