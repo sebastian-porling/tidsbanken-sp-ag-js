@@ -2,13 +2,18 @@
 <v-col class="container">
   <br>
   <br>
-  <v-row>
+  <div v-if="user">
+    <v-row>
     <UserInfoComponent :user="user" />
   </v-row>
   <br>
   <v-row>
     <RequestHistoryTable :user="user" />
   </v-row>
+  </div>
+  <div v-if="!user">
+    <h1>Something went wrong..</h1>
+  </div>
 </v-col>
 </template>
 
