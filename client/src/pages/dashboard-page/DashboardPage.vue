@@ -3,30 +3,30 @@
         <v-container fluid>
         <v-row align="center" justify="space-around">
             <create-ip-modal/>
-            <ineligible-modal/>
+            <delete-ineligible-modal/>
             <create-request-modal/>
             <view-request-modal/>
         </v-row>
         </v-container>
         
-        <dashboard-calander />
+        <dashboard-calendar />
     </v-main>
 </template>
 
 <script>
 import CreateIPModal from './CreateIPModal';
 import CreateRequestModal from './CreateRequestModal';
-import DashboardCalander from './DashboardCalander'
+import DashboardCalendar from './DashboardCalendar'
 import ViewRequestModal from '@/components/shared/ViewRequestModal'
-import IneligibleModal from './IneligibleModal'
+import DeleteIneligibleModal from './DeleteIneligibleModal'
 export default {
     name: 'DashboardPage',
     components: {
-        'dashboard-calander': DashboardCalander,
+        'dashboard-calendar': DashboardCalendar,
         'create-ip-modal': CreateIPModal,
         'create-request-modal': CreateRequestModal,
         'view-request-modal': ViewRequestModal,
-        'ineligible-modal': IneligibleModal
+        'delete-ineligible-modal': DeleteIneligibleModal
     },
     data() {
         return {

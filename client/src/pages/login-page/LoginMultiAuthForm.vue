@@ -68,7 +68,7 @@
          })
          .then(() => {
            this.$store.dispatch('establishClientSocket')
-           this.$router.push('/dashboard')
+           this.$router.push('/')
          })
          .catch((e) => {
            console.log(e);

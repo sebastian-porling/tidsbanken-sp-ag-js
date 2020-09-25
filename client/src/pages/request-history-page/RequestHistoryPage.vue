@@ -2,13 +2,18 @@
 <v-col class="container">
   <br>
   <br>
-  <v-row>
-    <UserInfoComponent />
+  <div v-if="user">
+    <v-row>
+    <UserInfoComponent :user="user" />
   </v-row>
   <br>
   <v-row>
-    <RequestHistoryTable />
+    <RequestHistoryTable :user="user" />
   </v-row>
+  </div>
+  <div v-if="!user">
+    <h1>Something went wrong..</h1>
+  </div>
 </v-col>
 </template>
 
@@ -21,6 +26,22 @@ export default {
   components: {
     UserInfoComponent,
     RequestHistoryTable
+  },
+  props: {
+    id: {
+      type: Number,
+      required: true
+    }
+  },
+  created() {
+    this.$store.dispatch("retrieveAllUsers");
+  },
+  computed: {
+    user() {
+      return this.$store.getters.getAllUsers.find(
+        user => user.id === this.id
+      )
+    }
   }
 }
 </script>

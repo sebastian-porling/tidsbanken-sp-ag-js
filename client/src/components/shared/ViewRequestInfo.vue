@@ -15,7 +15,7 @@
                                 <span v-if="!request.owner.profile_pic" class="white--text headline">UU</span>
                                 <img v-if="request.owner.profile_pic" :src="request.owner.profile_pic" alt="profilePic">
                             </v-avatar>
-                            <router-link to="profile" style="text-decoration: none;">
+                            <router-link :to="{ name: 'RequestHistory', params: { id: request.owner.owner_id} }" style="text-decoration: none;">
                                 <strong style="margin-left: 5px">
                                 {{ request.owner.full_name }}
                                 </strong>
@@ -40,7 +40,7 @@
                     </v-col>
                     <v-col cols="12">
                         <view-request-comments :request_id="request.id" />
-                        <view-request-comment-form />
+                        <view-request-comment-form :request_id="request.id" />
                     </v-col>
                 </v-row>
             </v-container>
@@ -48,7 +48,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-            <v-btn color="primary darken-1" text @click="changeMode">Edit</v-btn>
+            <v-btn color="primary darken-1" text @click="changeMode" >Edit</v-btn>
         </v-card-actions>
     </v-card>
 </template>

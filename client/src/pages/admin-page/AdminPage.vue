@@ -5,7 +5,7 @@
         <v-card class="mx-auto" max-width="300" tile>
           <v-list rounded>
             <v-subheader>Menu</v-subheader>
-            <v-list-item-group v-model="item" color="primary">
+            <v-list-item-group color="primary">
 
               <v-list-item>
                 <v-list-item-icon>
@@ -58,7 +58,7 @@
         <application-settings-modal :active="activateModal" @closeModal="closeModal"/>
       </v-col>
       <v-col cols="8">
-        <TableSelect v-if="activeTable === 'requests'" />
+        <RequestTable v-if="activeTable === 'requests'" />
         <UserTable v-if="activeTable === 'users'" />
       </v-col>
     </v-row>
@@ -67,13 +67,13 @@
 
 <script>
 import ApplicationSettingsModal from "@/pages/admin-page/ApplicationSettingsModal";
-import TableSelect from "@/pages/admin-page/TableSelect";
+import RequestTable from "@/pages/admin-page/RequestTable";
 import UserTable from "@/pages/admin-page/UserTable";
 export default {
   name: "AdminPage",
   components: {
     "application-settings-modal": ApplicationSettingsModal,
-    TableSelect,
+    RequestTable,
     UserTable,
   },
   data() {

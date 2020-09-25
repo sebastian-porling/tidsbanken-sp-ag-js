@@ -83,7 +83,7 @@ export default {
             endRules: [
               v => !!v || "Start date is required",
               v => (v && v > this.start) || "End date can not be before start date"
-            ]
+            ],
         }
     },
     props: [
@@ -108,10 +108,17 @@ export default {
         },
         submit() {
         if (this.valid) {
-          // do stuff
-          // If title is "" then use the old title
-          alert("You're vacation request has successfully been edited");
-          this.dialog = false;
+           this.$store.dispatch("patchRequest", {
+               id: this.request.id,
+               title: this.title,
+               start: this.start,
+               end: this.end,
+           }).then(() => {
+               this.changeMode();
+               this.closeModal();
+           }).catch(error => {
+               alert(error.data.message);
+           })
         } else {
           alert("You have to fill out all the required fields")
         }

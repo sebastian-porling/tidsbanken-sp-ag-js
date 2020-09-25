@@ -13,7 +13,6 @@ export default {
     components: {
         'view-request-info': ViewRequestInfo,
         'view-request-edit-form': ViewRequestEditForm,
-
     },
     data() {
         return {
