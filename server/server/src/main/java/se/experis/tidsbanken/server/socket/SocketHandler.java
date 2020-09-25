@@ -1,13 +1,10 @@
 package se.experis.tidsbanken.server.socket;
 
-import com.corundumstudio.socketio.HandshakeData;
-import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.listener.ConnectListener;
-import com.corundumstudio.socketio.listener.DataListener;
-import com.corundumstudio.socketio.listener.DisconnectListener;
-import io.netty.handler.codec.http.HttpHeaders;
+import com.corundumstudio.socketio.*;
+import com.corundumstudio.socketio.listener.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.experis.tidsbanken.server.models.User;
 import se.experis.tidsbanken.server.repositories.NotificationRepository;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 
@@ -15,58 +12,80 @@ import se.experis.tidsbanken.server.services.AuthorizationService;
 public class SocketHandler {
 
     @Autowired private NotificationRepository notificationRepository;
-
     @Autowired private SocketStore socketStore;
-
     @Autowired private AuthorizationService authService;
 
     @Autowired
     public SocketHandler(SocketIOServer ioServer) {
-
         ioServer.addConnectListener(handleConnect());
         ioServer.addDisconnectListener(handleDisconnect());
-        ioServer.addEventListener("get all", Long.class, handleGetAll());
-        ioServer.addEventListener("mark read", Long.class, handleMarkRead());
+        ioServer.addEventListener("all", Long.class, handleGetAll());
+        ioServer.addEventListener("mark", Long.class, handleMarkRead());
         ioServer.addEventListener("delete", Long.class, handleDelete());
+        ioServer.addEventListener("deleteAll", Long.class, handleDeleteAll());
     }
 
     private ConnectListener handleConnect() {
         return socketIOClient -> {
             System.out.println("Connecting");
-            HandshakeData handshakeData = socketIOClient.getHandshakeData();
-            HttpHeaders headers = handshakeData.getHttpHeaders();
-            System.out.println(headers.toString());
+            final String token = parseToken(socketIOClient);
+            if (authService.isAuthorized(token)) {
+                final User user = authService.currentUser(token);
+                socketStore.addUserClient(user.getId(), socketIOClient);
+            }
         };
     }
 
     private DisconnectListener handleDisconnect() {
         return socketIOClient -> {
             System.out.println("Disconnecting");
-            HttpHeaders headers = socketIOClient.getHandshakeData().getHttpHeaders();
-            System.out.println(headers.toString());
+            final String token = parseToken(socketIOClient);
+            if (authService.isAuthorized(token)) {
+                final User user = authService.currentUser(token);
+                socketStore.removeUserClient(user.getId());
+            }
         };
     }
 
     private DataListener<Long> handleGetAll() {
         return (socketIOClient, __, ackRequest) -> {
-            System.out.println("handle get all");
-            socketIOClient.sendEvent("notification",
-                    notificationRepository.findAll());
+            System.out.println("handle all");
+            final String token = parseToken(socketIOClient);
+            socketIOClient.sendEvent("notifications",
+                    notificationRepository.findAllByUser(authService.currentUser(token)));
         };
     }
 
     private DataListener<Long> handleMarkRead() {
         return (socketIOClient, notificationId, ackRequest) -> {
-            System.out.println("handle mark read");
-
-            socketIOClient.sendEvent("read", notificationId);
+            System.out.println("handle mark");
+            notificationRepository.findById(notificationId).ifPresent(n -> {
+                socketIOClient.sendEvent("marked", notificationRepository.save(n.setRead(true)));
+            });
         };
     }
 
     private DataListener<Long> handleDelete() {
         return (socketIOClient, notificationId, ackRequest) -> {
-            System.out.println("deleting");
-            socketIOClient.sendEvent("delete", notificationId);
+            System.out.println("deleting " + notificationId);
+            notificationRepository.findById(notificationId).ifPresent(n -> {
+                notificationRepository.delete(n);
+                socketIOClient.sendEvent("deleted", n.getId());
+            });
         };
+    }
+
+    private DataListener<Long> handleDeleteAll() {
+        return (socketIOClient, aLong, ackRequest) -> {
+            System.out.println("deleting all user notifications");
+            final String token = parseToken(socketIOClient);
+            notificationRepository.findAllByUser(authService.currentUser(token))
+                    .forEach(notificationRepository::delete);
+            socketIOClient.sendEvent("allDeleted");
+        };
+    }
+
+    private String parseToken(SocketIOClient client) {
+        return client.getHandshakeData().getSingleUrlParam("token");
     }
 }

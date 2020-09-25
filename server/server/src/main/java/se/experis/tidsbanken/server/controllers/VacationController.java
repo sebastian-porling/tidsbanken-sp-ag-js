@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.CommentRepository;
 import se.experis.tidsbanken.server.repositories.IneligiblePeriodRepository;
+import se.experis.tidsbanken.server.repositories.UserRepository;
 import se.experis.tidsbanken.server.repositories.VacationRequestRepository;
 import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,10 @@ public class VacationController{
     @Autowired private CommentRepository commentRepository;
 
     @Autowired private IneligiblePeriodRepository ipRepository;
+
+    @Autowired private UserRepository userRepository;
+
+    @Autowired private NotificationObserver observer;
 
     @GetMapping("/request")
     public ResponseEntity<CommonResponse> getRequests( HttpServletRequest request,
@@ -124,6 +130,7 @@ public class VacationController{
                     } else {if (vacationRequest.getStatus() != null || !vr.isPending()) return responseUtility.forbidden(); }
                     vr.setModifiedAt(new Date(System.currentTimeMillis()));
                     final VacationRequest patchedVr = vrRepository.save(vr);
+                    notify(patchedVr, currentUser, " modified Vacation Request ");
                     return responseUtility.ok("Updated", patchedVr);
                 } catch(Exception e) { return responseUtility.errorMessage(); }
             } else return responseUtility.forbidden();
@@ -140,6 +147,7 @@ public class VacationController{
             if (currentUser.isAdmin() || currentUser.getId() - vrOp.get().getOriginalOwner().getId() == 0) {
                 commentRepository.findAllByRequestOrderByCreatedAtDesc(vrOp.get()).forEach(commentRepository::delete);
                 vrRepository.delete(vrOp.get());
+                notify(vrOp.get(), currentUser, " deleted Vacation Request ");
                 return responseUtility.ok("Deleted", null);
             } else return responseUtility.forbidden();
         } else return responseUtility.notFound("Vacation Request Not Found");
@@ -148,6 +156,15 @@ public class VacationController{
     private Boolean filterApprovedAndOwnerRequests(VacationRequest vr, HttpServletRequest request) {
         return  vr.onlyApproved() ||
                 vr.getOriginalOwner().getId().equals(authService.currentUser(request).getId());
+    }
+
+    private void notify(VacationRequest vr, User performer, String message) {
+        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
+        final List<User> users = comments.stream().map(Comment::getOriginalUser).collect(Collectors.toList());
+        users.add(vr.getOriginalOwner());
+        if (vr.getOriginalModerator() != null) users.add(vr.getOriginalModerator());
+        users.stream().filter(u -> !u.getId().equals(performer.getId()))
+                .forEach(u -> observer.sendNotification(performer.getFullName() + message + vr.getTitle(), u));
     }
 
 }
