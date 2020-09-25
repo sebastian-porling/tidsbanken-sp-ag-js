@@ -3,16 +3,16 @@ axios.defaults.baseURL = "http://localhost:3400/";
 
 export default {
     state: {
-        IneligiblePeriod: []
+        ineligiblePeriod: []
     },
     getters: {
         getIneligiblePeriod(state) {
-            return state.IneligiblePeriod;
+            return state.ineligiblePeriod;
         }
     },
     mutations: {
         setIneligiblePeriod(state, ineligible) {
-            state.IneligiblePeriod = ineligible;
+            state.ineligiblePeriod = ineligible;
         }
     },
     actions: {
@@ -24,8 +24,8 @@ export default {
                     }
                 })
                 .then(response => {
-                    const IneligiblePeriod = response.data.data;
-                    context.commit("setIneligiblePeriod", IneligiblePeriod);
+                    const ineligiblePeriod = response.data.data;
+                    context.commit("setIneligiblePeriod", ineligiblePeriod);
                 })
                 .catch(error => {
                     console.log(error.response);

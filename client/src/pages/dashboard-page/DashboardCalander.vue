@@ -66,7 +66,7 @@
 
 <script>
 //import response from '../../../mock_data/get_request';
-// import ipResponse from '../../../mock_data/get_ineligibles';
+//import ipResponse from '../../../mock_data/get_ineligibles';
 
  import ViewRequestModal from '../../components/shared/ViewRequestModal'
 
@@ -77,7 +77,7 @@
      },
     data: () => ({
         // requests: response.data,
-        // ineligiblePeriods: ipResponse.data,
+         //ineligiblePeriods: ipResponse.data,
       focus: '',
       type: 'month',
       typeToLabel: {
@@ -92,16 +92,20 @@
         activateModal: false,
         request: 0
     }),
-    props: [
-    'ineligible'
-  ],
+    
    created() {
       this.$store.dispatch('retrieveAllRequests')
+      this.$store.dispatch('retrieveIneligiblePeriod')
     },
     computed: {
       requests: {
         get() {
           return this.$store.getters.getAllRequests;
+        }
+      },
+      ineligible: {
+        get() {
+          return this.$store.getters.getIneligiblePeriod;
         }
       }
     },
@@ -143,7 +147,7 @@
                     name: request.owner.full_name + ": " + request.title,
                     start: request.start,
                     end: request.end,
-                    color: this.getColor(request.status),
+                    color: this.getColor(request.status.status),
                 }) 
             }); 
 
