@@ -1,5 +1,6 @@
 <template>
      <v-snackbar
+     v-if="notification"
       v-model="snackbar"
       :color="'cyan darken-2'"
       :multi-line="'multi-line'"
@@ -32,10 +33,7 @@ export default {
     created() {
         this.$store.getters.getSocket.on('notification', (notification) => {
             this.notification = notification;
-            setTimeout(() => {
-              this.snackbar = false;
-              this.notification = null;
-            }, 5000);
+            this.snackbar = true;
         })
     }
 }
