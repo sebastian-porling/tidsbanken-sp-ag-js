@@ -8,7 +8,7 @@
         >
             <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-bind="attrs" v-on="on">
-                    <v-badge color="red" content="6">
+                    <v-badge color="red" :content="notifications.length">
                         <v-icon>mdi-bell</v-icon>
                     </v-badge>
                 </v-btn>
@@ -18,7 +18,7 @@
                 <v-list>
                     <v-list-item>
                         <v-list-item-title>Notifications</v-list-item-title>
-                        <v-badge color="red" content="6" left bottom>
+                        <v-badge color="red" :content="notifications.length" left bottom>
                             <v-icon>mdi-bell</v-icon>
                         </v-badge>
                     </v-list-item>
@@ -26,7 +26,7 @@
 
                 <v-divider></v-divider>
 
-                <notification-list />
+                <notification-list :notifications="notifications"/>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -48,7 +48,14 @@ export default {
     },
     data: () => ({
         menu: false,
-    })
+    }),
+    computed: {
+        notifications: {
+            get() {
+                return this.$store.getters.getNotifications;
+            }
+        }
+    },
 };
 </script>
 
