@@ -22,9 +22,10 @@ export default {
     UserInfoComponent,
     RequestHistoryTable
   },
-  data() {
-    return {
-      userId: this.$route.params.id
+  props: {
+    id: {
+      type: Number,
+      required: true
     }
   },
   created() {
@@ -33,7 +34,7 @@ export default {
   computed: {
     user() {
       return this.$store.getters.getAllUsers.find(
-        user => user.id === this.userId
+        user => user.id === this.id
       )
     }
   }

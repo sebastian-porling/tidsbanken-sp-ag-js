@@ -11,11 +11,13 @@ import UserTable from '../pages/admin-page/UserTable'
 Vue.use(Router)
 
 export default new Router ({
+    mode: "history",
     routes: [
         {
             path:'/',
             name: 'Dashboard',
             component: DashboardPage,
+            props: true,
             meta: {
                 requiresAuth: true
             }
@@ -24,6 +26,7 @@ export default new Router ({
             path:'/login',
             name: 'Login',
             component: LoginPage,
+            props: true,
             meta: {
                 requiresVisitor: true
             }
@@ -32,6 +35,7 @@ export default new Router ({
             path:'/admin',
             name: 'Admin',
             component: AdminPage,
+            props: true,
             meta: {
                 requiresAdmin: true
             }
@@ -40,6 +44,7 @@ export default new Router ({
             path:'/history/:id',
             name: 'RequestHistory',
             component: RequestHistoryPage,
+            props: true,
             meta: {
                 requiresAuth: true
             }
@@ -48,6 +53,7 @@ export default new Router ({
             path:'/profile',
             name: 'UserProfile',
             component: UserPage,
+            props: true,
             meta: {
                 requiresAuth: true
             }
@@ -55,7 +61,7 @@ export default new Router ({
         {
             path:'/requests',
             name: 'ViewRequests',
-            component: TableSelect
+            component: TableSelect,
         },
         {
             path: '/users',
