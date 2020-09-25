@@ -84,7 +84,6 @@
         this.activateModal = true;
       },
       closeModal() {
-        this.request = {};
         this.activateModal = false;
       }
     },
