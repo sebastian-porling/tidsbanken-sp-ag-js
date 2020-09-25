@@ -67,7 +67,7 @@
           code: this.code
          })
          .then(() => {
-           this.$router.push('/dashboard')
+           this.$router.push('/')
          })
          .catch(() => {
              this.code = '';

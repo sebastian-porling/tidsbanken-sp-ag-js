@@ -15,7 +15,7 @@
                                 <span v-if="!request.owner.profile_pic" class="white--text headline">UU</span>
                                 <img v-if="request.owner.profile_pic" :src="request.owner.profile_pic" alt="profilePic">
                             </v-avatar>
-                            <router-link to="profile" style="text-decoration: none;">
+                            <router-link :to="{ name: 'RequestHistory', params: { id: request.owner.owner_id} }" style="text-decoration: none;">
                                 <strong style="margin-left: 5px">
                                 {{ request.owner.full_name }}
                                 </strong>

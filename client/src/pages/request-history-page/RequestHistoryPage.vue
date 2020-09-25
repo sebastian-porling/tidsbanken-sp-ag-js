@@ -3,11 +3,11 @@
   <br>
   <br>
   <v-row>
-    <UserInfoComponent />
+    <UserInfoComponent :user="user" />
   </v-row>
   <br>
   <v-row>
-    <RequestHistoryTable />
+    <RequestHistoryTable :user="user" />
   </v-row>
 </v-col>
 </template>
@@ -21,6 +21,21 @@ export default {
   components: {
     UserInfoComponent,
     RequestHistoryTable
+  },
+  data() {
+    return {
+      userId: this.$route.params.id
+    }
+  },
+  created() {
+    this.$store.dispatch("retrieveAllUsers");
+  },
+  computed: {
+    user() {
+      return this.$store.getters.getAllUsers.find(
+        user => user.id === this.userId
+      )
+    }
   }
 }
 </script>

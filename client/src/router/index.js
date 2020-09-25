@@ -21,14 +21,6 @@ export default new Router ({
             }
         },
         {
-            path:'/dashboard',
-            name: 'Dashboard',
-            component: DashboardPage,
-            meta: {
-                requiresAuth: true
-            }
-        },
-        {
             path:'/login',
             name: 'Login',
             component: LoginPage,
@@ -45,8 +37,8 @@ export default new Router ({
             }
         }, 
         {
-            path:'/history',
-            name: 'Request History',
+            path:'/history/:id',
+            name: 'RequestHistory',
             component: RequestHistoryPage,
             meta: {
                 requiresAuth: true
@@ -54,7 +46,7 @@ export default new Router ({
         },
         {
             path:'/profile',
-            name: 'User Profile',
+            name: 'UserProfile',
             component: UserPage,
             meta: {
                 requiresAuth: true
@@ -62,12 +54,12 @@ export default new Router ({
         },
         {
             path:'/requests',
-            name: 'View Requests',
+            name: 'ViewRequests',
             component: TableSelect
         },
         {
             path: '/users',
-            name: 'View Users',
+            name: 'ViewUsers',
             component: UserTable
         }
     ]
