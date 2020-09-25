@@ -2,6 +2,8 @@ package se.experis.tidsbanken.server.socket;
 
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.experis.tidsbanken.server.models.User;
@@ -14,6 +16,7 @@ public class SocketHandler {
     @Autowired private NotificationRepository notificationRepository;
     @Autowired private SocketStore socketStore;
     @Autowired private AuthorizationService authService;
+    private Logger logger = LoggerFactory.getLogger(SocketHandler.class);
 
     @Autowired
     public SocketHandler(SocketIOServer ioServer) {
@@ -27,18 +30,20 @@ public class SocketHandler {
 
     private ConnectListener handleConnect() {
         return socketIOClient -> {
-            System.out.println("Connecting");
+            logger.info("Connecting client");
             final String token = parseToken(socketIOClient);
             if (authService.isAuthorized(token)) {
                 final User user = authService.currentUser(token);
                 socketStore.addUserClient(user.getId(), socketIOClient);
+            } else {
+                logger.warn("Unauthorized client");
             }
         };
     }
 
     private DisconnectListener handleDisconnect() {
         return socketIOClient -> {
-            System.out.println("Disconnecting");
+            logger.info("Disconnecting client");
             final String token = parseToken(socketIOClient);
             if (authService.isAuthorized(token)) {
                 final User user = authService.currentUser(token);
@@ -49,7 +54,7 @@ public class SocketHandler {
 
     private DataListener<Long> handleGetAll() {
         return (socketIOClient, __, ackRequest) -> {
-            System.out.println("handle all");
+            logger.info("Client receiving all user notifications");
             final String token = parseToken(socketIOClient);
             socketIOClient.sendEvent("notifications",
                     notificationRepository.findAllByUser(authService.currentUser(token)));
@@ -58,7 +63,7 @@ public class SocketHandler {
 
     private DataListener<Long> handleMarkRead() {
         return (socketIOClient, notificationId, ackRequest) -> {
-            System.out.println("handle mark");
+            logger.info("Client marking notification as read");
             notificationRepository.findById(notificationId).ifPresent(n -> {
                 socketIOClient.sendEvent("marked", notificationRepository.save(n.setRead(true)));
             });
@@ -67,7 +72,7 @@ public class SocketHandler {
 
     private DataListener<Long> handleDelete() {
         return (socketIOClient, notificationId, ackRequest) -> {
-            System.out.println("deleting " + notificationId);
+            logger.info("Client deleting notification: " + notificationId);
             notificationRepository.findById(notificationId).ifPresent(n -> {
                 notificationRepository.delete(n);
                 socketIOClient.sendEvent("deleted", n.getId());
@@ -77,11 +82,11 @@ public class SocketHandler {
 
     private DataListener<Long> handleDeleteAll() {
         return (socketIOClient, aLong, ackRequest) -> {
-            System.out.println("deleting all user notifications");
+            logger.info("Client deleting all user notifications");
             final String token = parseToken(socketIOClient);
             notificationRepository.findAllByUser(authService.currentUser(token))
                     .forEach(notificationRepository::delete);
-            socketIOClient.sendEvent("allDeleted");
+            socketIOClient.sendEvent("deletedAll");
         };
     }
 
