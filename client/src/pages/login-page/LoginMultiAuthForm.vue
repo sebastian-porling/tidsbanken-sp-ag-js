@@ -67,9 +67,11 @@
           code: this.code
          })
          .then(() => {
+           this.$store.dispatch('establishClientSocket')
            this.$router.push('/dashboard')
          })
-         .catch(() => {
+         .catch((e) => {
+           console.log(e);
              this.code = '';
          })
       }
