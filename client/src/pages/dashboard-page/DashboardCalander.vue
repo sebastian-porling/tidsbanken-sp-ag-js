@@ -65,8 +65,8 @@
 </template>
 
 <script>
-import response from '../../../mock_data/get_request';
-import ipResponse from '../../../mock_data/get_ineligibles';
+//import response from '../../../mock_data/get_request';
+//import ipResponse from '../../../mock_data/get_ineligibles';
 
  import ViewRequestModal from '../../components/shared/ViewRequestModal'
 
@@ -76,8 +76,8 @@ import ipResponse from '../../../mock_data/get_ineligibles';
        'view-request-modal': ViewRequestModal
      },
     data: () => ({
-        requests: response.data,
-        ineligiblePeriods: ipResponse.data,
+        // requests: response.data,
+         //ineligiblePeriods: ipResponse.data,
       focus: '',
       type: 'month',
       typeToLabel: {
@@ -92,6 +92,24 @@ import ipResponse from '../../../mock_data/get_ineligibles';
         activateModal: false,
         request: 0
     }),
+    
+   created() {
+      this.$store.dispatch('retrieveAllRequests')
+      this.$store.dispatch('retrieveIneligiblePeriod')
+    },
+    computed: {
+      requests: {
+        get() {
+          return this.$store.getters.getAllRequests;
+        }
+      },
+      ineligible: {
+        get() {
+          return this.$store.getters.getIneligiblePeriod;
+        }
+      }
+    },
+  
     mounted () {
       this.$refs.calendar.checkChange()
     },
@@ -115,21 +133,21 @@ import ipResponse from '../../../mock_data/get_ineligibles';
       updateRange () {
         const events = []
 
-            this.ineligiblePeriods.forEach(period => {
+            this.ineligible.forEach(ineligible => {
                 events.push({
                     name: "Ineligible Period",
-                    start: period.period_start,
-                    end: period.period_end,
+                    start: ineligible.start,
+                    end: ineligible.end,
                     color: 'grey',
                 })
             })
 
-            this.requests.forEach(request => {
+           this.requests.forEach(request => {
                 events.push({
-                    name: request.owner.name + ": " + request.title,
-                    start: request.period_start,
-                    end: request.period_end,
-                    color: this.getColor(request.status),
+                    name: request.owner.full_name + ": " + request.title,
+                    start: request.start,
+                    end: request.end,
+                    color: this.getColor(request.status.status),
                 }) 
             }); 
 
