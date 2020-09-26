@@ -13,5 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findAllByRequestOrderByCreatedAtDesc(VacationRequest request);
 
+    List<Comment> findAllByRequest(VacationRequest request);
+
     Optional<Comment> findByIdAndRequestOrderByCreatedAtDesc(Long commentId, VacationRequest request);
 }
