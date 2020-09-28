@@ -53,6 +53,22 @@ export default {
                         reject(error.response);
                     });
             });
+        },
+        deleteRequest(context, request) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .delete(`request/${request.id}`, request, {
+                        headers: {
+                            authorization: `Bearer ${context.rootGetters.getToken}`
+                        }
+                    })
+                    .then(response => {
+                        resolve(response.data);
+                    })
+                    .catch(error => {
+                        reject(error.response);
+                    });
+            });
         }
     }
 };
