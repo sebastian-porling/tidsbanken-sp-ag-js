@@ -1,11 +1,14 @@
 package se.experis.tidsbanken.server.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.NonNull;
 
 import java.sql.Date;
 
 public class CommentDTO {
+    @NonNull
     private String message;
+    @NonNull
     private Long userId;
     private Date createdAt;
     private Date modifiedAt;

@@ -1,15 +1,21 @@
 package se.experis.tidsbanken.server.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.NonNull;
 
 import java.sql.Date;
 import java.util.List;
 
 public class ImportExportDTO {
+    @NonNull
     private String title;
+    @NonNull
     private Date start;
+    @NonNull
     private Date end;
+    @NonNull
     private Long userId;
+    @NonNull
     private String status;
     private Date createdAt;
     private Date modifiedAt;
