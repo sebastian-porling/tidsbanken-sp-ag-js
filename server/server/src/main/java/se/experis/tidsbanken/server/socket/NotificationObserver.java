@@ -6,6 +6,8 @@ import se.experis.tidsbanken.server.models.Notification;
 import se.experis.tidsbanken.server.models.User;
 import se.experis.tidsbanken.server.repositories.NotificationRepository;
 
+import java.util.Optional;
+
 @Component
 public class NotificationObserver {
 
@@ -17,9 +19,8 @@ public class NotificationObserver {
         if (message != null && recipient != null){
             final Notification notification = notificationRepository
                     .save(new Notification(message, recipient));
-            socketStore.getUserClient(recipient.getId())
-                    .ifPresent(ioClient -> ioClient
-                            .sendEvent("notification", notification));
+           socketStore.getUserClient(recipient.getId())
+                   .ifPresent(ioClient -> ioClient.sendEvent("notification", notification));
         }
     }
 }
