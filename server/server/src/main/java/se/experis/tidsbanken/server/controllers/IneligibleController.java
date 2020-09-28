@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import se.experis.tidsbanken.server.repositories.IneligiblePeriodRepository;
 import se.experis.tidsbanken.server.models.*;
+import se.experis.tidsbanken.server.repositories.UserRepository;
 import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 
@@ -22,6 +24,10 @@ public class IneligibleController{
     @Autowired private AuthorizationService authService;
 
     @Autowired private ResponseUtility responseUtility;
+
+    @Autowired private UserRepository userRepository;
+
+    @Autowired private NotificationObserver observer;
 
     @GetMapping("/ineligible")
     public ResponseEntity<CommonResponse> getIneligiblePeriod(HttpServletRequest request){
@@ -36,8 +42,9 @@ public class IneligibleController{
                                                                  HttpServletRequest request) {
         if(!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
         if (ipRepository.findAll().stream().allMatch(ip::excludesInPeriod)) {
-            try { ipRepository.save(ip.setModerator(authService.currentUser(request)));
-                return responseUtility.created("New period added", ip);
+            try {IneligiblePeriod saved = ipRepository.save(ip.setModerator(authService.currentUser(request)));
+                notify(saved, authService.currentUser(request), " has created an Ineligible Period");
+                return responseUtility.created("New period added", saved);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.badRequest("Period already exists");
     }
@@ -67,7 +74,8 @@ public class IneligibleController{
             updatedPeriod.setModerator(authService.currentUser(request));
             updatedPeriod.setModifiedAt(new java.sql.Date(System.currentTimeMillis()));
             try {
-                IneligiblePeriod patchedIp = ipRepository.save(updatedPeriod);
+                final IneligiblePeriod patchedIp = ipRepository.save(updatedPeriod);
+                notify(patchedIp, authService.currentUser(request), " has updated an Ineligible Period");
                 return responseUtility.ok("Ineligible period updated successfully", patchedIp);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("Ineligible period not found");
@@ -81,8 +89,15 @@ public class IneligibleController{
         if (fetchedPeriod.isPresent()) {
             try {
                 ipRepository.deleteById(ip_id);
+                notify(fetchedPeriod.get(), authService.currentUser(request), " has deleted a period");
                 return responseUtility.ok("Ineligible period deleted successfully", null);
             } catch (Exception e)  {return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("Ineligible period not found");
+    }
+
+    private void notify(IneligiblePeriod ip, User performer, String message) {
+        userRepository.findAllByIsActiveTrue().stream()
+                .filter(u -> !u.getId().equals(performer.getId()))
+                .forEach(u -> observer.sendNotification(performer.getFullName() + message, u));
     }
 }

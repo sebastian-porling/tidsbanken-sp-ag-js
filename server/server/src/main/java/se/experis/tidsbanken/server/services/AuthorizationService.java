@@ -30,6 +30,12 @@ public class AuthorizationService {
     public Boolean isAuthorized(HttpServletRequest request) {
         try {
             final String jwt = extractToken(request);
+            return isAuthorized(jwt);
+        } catch (Exception e) { return false; }
+    }
+
+    public Boolean isAuthorized(String jwt) {
+        try {
             final String email = jwtUtil.extractEmail(jwt);
             final User user = userRepository.getByEmailAndIsActiveTrue(email).get();
             return jwtUtil.validateToken(jwt, user);
@@ -55,6 +61,12 @@ public class AuthorizationService {
     public User currentUser(HttpServletRequest request) {
         try {
             final String jwt = extractToken(request);
+            return currentUser(jwt);
+        } catch (Exception e) { return null; }
+    }
+
+    public User currentUser(String jwt) {
+        try {
             final String email = jwtUtil.extractEmail(jwt);
             return userRepository.getByEmailAndIsActiveTrue(email).get();
         } catch (Exception e) { return null; }

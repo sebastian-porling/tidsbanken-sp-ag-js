@@ -51,16 +51,19 @@
       <v-btn v-if="!loggedIn" router-link :to="{ name: 'Login' }" outlined> Login </v-btn>
       <v-btn v-if="loggedIn" @click="signOut" outlined> Sign Out </v-btn>
     </v-app-bar>
-
+    <notification-alert />
   </div>
 </template>
 
 <script>
 import HeaderNotifications from './HeaderNotifications';
+import NotificationAlert from './NotificationAlert'
+
 export default {
     name: 'Header',
     components: {
-        'header-notifications': HeaderNotifications
+        'header-notifications': HeaderNotifications,
+        'notification-alert': NotificationAlert
     },
     data: () => ({
         drawer: null,
@@ -77,6 +80,7 @@ export default {
     },
     methods: {
       signOut() {
+        this.$store.dispatch('closeSocket');
         return this.$store.dispatch('destroyToken')
         .then(() => {
            this.$router.push('/login')

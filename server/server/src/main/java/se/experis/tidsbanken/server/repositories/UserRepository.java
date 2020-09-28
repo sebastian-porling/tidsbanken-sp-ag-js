@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByIdAndIsActiveTrue(Long id);
 
     List<User> findAllByIsActiveTrue();
+
+    List<User> findAllByIsAdminTrueAndIsActiveTrue();
 }

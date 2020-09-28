@@ -7,11 +7,15 @@ import org.springframework.web.bind.annotation.*;
 
 import se.experis.tidsbanken.server.models.CommonResponse;
 import se.experis.tidsbanken.server.models.Setting;
+import se.experis.tidsbanken.server.models.User;
 import se.experis.tidsbanken.server.repositories.SettingRepository;
+import se.experis.tidsbanken.server.repositories.UserRepository;
 import se.experis.tidsbanken.server.services.AuthorizationService;
+import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,6 +27,10 @@ public class SettingsController {
     @Autowired private SettingRepository settingRepository;
 
     @Autowired private AuthorizationService authService;
+
+    @Autowired private UserRepository userRepository;
+
+    @Autowired private NotificationObserver observer;
 
     @GetMapping("/setting")
     public ResponseEntity<CommonResponse> getSettings(HttpServletRequest request){
@@ -36,8 +44,11 @@ public class SettingsController {
     public ResponseEntity<CommonResponse> createSetting(@RequestBody Setting setting, HttpServletRequest request){
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
         try {
-            if (!settingRepository.existsByKey(setting.getKey()))
-                return responseUtility.created("Setting added", settingRepository.save(setting));
+            if (!settingRepository.existsByKey(setting.getKey())){
+                final Setting saved = settingRepository.save(setting);
+                notify(saved, authService.currentUser(request), " created setting ");
+                return responseUtility.created("Setting added", saved);
+            }
             return responseUtility.badRequest("Setting already exists");
         }catch (Exception e) { return responseUtility.errorMessage(); }
     }
@@ -53,7 +64,9 @@ public class SettingsController {
                 final Setting settingPayload = settingOp.get();
                 if (setting.getKey() != null) settingPayload.setKey(setting.getKey());
                 if (setting.getValue() != null) settingPayload.setValue(setting.getValue());
-                return responseUtility.ok("Setting updated", settingRepository.save(settingPayload));
+                final Setting saved = settingRepository.save(settingPayload);
+                notify(saved, authService.currentUser(request), " modified setting ");
+                return responseUtility.ok("Setting updated", saved);
             } else return responseUtility.notFound("Setting not found");
         } catch(Exception e) { return responseUtility.errorMessage(); }
     }
@@ -78,10 +91,16 @@ public class SettingsController {
             final Optional<Setting> settingOp = settingRepository.findById(settingId);
             if (settingOp.isPresent()) {
                 settingRepository.delete(settingOp.get());
+                notify(settingOp.get(), authService.currentUser(request), " deleted setting ");
                 return responseUtility.ok("Setting deleted", null);
             }
             return responseUtility.notFound("Setting with id: " + settingId + " Not found!");
         } catch(Exception e) { return responseUtility.errorMessage(); }
     }
 
+    private void notify(Setting setting, User performer, String message) {
+        userRepository.findAllByIsAdminTrueAndIsActiveTrue().stream()
+                .filter(u -> !u.getId().equals(performer.getId()))
+                .forEach(u -> observer.sendNotification(performer.getFullName() + message + setting.getKey(), u));
+    }
 }
