@@ -27,7 +27,6 @@
           <v-col cols="12">
             <v-text-field type="text" label="Title" v-model="title" :rules="titleRules"></v-text-field>
           </v-col>
-          <!-- Not implemented period start and end -->
           <v-col cols="12" sm="6" md="6">
             <v-text-field
               type="date"
@@ -48,6 +47,13 @@
               required
             ></v-text-field>
           </v-col>
+          <v-col cols="12" sm="6" md="6" v-if="currentUser.is_admin && currentUser.id !== request.owner.owner_id">
+            <v-radio-group v-model="status" :mandatory="true">
+              <v-radio label="Pending" color="warning" value="Pending"></v-radio>
+              <v-radio label="Approved" color="success" value="Approved"></v-radio>
+              <v-radio label="Denied" color="error" value="Denied"></v-radio>
+            </v-radio-group>
+          </v-col>
         </v-row>
       </v-form>
     </v-card-text>
@@ -66,6 +72,7 @@ export default {
     return {
       today: new Date().toJSON().slice(0, 10),
       valid: true,
+      status: this.request.status.status,
       title: this.request.title,
       titleRules: [
         (v) => (v && v.length >= 10) || "Title must be 10 characters or more",
@@ -74,14 +81,16 @@ export default {
       startRules: [
         (v) => !!v || "Start date is required",
         (v) =>
-          this.checkifDateInPeriod(v) && this.checkPeriod(v, this.end) || "Period is ineligible for vacation request",
+          (this.checkifDateInPeriod(v) && this.checkPeriod(v, this.end)) ||
+          "Period is ineligible for vacation request",
       ],
       end: this.request.end,
       endRules: [
         (v) => !!v || "Start date is required",
         (v) => (v && v > this.start) || "End date can not be before start date",
         (v) =>
-          this.checkifDateInPeriod(v) && this.checkPeriod(this.start, v) || "Period is ineligible for vacation request",
+          (this.checkifDateInPeriod(v) && this.checkPeriod(this.start, v)) ||
+          "Period is ineligible for vacation request",
       ],
     };
   },
@@ -94,6 +103,9 @@ export default {
       get() {
         return this.$store.getters.getIneligiblePeriod;
       },
+    },
+    currentUser() {
+      return this.$store.getters.getCurrentUser;
     },
   },
   methods: {
@@ -121,6 +133,7 @@ export default {
             title: this.title,
             start: this.start,
             end: this.end,
+            status: this.status
           })
           .then(() => {
             this.changeMode();
