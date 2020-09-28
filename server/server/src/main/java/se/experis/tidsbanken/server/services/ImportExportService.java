@@ -54,8 +54,8 @@ public class ImportExportService {
         vr.setOwner(owner);
         vr.setModerator(moderator);
         vr.setModerationDate(dto.getModerationDate());
-        Optional.of(dto.getCreatedAt()).ifPresent(vr::setCreatedAt);
-        Optional.of(dto.getModifiedAt()).ifPresent(vr::setModifiedAt);
+        Optional.ofNullable(dto.getCreatedAt()).ifPresent(vr::setCreatedAt);
+        Optional.ofNullable(dto.getModifiedAt()).ifPresent(vr::setModifiedAt);
         vr.setStatus(statusRepository.findByStatus(dto.getStatus()).orElseThrow());
         return vr;
     }
@@ -67,8 +67,8 @@ public class ImportExportService {
                     c.setMessage(cDTO.getMessage());
                     c.setUser(userRepository.findByIdAndIsActiveTrue(
                             cDTO.getUserId()).orElseThrow());
-                    Optional.of(cDTO.getCreatedAt()).ifPresent(c::setCreatedAt);
-                    Optional.of(cDTO.getModifiedAt()).ifPresent(c::setModifiedAt);
+                    Optional.ofNullable(cDTO.getCreatedAt()).ifPresent(c::setCreatedAt);
+                    Optional.ofNullable(cDTO.getModifiedAt()).ifPresent(c::setModifiedAt);
                     c.setRequest(vr);
                     return c;
                 }).collect(Collectors.toList());

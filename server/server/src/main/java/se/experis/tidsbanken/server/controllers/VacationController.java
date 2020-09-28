@@ -140,16 +140,14 @@ public class VacationController{
     @DeleteMapping("/request/{request_id}")
     public ResponseEntity<CommonResponse> deleteRequest(@PathVariable("request_id") Long requestId,
                                                         HttpServletRequest request){
-        if (!authService.isAuthorized(request)) return responseUtility.unauthorized();
+        if (!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
         final User currentUser = authService.currentUser(request);
         final Optional<VacationRequest> vrOp = vrRepository.findById(requestId);
         if (vrOp.isPresent()) {
-            if (currentUser.isAdmin() || currentUser.getId() - vrOp.get().getOriginalOwner().getId() == 0) {
-                commentRepository.findAllByRequestOrderByCreatedAtDesc(vrOp.get()).forEach(commentRepository::delete);
-                vrRepository.delete(vrOp.get());
-                notify(vrOp.get(), currentUser, " deleted Vacation Request ");
-                return responseUtility.ok("Deleted", null);
-            } else return responseUtility.forbidden();
+            commentRepository.findAllByRequestOrderByCreatedAtDesc(vrOp.get()).forEach(commentRepository::delete);
+            vrRepository.delete(vrOp.get());
+            notify(vrOp.get(), currentUser, " deleted Vacation Request ");
+            return responseUtility.ok("Deleted", null);
         } else return responseUtility.notFound("Vacation Request Not Found");
     }
 
@@ -162,7 +160,7 @@ public class VacationController{
         final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
         final List<User> users = comments.stream().map(Comment::getOriginalUser).collect(Collectors.toList());
         users.add(vr.getOriginalOwner());
-        if (vr.getOriginalModerator() != null) users.add(vr.getOriginalModerator());
+        Optional.ofNullable(vr.getOriginalModerator()).ifPresent(users::add);
         users.stream().filter(u -> !u.getId().equals(performer.getId()))
                 .forEach(u -> observer.sendNotification(performer.getFullName() + message + vr.getTitle(), u));
     }

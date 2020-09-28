@@ -11,7 +11,7 @@ public class SocketStore {
     final private HashMap<Long, SocketIOClient> clients = new HashMap<>();
 
     public Optional<SocketIOClient> getUserClient(Long userId) {
-        return Optional.of(clients.get(userId));
+        return Optional.ofNullable(clients.get(userId));
     }
 
     public void addUserClient(Long userId, SocketIOClient client) {
