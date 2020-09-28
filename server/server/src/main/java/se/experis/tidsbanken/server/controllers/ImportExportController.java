@@ -33,12 +33,15 @@ public class ImportExportController {
 
     @PostMapping("/import")
     public ResponseEntity<CommonResponse> importVacations(HttpServletRequest request,
-                                                          List<ImportExportDTO> importData){
+                                                          @RequestBody List<ImportExportDTO> importData){
         if (!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
         try{
             importExportService.saveImportData(importData);
             return responseUtility.created("All Data Was Imported!", null);
-        } catch(Exception e) { return responseUtility.errorMessage(); }
+        } catch(Exception e) {
+            /* TODO: Add different error messages depending on what went wrong */
+            return responseUtility.errorMessage();
+        }
     }
 
 }
