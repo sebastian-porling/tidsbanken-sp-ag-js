@@ -48,10 +48,22 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="6" v-if="currentUser.is_admin && currentUser.id !== request.owner.owner_id">
-            <v-radio-group v-model="status" :mandatory="true">
-              <v-radio label="Pending" color="warning" value="Pending"></v-radio>
-              <v-radio label="Approved" color="success" value="Approved"></v-radio>
-              <v-radio label="Denied" color="error" value="Denied"></v-radio>
+            <v-radio-group v-model="selectedStatus">
+              <v-radio 
+              color="warning"
+              :label="status[0].status" 
+              :value="status[0]"
+              ></v-radio>
+              <v-radio 
+              color="success"
+              :label="status[1].status" 
+              :value="status[1]"
+              ></v-radio>
+              <v-radio 
+              color="error"
+              :label="status[2].status" 
+              :value="status[2]"
+              ></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
@@ -72,7 +84,7 @@ export default {
     return {
       today: new Date().toJSON().slice(0, 10),
       valid: true,
-      status: this.request.status.status,
+      selectedStatus: this.request.status,
       title: this.request.title,
       titleRules: [
         (v) => (v && v.length >= 10) || "Title must be 10 characters or more",
@@ -97,6 +109,7 @@ export default {
   props: ["request"],
   created() {
     this.$store.dispatch("retrieveIneligiblePeriod");
+    this.$store.dispatch("retrieveStatus");
   },
   computed: {
     ineligiblePeriods: {
@@ -107,6 +120,11 @@ export default {
     currentUser() {
       return this.$store.getters.getCurrentUser;
     },
+    status: {
+      get() {
+        return this.$store.getters.getStatus;
+      }
+    }
   },
   methods: {
     closeModal() {
@@ -133,7 +151,7 @@ export default {
             title: this.title,
             start: this.start,
             end: this.end,
-            status: this.status
+            status: this.selectedStatus
           })
           .then(() => {
             this.changeMode();
