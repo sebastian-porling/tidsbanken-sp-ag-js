@@ -33,6 +33,8 @@ public class Comment {
 
     public Comment() { }
 
+
+
     public Long getId() {
         return id;
     }
@@ -87,5 +89,13 @@ public class Comment {
 
     public void updateModifiedAt() {
         this.modifiedAt = new java.sql.Date(System.currentTimeMillis());
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }
