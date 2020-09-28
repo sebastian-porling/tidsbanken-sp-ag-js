@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashMap;
 
 @Entity
@@ -26,12 +26,14 @@ public class Comment {
     private User user;
 
     @Column(nullable = false)
-    private Date createdAt = new java.sql.Timestamp(new Date().getTime());
+    private Date createdAt = new java.sql.Date(System.currentTimeMillis());
 
     @Column(nullable = false)
-    private Date modifiedAt = new java.sql.Timestamp(new Date().getTime());
+    private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 
     public Comment() { }
+
+
 
     public Long getId() {
         return id;
@@ -86,6 +88,14 @@ public class Comment {
     }
 
     public void updateModifiedAt() {
-        this.modifiedAt = new java.sql.Timestamp(new Date().getTime());
+        this.modifiedAt = new java.sql.Date(System.currentTimeMillis());
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }
