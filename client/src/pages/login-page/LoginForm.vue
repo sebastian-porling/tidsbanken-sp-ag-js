@@ -1,10 +1,17 @@
 <template>
 <v-row justify="center" align="center">
   <div v-if="qrCode" class="qr">
-    <h1>Scan the QR code...</h1>
-    <h5>...and add it to your authentication app!</h5>
-    <img :src="qrCode" alt="QR-code for multi authentication" />
-    <v-btn @click="loginMultiAuth">Login</v-btn>
+    <v-card style="margin-bottom: 30px;">
+      <v-card-title>Scan the QR code...</v-card-title>
+      <v-card-subtitle>...and add it to your authentication app!</v-card-subtitle>
+      <img :src="qrCode" alt="QR-code for multi authentication" />
+      <div v-if="isMobile" style="padding-bottom: 10px;">
+        <v-card-text>Or click: </v-card-text>
+        <v-btn text :href="uri" color="deep-purple lighten-2">Add 2FA</v-btn>
+      </div>
+    </v-card>
+    
+    <v-btn text @click="loginMultiAuth" color="indigo lighten-2">Login</v-btn>
   </div>
   <v-form
     ref="form"
@@ -51,8 +58,16 @@
         v => !!v || 'Password is required',
         v => (v && v.length >= 6) || 'Password must be more than 6 characters',
       ],
-      qrCode: null
+      qrCode: null,
+      uri: ''
     }),
+    computed: {
+      isMobile: {
+        get() {
+          return window.innerWidth < 700;
+        }
+      }
+    },
     methods: {
       login () {
          this.$store.dispatch('retrieveQr', {
@@ -61,6 +76,7 @@
          })
          .then(() => {
            this.qrCode = `data:image/png;base64, ${this.$store.getters.getQrCode}`;
+           this.uri = this.$store.getters.getUri;
          })
          .catch((e) => {
            if(e.data.message.includes('code')) {
