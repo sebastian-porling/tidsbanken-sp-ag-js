@@ -9,6 +9,7 @@ import users from "./users";
 import settings from "./settings";
 import notifications from "./notifications";
 import ineligible from "./ineligible";
+import import_export from "./import_export";
 
 // Load vuex
 Vue.use(Vuex);
@@ -24,5 +25,6 @@ export const store = new Vuex.Store({
         settings,
         notifications,
         ineligible,
+        import_export,
     ]
 });
