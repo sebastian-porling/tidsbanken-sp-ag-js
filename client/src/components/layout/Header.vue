@@ -13,7 +13,7 @@
             <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item router-link :to="{ name: 'RequestHistory', params: { id:user.id } }">
+        <v-list-item router-link :to="{ name: 'RequestHistory', params: { id:user.id.toString() } }">
           <v-list-item-action>
             <v-icon>mdi-history</v-icon>
           </v-list-item-action>
