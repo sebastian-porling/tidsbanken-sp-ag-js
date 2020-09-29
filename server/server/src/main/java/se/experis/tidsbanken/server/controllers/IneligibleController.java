@@ -19,7 +19,6 @@ import se.experis.tidsbanken.server.utils.ResponseUtility;
 @Controller
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class IneligibleController{
-
     @Autowired private IneligiblePeriodRepository ipRepository;
 
     @Autowired private AuthorizationService authService;
