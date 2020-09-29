@@ -19,6 +19,9 @@ export default {
         const index = state.allUsers.findIndex(x => x.id == user.id)
         Vue.set(state.allUsers, index, user);
     },
+    addUser(state, user) {
+      state.allUsers = [...state.allUsers, user];
+    }
   },
   actions: {
     retrieveAllUsers(context) {
@@ -46,7 +49,7 @@ export default {
           })
           .then((response) => {
             const user = response.data.data;
-            context.commit("updateAllUsers", user);
+            context.commit("addUser", user);
             resolve(response);
           })
           .catch((error) => {

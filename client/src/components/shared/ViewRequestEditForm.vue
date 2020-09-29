@@ -25,13 +25,13 @@
             </v-btn>
           </v-col>
           <v-col cols="12">
-            <v-text-field type="text" label="Title" v-model="title" :rules="titleRules"></v-text-field>
+            <v-text-field type="text" label="Title" v-model="request.title" :rules="titleRules"></v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="6">
             <v-text-field
               type="date"
               label="Start*"
-              v-model="start"
+              v-model="request.start"
               :min="today"
               :rules="startRules"
               required
@@ -41,7 +41,7 @@
             <v-text-field
               type="date"
               label="End*"
-              v-model="end"
+              v-model="request.end"
               :min="today"
               :rules="endRules"
               required
@@ -85,18 +85,15 @@ export default {
       today: new Date().toJSON().slice(0, 10),
       valid: true,
       selectedStatus: this.request.status,
-      title: this.request.title,
       titleRules: [
         (v) => (v && v.length >= 10) || "Title must be 10 characters or more",
       ],
-      start: this.request.start,
       startRules: [
         (v) => !!v || "Start date is required",
         (v) =>
           (this.checkifDateInPeriod(v) && this.checkPeriod(v, this.end)) ||
           "Period is ineligible for vacation request",
       ],
-      end: this.request.end,
       endRules: [
         (v) => !!v || "Start date is required",
         (v) => (v && v > this.start) || "End date can not be before start date",
