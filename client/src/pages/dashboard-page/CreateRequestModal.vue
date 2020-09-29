@@ -3,6 +3,8 @@
       <template v-slot:activator="{ on, attrs }">
           <v-btn 
           v-bind="attrs"
+          text
+          :color="'green darken-2'"
           v-on="on">
             <v-icon>mdi-plus</v-icon> 
             Request Vacation
@@ -14,15 +16,16 @@
         </v-card-title>
         <v-card-text>
           <v-form v-model="valid">
+            {{errorMessage}}
             <v-row>
               <v-col cols="12">
                 <v-text-field label="Title*" v-model="title" required :rules="titleRules"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6">
-                <v-text-field type="date" v-model="period_start" label="Start*" required :min="today" :rules="startRules"></v-text-field>
+                <v-text-field type="date" v-model="start" label="Start*" required :min="today" :rules="startRules"></v-text-field>
               </v-col>
                <v-col cols="12" sm="6" md="6">
-                <v-text-field type="date" v-model="period_end" label="End*" required :min="today" :rules="endRules"></v-text-field>
+                <v-text-field type="date" v-model="end" label="End*" required :min="today" :rules="endRules"></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-textarea
@@ -53,30 +56,44 @@ export default {
             today: new Date().toJSON().slice(0,10),
             valid: true,
             title: "",
+            errorMessage: "",
             titleRules: [
               v => !!v || "Title is required",
               v => (v && v.length >= 10) || 'Title must be 10 characters or more',
             ],
-            period_start: "",
+            start: "",
             startRules: [
               v => !!v || "Start date is required",
             ],
-            period_end: "",
+            end: "",
             endRules: [
               v => !!v || "Start date is required",
-              v => (v && v > this.period_start) || "End date can not be before start date"
+              v => (v && v > this.start) || "End date can not be before start date"
             ]
         }
     },
     methods: {
       submit() {
         if (this.valid) {
-          // do stuff
-          alert("You're vacation request has successfully been added");
-          this.dialog = false;
+          this.$store.dispatch('createVacationRequest', {title: this.title, start: this.start, end: this.end})
+          .then(request => {
+            this.$emit("openRequestModal", request);
+            this.reset();
+          })
+          .catch(error => {
+            this.errorMessage = error.data.message;
+          })
         } else {
-          alert("You have to fill out all the required fields")
+          this.errorMessage = "You have to fill out all the required fields";
         }
+      },
+      reset() {
+        this.valid = true;
+        this.title = "";
+        this.errorMessage = "";
+        this.start = "";
+        this.end = "";
+        this.dialog = false;
       }
     }
 }

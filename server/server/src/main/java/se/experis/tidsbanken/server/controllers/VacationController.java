@@ -67,14 +67,14 @@ public class VacationController{
         final User currentUser = authService.currentUser(request);
         final List<VacationRequest> vacationRequests = vrRepository.findAllByOwner(currentUser);
         final List<IneligiblePeriod> ips = ipRepository.findAllByOrderByStartDesc();
-        if (!vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
-                !ips.stream().allMatch(vacationRequest::excludesInIP)) {
+        if (vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
+                ips.stream().allMatch(vacationRequest::excludesInIP)) {
             try {
                 final VacationRequest vr = vrRepository
                         .save(vacationRequest.setStatus(StatusType.PENDING.getStatus()).setOwner(currentUser));
                 return responseUtility.created("Created", vr);
             } catch (Exception e) { return responseUtility.errorMessage(); }
-        } else return responseUtility.badRequest("Overlaps with existing requests");
+        } else { return responseUtility.badRequest("Overlaps with existing requests"); }
     }
 
     @GetMapping("/request/{request_id}")

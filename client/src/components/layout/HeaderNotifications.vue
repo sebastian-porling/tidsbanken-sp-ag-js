@@ -8,7 +8,7 @@
         >
             <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-bind="attrs" v-on="on">
-                    <v-badge color="red" :content="notifications.length">
+                    <v-badge color="red" :content="notifications.length || '0'">
                         <v-icon>mdi-bell</v-icon>
                     </v-badge>
                 </v-btn>
@@ -18,7 +18,7 @@
                 <v-list>
                     <v-list-item>
                         <v-list-item-title>Notifications</v-list-item-title>
-                        <v-badge color="red" :content="notifications.length" left bottom>
+                        <v-badge color="red" :content="notifications.length || '0'" left bottom>
                             <v-icon>mdi-bell</v-icon>
                         </v-badge>
                     </v-list-item>

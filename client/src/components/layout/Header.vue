@@ -3,6 +3,7 @@
       <v-navigation-drawer
       v-model="drawer"
       app
+      v-if="loggedIn"
     >
       <v-list dense>
         <v-list-item router-link :to="{ name: 'Dashboard' }">
@@ -37,7 +38,7 @@
       color="indigo"
       dark
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-if="loggedIn"></v-app-bar-nav-icon>
       <v-toolbar-title>Tidsbanken</v-toolbar-title>
       <v-spacer></v-spacer>
       <header-notifications v-if="loggedIn"/>
@@ -48,8 +49,8 @@
             </v-avatar>
             <router-link :to="{ name: 'UserProfile' }" class="white--text" style="text-decoration: none;"><strong style="margin-left: 5px">{{ user.full_name }}</strong></router-link>
       </v-btn>
-      <v-btn v-if="!loggedIn" router-link :to="{ name: 'Login' }" outlined> Login </v-btn>
-      <v-btn v-if="loggedIn" @click="signOut" outlined> Sign Out </v-btn>
+      <v-btn v-if="!loggedIn" router-link :to="{ name: 'Login' }" text> Login </v-btn>
+      <v-btn v-if="loggedIn" @click="signOut" text> Sign Out </v-btn>
     </v-app-bar>
     <notification-alert />
   </div>

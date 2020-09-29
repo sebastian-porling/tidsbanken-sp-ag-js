@@ -83,7 +83,7 @@ public class User {
         this.fullName = fullName;
     }
 
-
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

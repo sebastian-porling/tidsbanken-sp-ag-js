@@ -11,6 +11,9 @@ export default {
         loggedIn(state) {
             return state.token !== null;
         },
+        isAdmin(state) {
+            return state.user.is_admin;
+        },
         getCurrentUser(state) {
             return state.user;
         },
