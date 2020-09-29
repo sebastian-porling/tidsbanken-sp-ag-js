@@ -24,31 +24,43 @@ public class AuthorizationService {
 
     public Boolean isAuthorizedUser(HttpServletRequest request) {
         try { return isAuthorizedRole(request, UserRole.USER);
-        } catch (Exception e) { return false; }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public Boolean isAuthorized(HttpServletRequest request) {
         try {
             final String jwt = extractToken(request);
             return isAuthorized(jwt);
-        } catch (Exception e) { return false; }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public Boolean isAuthorized(String jwt) {
         try {
-            final String email = jwtUtil.extractEmail(jwt);
-            final User user = userRepository.getByEmailAndIsActiveTrue(email).get();
+            final Long userId = jwtUtil.extractUserId(jwt);
+            final User user = userRepository.findByIdAndIsActiveTrue(userId).get();
             return jwtUtil.validateToken(jwt, user);
-        } catch (Exception e) { return false; }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private Boolean isAuthorizedRole(HttpServletRequest request, UserRole userRole) throws Exception{
         try{
             final String jwt = extractToken(request);
-            final String email = jwtUtil.extractEmail(jwt);
-            final User user = userRepository.getByEmailAndIsActiveTrue(email).get();
+            final Long userId = jwtUtil.extractUserId(jwt);
+            final User user = userRepository.findByIdAndIsActiveTrue(userId).get();
             return jwtUtil.validateToken(jwt, user, userRole.toString());
-        }catch (Exception e) { return false; }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private String extractToken(HttpServletRequest request) throws Exception{
@@ -62,13 +74,19 @@ public class AuthorizationService {
         try {
             final String jwt = extractToken(request);
             return currentUser(jwt);
-        } catch (Exception e) { return null; }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public User currentUser(String jwt) {
         try {
-            final String email = jwtUtil.extractEmail(jwt);
-            return userRepository.getByEmailAndIsActiveTrue(email).get();
-        } catch (Exception e) { return null; }
+            final Long userId = jwtUtil.extractUserId(jwt);
+            return userRepository.findByIdAndIsActiveTrue(userId).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

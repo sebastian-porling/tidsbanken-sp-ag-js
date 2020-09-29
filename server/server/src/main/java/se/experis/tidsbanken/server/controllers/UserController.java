@@ -75,14 +75,16 @@ public class UserController {
         if (fetchedUser.isPresent()) {
             final User updatedUser = fetchedUser.get();
             if (user.getPassword() != null) return responseUtility.badRequest("Not allowed to patch password");
-            if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
-            if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
-            if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
             if (authService.isAuthorizedAdmin(request)) {
                 if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
                 if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
                 updatedUser.setAdmin(user.isAdmin());
-            } else  if (user.isAdmin() != null) return responseUtility.forbidden();
+            } else {
+                if (user.isAdmin() != null ) return responseUtility.forbidden();
+            }
+            if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
+            if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
+            if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
                 final User patchedUser = userRepository.save(updatedUser);

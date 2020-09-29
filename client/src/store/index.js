@@ -10,6 +10,7 @@ import settings from "./settings";
 import notifications from "./notifications";
 import ineligible from "./ineligible";
 import import_export from "./import_export";
+import status from "./status";
 
 // Load vuex
 Vue.use(Vuex);
@@ -26,5 +27,6 @@ export const store = new Vuex.Store({
         notifications,
         ineligible,
         import_export,
+        status,
     ]
 });
