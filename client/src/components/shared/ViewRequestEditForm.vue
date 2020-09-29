@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="request">
+  <v-card>
         <v-card-title>
             <span class="headline">{{ request.title }}</span>
             <v-chip class="ma-2" :color="getColor(request.status.status)" text-color="white">
@@ -24,7 +24,7 @@
                         <v-text-field
                             type="text"
                             label="Title"
-                            v-model="title"
+                            v-model="request.title"
                             :rules="titleRules"
                         ></v-text-field>
                     </v-col>
@@ -33,7 +33,7 @@
                         <v-text-field
                             type="date"
                             label="Start*"
-                            v-model="start"
+                            v-model="request.start"
                             :min="today" 
                             :rules="startRules"
                             required
@@ -43,7 +43,7 @@
                         <v-text-field
                             type="date"
                             label="End*"
-                            v-model="end"
+                            v-model="request.end"
                             :min="today" 
                             :rules="endRules"
                             required
@@ -71,20 +71,20 @@ export default {
         return {
             today: new Date().toJSON().slice(0,10),
             valid: true,
-            title: this.request.title,
             titleRules: [
               v => (v && v.length >= 10) || 'Title must be 10 characters or more',
             ],
-            start: this.request.start,
             startRules: [
               v => !!v || "Start date is required",
             ],
-            end: this.request.end,
             endRules: [
               v => !!v || "Start date is required",
-              v => (v && v > this.start) || "End date can not be before start date"
+              v => (v && v > this.request.start) || "End date can not be before start date"
             ],
         }
+    },
+    created() {
+
     },
     props: [
         'request'
@@ -110,9 +110,9 @@ export default {
         if (this.valid) {
            this.$store.dispatch("patchRequest", {
                id: this.request.id,
-               title: this.title,
-               start: this.start,
-               end: this.end,
+               title: this.request.title,
+               start: this.request.start,
+               end: this.request.end,
            }).then(() => {
                this.changeMode();
                this.closeModal();
