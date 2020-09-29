@@ -78,7 +78,7 @@ public class UserController {
             if (authService.isAuthorizedAdmin(request)) {
                 if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
                 if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
-                updatedUser.setAdmin(user.isAdmin());
+                if (user.isAdmin() != null) updatedUser.setAdmin(user.isAdmin());
             } else {
                 if (user.isAdmin() != null ) return responseUtility.forbidden();
             }
@@ -90,7 +90,7 @@ public class UserController {
                 final User patchedUser = userRepository.save(updatedUser);
                 if (authService.isAuthorizedAdmin(request))
                     observer.sendNotification("Your account have been modified!", updatedUser);
-                return responseUtility.ok("User updated successfully", getUserResponse(patchedUser));
+                return responseUtility.ok("User updated successfully", patchedUser);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");
     }

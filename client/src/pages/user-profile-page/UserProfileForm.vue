@@ -7,8 +7,11 @@
             <span v-if="!user.profile_pic" class="white--text headline">A</span>
             <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic" />
           </v-avatar>
+
+          <change-profile-picture-modal :active="activateModal" :user="user" @closeModal="closeModal" />
+
           <br />
-          <v-btn color="default" @click="changePicture" style="margin: 4%">Change Picture</v-btn>
+          <v-btn color="default" @click="launchModal" style="margin: 4%">Change Picture</v-btn>
           <v-form v-model="valid">
             <v-row>
               <v-col cols="10">
@@ -49,10 +52,15 @@
 </template>
 
 <script>
+import ChangeProfilePictureModal from "./ChangeProfilePictureModal"
 export default {
   name: "UserProfileForm",
+  components: {
+    "change-profile-picture-modal": ChangeProfilePictureModal
+  },
   data: () => ({
     valid: true,
+    activateModal: false,
     nameRules: [
       (v) => !!v || "Name is required",
       (v) => (v && v.length <= 100) || "Name must be less than 100 characters",
@@ -85,8 +93,11 @@ export default {
     twoFactorAuthenticationSettings() {
       this.$refs.form.twoFactorAuthenticationSettings();
     },
-    changePicture() {
-      this.$refs.form.changePicture();
+    launchModal() {
+      this.activateModal = true;
+    },
+    closeModal() {
+      this.activateModal = false;
     },
     submit() {
       this.$store
@@ -107,8 +118,8 @@ export default {
       if (this.password !== "" && this.password !== null) {
         this.$store
           .dispatch("changePassword", this.user.id, this.password)
-          .then((response) => {
-            alert(response.data.message);
+          .then(() => {
+            alert("User updated successfully");
           })
           .catch((error) => {
             alert(error.data.message);

@@ -68,6 +68,7 @@ export default {
             .then((response) => {
               const updUser = response.data.data;
               context.commit("updateAllUsers", updUser);
+              context.commit("updateCurrentUser", updUser);
               resolve(response);
             })
             .catch((error) => {

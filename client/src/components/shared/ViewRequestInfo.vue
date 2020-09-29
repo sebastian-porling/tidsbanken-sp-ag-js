@@ -35,7 +35,7 @@
           <v-col cols="12" sm="6" md="6">
             <v-text-field type="date" label="End" :value="request.end | formatDate" disabled></v-text-field>
           </v-col>
-          <v-col cols="12" v-if="request.owner.id === currentUser.id || currentUser.is_admin">
+          <v-col cols="12" v-if="request.owner.owner_id === currentUser.id || currentUser.is_admin">
             <view-request-comments v-if="currentUser.id === request.owner.owner_id || currentUser.is_admin" :request_id="request.id" />
             <view-request-comment-form v-if="currentUser.id === request.owner.owner_id || currentUser.is_admin" :request_id="request.id" />
           </v-col>
@@ -92,12 +92,10 @@ export default {
         this.$store
           .dispatch("deleteRequest", this.request)
           .then(() => {
-            alert("Request deleted!");
-            this.changeMode();
             this.closeModal();
           })
           .catch((error) => {
-            alert(error.data.message);
+            alert(error);
           });
       }
     },
