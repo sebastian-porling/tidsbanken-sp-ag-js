@@ -95,4 +95,16 @@ public class IneligiblePeriod {
         return (ip.start.before(this.start) && ip.end.before(this.start)) ||
                 (ip.start.after(this.end) && ip.end.after(this.end));
     }
+
+    @Override
+    public String toString() {
+        return "IneligiblePeriod{" +
+                "id=" + id +
+                ", start=" + start +
+                ", end=" + end +
+                ", moderator=" + moderator +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                '}';
+    }
 }
