@@ -128,7 +128,7 @@ public class User {
         this.vacationDays = vacationDays;
     }
 
-    @JsonProperty("user_vacation_days")
+    @JsonProperty("used_vacation_days")
     public Integer getUsedVacationDays() {
         return usedVacationDays;
     }
