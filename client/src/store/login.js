@@ -12,7 +12,6 @@ export default {
             return state.token !== null;
         },
         isAdmin(state) {
-            console.log(state.user.is_admin);
             return state.user.is_admin;
         },
         getCurrentUser(state) {
@@ -39,6 +38,10 @@ export default {
         },
         destroyToken(state) {
             state.token = null;
+        },
+        updateCurrentUser(state, user) {
+            localStorage.setItem("user", JSON.stringify(user));
+            state.user = user;
         }
     },
     actions: {

@@ -1,83 +1,130 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-form ref="form" v-model="valid">
+  <v-container>
+    <v-row align="center" justify="center">
+      <v-card max-width="600px" style="padding: 2%; margin: 5%">
+        <v-card-text align="center" justify="center">
+          <v-avatar color="indigo" size="120" v-model="user.profile_pic">
+            <span v-if="!user.profile_pic" class="white--text headline">A</span>
+            <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic" />
+          </v-avatar>
 
-      <v-row justify="center">
-        <v-avatar color="indigo" size="120" v-model="user.profile_pic">
-          <span v-if="!user.profile_pic" class="white--text headline">A</span>
-          <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic">
-        </v-avatar> 
-      </v-row>
+          <change-profile-picture-modal :active="activateModal" :user="user" @closeModal="closeModal" />
 
-      <v-row justify="center" class="my-8">
-        <v-btn color="default" @click="changePicture">Change Picture</v-btn>
-      </v-row>
-
-      <v-text-field v-model="user.full_name" :counter="100" :rules="nameRules" label="Name" required></v-text-field>
-
-      <v-text-field v-model="user.email" :rules="emailRules" label="E-mail" required>{{ user.email }}</v-text-field>
-
-      <v-text-field
-        type="password"
-        v-model="password"
-        :rules="passwordRules"
-        label="Password"
-        required
-      ></v-text-field>
-
-      <v-btn
-      class="my-8"
-        color="default"
-        @click="twoFactorAuthenticationSettings"
-      >Add/Remove Two-Factor-Authentication</v-btn>
-
-        <br>
-      <v-btn color="info" @click="saveChanges">Save Changes</v-btn>
-    </v-form>
-  </v-row>
+          <br />
+          <v-btn color="default" @click="launchModal" style="margin: 4%">Change Picture</v-btn>
+          <v-form v-model="valid">
+            <v-row>
+              <v-col cols="10">
+                <v-text-field v-model="user.full_name" label="Name" required :rules="nameRules"></v-text-field>
+              </v-col>
+              <v-col cols="10">
+                <v-text-field v-model="user.email" label="Email" required :rules="emailRules"></v-text-field>
+              </v-col>
+              <br />
+              <v-col cols="10">
+                <v-text-field
+                  type="password"
+                  v-model="password"
+                  :rules="passwordRules"
+                  label="Password"
+                  required
+                ></v-text-field>
+              </v-col>
+              <!-- <v-col cols="10">
+                <v-text-field
+                  type="password"
+                  v-model="confirm"
+                  :rules="confirmRules"
+                  label="Confirm Password"
+                  required
+                ></v-text-field>
+              </v-col>-->
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
+import ChangeProfilePictureModal from "./ChangeProfilePictureModal"
 export default {
-  name: 'UserProfileForm',
+  name: "UserProfileForm",
+  components: {
+    "change-profile-picture-modal": ChangeProfilePictureModal
+  },
   data: () => ({
     valid: true,
-    full_name: '',
+    activateModal: false,
     nameRules: [
       (v) => !!v || "Name is required",
       (v) => (v && v.length <= 100) || "Name must be less than 100 characters",
     ],
-    email: '',
     emailRules: [
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
-    password: '',
+    password: "",
     passwordRules: [
       (v) => !!v || "Password is required",
       (v) => (v && v.length >= 6) || "Password must be more than 6 characters",
     ],
+    /* confirm: "",
+    confirmRules: [
+      (v) => (v && v === this.password) || "Passwords does not match"
+    ], */
   }),
   computed: {
-      loggedIn() {
-        return this.$store.getters.loggedIn;
+    loggedIn() {
+      return this.$store.getters.loggedIn;
+    },
+    user: {
+      get() {
+        return this.$store.getters.getCurrentUser;
       },
-      user: {
-        get() {
-          return this.$store.getters.getCurrentUser;
-        }
-      }
     },
+  },
   methods: {
-    saveChanges() {
-      /* this.$refs.form.saveChanges(); */
-      console.log(this.full_name);
-    },
     twoFactorAuthenticationSettings() {
       this.$refs.form.twoFactorAuthenticationSettings();
     },
-    changePicture() {
-      this.$refs.form.changePicture();
+    launchModal() {
+      this.activateModal = true;
+    },
+    closeModal() {
+      this.activateModal = false;
+    },
+    submit() {
+      this.$store
+        .dispatch("updateUser", {
+          id: this.user.id,
+          full_name: this.user.full_name,
+          email: this.user.email,
+        })
+        .then((response) => {
+          alert(response.data.message);
+          this.changePassword();
+        })
+        .catch((error) => {
+          alert(error.data.message);
+        });
+    },
+    changePassword() {
+      if (this.password !== "" && this.password !== null) {
+        this.$store
+          .dispatch("changePassword", this.user.id, this.password)
+          .then(() => {
+            alert("User updated successfully");
+          })
+          .catch((error) => {
+            alert(error.data.message);
+          });
+      }
     },
   },
 };

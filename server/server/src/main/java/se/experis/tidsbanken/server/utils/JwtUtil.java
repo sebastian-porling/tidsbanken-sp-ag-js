@@ -12,6 +12,11 @@ public class JwtUtil {
 
     final private String SECRET = "test";
 
+    public Long extractUserId(String token) {
+        final Claims claims = extractAllClaims(token);
+        return Long.valueOf(claims.get("user_id").toString());
+    }
+
     /**
      *
      * @param token
@@ -77,6 +82,7 @@ public class JwtUtil {
      */
     public String generateToken(User user, String audience) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("user_id", user.getId());
         return createToken(claims, user.getEmail(), audience);
     }
 
@@ -104,8 +110,8 @@ public class JwtUtil {
      */
     public Boolean validateToken(String token, User user, String audience) {
         final String tokenAudience = extractAudience(token);
-        final String tokenEmail = extractEmail(token);
-        return (tokenEmail.equals(user.getEmail()) && tokenAudience.equals(audience) && !isTokenExpired(token));
+        final Long tokenUserId = extractUserId(token);
+        return (tokenUserId.equals(user.getId()) && tokenAudience.equals(audience) && !isTokenExpired(token));
     }
 
     /**
@@ -115,8 +121,8 @@ public class JwtUtil {
      * @return true if valid
      */
     public Boolean validateToken(String token, User user) {
-        final String tokenEmail = extractEmail(token);
-        return (tokenEmail.equals(user.getEmail()) && !isTokenExpired(token));
+        final Long tokenUserId = extractUserId(token);
+        return (tokenUserId.equals(user.getId()) && !isTokenExpired(token));
     }
 
 }

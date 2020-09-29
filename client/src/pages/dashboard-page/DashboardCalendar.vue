@@ -150,11 +150,9 @@
         launchModal(value) {
           if ( this.isAdmin && value.event.type === 'ip') {
             this.ineligiblePeriod = this.ineligibles[value.event.index]
-            this.vacationRequest = null;
             this.activateModal = value.event.type;
           } else if (value.event.type !== 'ip') {
             this.vacationRequest = this.requests[value.event.index];
-            this.ineligiblePeriod = null;
             this.activateModal = value.event.type;
           }
           this.rerender = false;
@@ -163,10 +161,6 @@
         this.activateModal = '';
         setTimeout(() => {
           this.rerender = true;
-          setTimeout(() => {
-            this.ineligiblePeriod = null;
-            this.vacationRequest = null;
-          }, 500);
         }, 500);
       }
     },

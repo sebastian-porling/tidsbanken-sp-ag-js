@@ -11,9 +11,6 @@
         <RequestHistoryTable :user="user" />
       </v-row>
     </div>
-    <div v-if="!user">
-      <h1>Something went wrong..</h1>
-    </div>
   </v-col>
 </template>
 

@@ -23,6 +23,9 @@ export default {
     props: [
         'request_id'
     ],
+    created() {
+        this.$store.dispatch('retrieveComments', this.request_id)
+    },
     computed: {
       comments: {
         get() {
