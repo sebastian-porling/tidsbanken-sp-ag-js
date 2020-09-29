@@ -11,6 +11,10 @@ export default {
         loggedIn(state) {
             return state.token !== null;
         },
+        isAdmin(state) {
+            console.log(state.user.is_admin);
+            return state.user.is_admin;
+        },
         getCurrentUser(state) {
             return state.user;
         },
