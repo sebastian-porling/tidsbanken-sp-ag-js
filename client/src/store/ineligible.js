@@ -1,35 +1,79 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3400/";
+import Vue from 'vue';
+axios.defaults.baseURL = "http://localhost:3400";
+const headers = (token) => {return {headers: {authorization: `Bearer ${token}`}}};
 
 export default {
     state: {
-        ineligiblePeriod: []
+        ineligiblePeriods: []
     },
     getters: {
-        getIneligiblePeriod(state) {
-            return state.ineligiblePeriod;
+        getIneligiblePeriods(state) {
+            return state.ineligiblePeriods;
         }
     },
     mutations: {
-        setIneligiblePeriod(state, ineligible) {
-            state.ineligiblePeriod = ineligible;
+        setIneligiblePeriods(state, ineligiblePeriods) {
+            state.ineligiblePeriods = ineligiblePeriods;
+        },
+        removeIneligiblePeriod(state, ineligiblePeriodId) {
+            state.ineligiblePeriods = state.ineligiblePeriods.filter(ip => ip.id !== ineligiblePeriodId);
+        },
+        replaceIneligiblePeriod(state, ineligiblePeriod) {
+            const index = state.ineligiblePeriods.findIndex(ip => ip.id === ineligiblePeriod.id)
+            Vue.set(state.ineligiblePeriods, index, ineligiblePeriod);
+        },
+        addIneligiblePeriod(state, ineligiblePeriod) {
+            state.ineligiblePeriods = [...state.ineligiblePeriods, ineligiblePeriod];
         }
     },
     actions: {
-        retrieveIneligiblePeriod(context) {
+        retrieveIneligiblePeriods({commit, rootGetters}) {
             axios
-                .get('/ineligible', {
-                    headers: {
-                        authorization: `Bearer ${context.rootGetters.getToken}`
-                    }
-                })
-                .then(response => {
-                    const ineligiblePeriod = response.data.data;
-                    context.commit("setIneligiblePeriod", ineligiblePeriod);
+                .get('/ineligible', headers(rootGetters.getToken))
+                .then(response => commit("setIneligiblePeriods", response.data.data))
+                .catch(error => console.log(error.response));
+        },
+        deleteIneligiblePeriod({commit, rootGetters}, ineligiblePeriodId) {
+            return new Promise((resolve, reject) => {
+                axios.delete(`/ineligible/${ineligiblePeriodId}`, headers(rootGetters.getToken))
+                .then(() => {
+                    commit('removeIneligiblePeriod', ineligiblePeriodId);
+                    resolve();
                 })
                 .catch(error => {
                     console.log(error.response);
+                    reject(error.response);
                 });
+            });
+        },
+        updateIneligiblePeriod({commit, rootGetters}, ineligiblePeriod) {
+            return new Promise((resolve, reject) => {
+                axios.patch(`/ineligible/${ineligiblePeriod.id}`, ineligiblePeriod, headers(rootGetters.getToken))
+                .then(response => {
+                    commit('replaceIneligiblePeriod', response.data.data);
+                    resolve(response.data.data);
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    reject(error.response);
+                });
+            });
+        },
+        createIneligiblePeriod({commit, rootGetters}, ineligiblePeriod) {
+            return new Promise((resolve, reject) => {
+                axios.post('/ineligible', ineligiblePeriod, headers(rootGetters.getToken))
+                .then(response => {
+                    console.log('CREATED', response.data.data);
+                    commit('addIneligiblePeriod', response.data.data);
+                    resolve(response.data.data);
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    reject(error.response);
+                })
+            })
+            
         }
     }
 };
