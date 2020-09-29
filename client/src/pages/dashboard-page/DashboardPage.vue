@@ -1,24 +1,22 @@
 <template>
     <v-main>
         <v-container fluid>
-        <v-row align="center" justify="space-around">
-            <create-ip-modal/>
-            <delete-ineligible-modal/>
-            <create-request-modal/>
-            <view-request-modal/>
+        <v-row align="center" justify="space-around" class="header">
+            <create-ip-modal v-if="isAdmin" />
+            <create-request-modal @openRequestModal="openRequestModal"/>
+            <view-request-modal :active="requestModal" :request="request" @closeModal="closeRequestModal"/>
         </v-row>
+        <dashboard-calendar />
         </v-container>
         
-        <dashboard-calendar />
     </v-main>
 </template>
 
 <script>
 import CreateIPModal from './CreateIPModal';
 import CreateRequestModal from './CreateRequestModal';
-import DashboardCalendar from './DashboardCalendar'
-import ViewRequestModal from '@/components/shared/ViewRequestModal'
-import DeleteIneligibleModal from './DeleteIneligibleModal'
+import ViewRequestModal from '@/components/shared/ViewRequestModal';
+import DashboardCalendar from './DashboardCalendar';
 export default {
     name: 'DashboardPage',
     components: {
@@ -26,12 +24,17 @@ export default {
         'create-ip-modal': CreateIPModal,
         'create-request-modal': CreateRequestModal,
         'view-request-modal': ViewRequestModal,
-        'delete-ineligible-modal': DeleteIneligibleModal
     },
     data() {
         return {
             ipModal: false,
-            requestModal: false
+            requestModal: false,
+            request: null
+        }
+    },
+    computed: {
+        isAdmin() {
+            return this.$store.getters.isAdmin;
         }
     },
     methods: {
@@ -40,15 +43,25 @@ export default {
         },
         closeRequestModal() {
             this.requestModal = false;
+            setTimeout(() => {
+                this.request = null;
+            }, 500);
         },
         openIPModal() {
             this.ipModal = true;
         },
-        openRequestModal() {
-            this.requestModal = true;
+        openRequestModal(request) {
+            setTimeout(() => {
+                this.request = request;
+                this.requestModal = true;
+            }, 500);
         }
     },
 };
 </script>
 
-<style></style>
+<style>
+.header{
+    margin-top: 30px;
+}
+</style>
