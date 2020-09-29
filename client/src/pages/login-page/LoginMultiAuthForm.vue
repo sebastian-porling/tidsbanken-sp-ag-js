@@ -33,6 +33,7 @@
       type="submit"
         class="submit"
         color="info"
+        text
       >
         Login
       </v-btn>
