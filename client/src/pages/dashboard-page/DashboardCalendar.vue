@@ -1,9 +1,10 @@
 <template>
   <v-row class="fill-height">
+    
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
+          <v-btn text class="mr-4" color="grey darken-2" @click="setToday">
             Today
           </v-btn>
           <v-btn fab text small color="grey darken-2" @click="prev">
@@ -16,33 +17,6 @@
             {{ $refs.calendar.title }}
           </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-menu bottom right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                outlined
-                color="grey darken-2"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <span>{{ typeToLabel[type] }}</span>
-                <v-icon right>mdi-menu-down</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
         </v-toolbar>
       </v-sheet>
       <v-sheet height="600">
@@ -60,42 +34,36 @@
         ></v-calendar>
       </v-sheet>
     </v-col>
-      <view-request-modal :active="activateModal" :request="request" @closeModal="closeModal"/>
+      <view-request-modal v-if="!rerender" :active="activateModal === 'request'" :request="vacationRequest" @closeModal="closeModal"/>
+      <edit-ip-modal v-if="!rerender" :active="activateModal === 'ip'" :ineligible="ineligiblePeriod" @closeModal="closeModal"/>
   </v-row>
 </template>
 
 <script>
-//import response from '../../../mock_data/get_request';
-//import ipResponse from '../../../mock_data/get_ineligibles';
-
- import ViewRequestModal from '../../components/shared/ViewRequestModal'
+ import ViewRequestModal from '@/components/shared/ViewRequestModal'
+ import EditIpModal from './EditIpModal'
 
   export default {
     name: "DashboardCalander",
     components: {
-       'view-request-modal': ViewRequestModal
+       'view-request-modal': ViewRequestModal,
+       'edit-ip-modal': EditIpModal,
      },
     data: () => ({
-        // requests: response.data,
-         //ineligiblePeriods: ipResponse.data,
       focus: '',
       type: 'month',
-      typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-        '4day': '4 Days',
-      },
       events: [],
       colors: ['red', 'orange', 'green'],
       names: [],
-        activateModal: false,
-        request: 0
+      activateModal: '',
+      ineligiblePeriod: null,
+      vacationRequest: null,
+      rerender: false
     }),
     
    created() {
       this.$store.dispatch('retrieveAllRequests')
-      this.$store.dispatch('retrieveIneligiblePeriod')
+      this.$store.dispatch('retrieveIneligiblePeriods')
     },
     computed: {
       requests: {
@@ -103,10 +71,23 @@
           return this.$store.getters.getAllRequests;
         }
       },
-      ineligible: {
+      ineligibles: {
         get() {
-          return this.$store.getters.getIneligiblePeriod;
+          return this.$store.getters.getIneligiblePeriods;
         }
+      },
+      isAdmin: {
+        get() {
+          return this.$store.getters.isAdmin;
+        }
+      }
+    },
+    watch: {
+      requests() {
+        this.updateRange();
+      },
+      ineligibles() {
+        this.updateRange();
       }
     },
   
@@ -132,22 +113,25 @@
       },
       updateRange () {
         const events = []
-
-            this.ineligible.forEach(ineligible => {
+            this.ineligibles.forEach((ineligible, index) => {
                 events.push({
                     name: "Ineligible Period",
                     start: ineligible.start,
                     end: ineligible.end,
                     color: 'grey',
+                    type: 'ip',
+                    index
                 })
             })
 
-           this.requests.forEach(request => {
+           this.requests.forEach((request, index) => {
                 events.push({
                     name: request.owner.full_name + ": " + request.title,
                     start: request.start,
                     end: request.end,
                     color: this.getColor(request.status.status),
+                    type: 'request',
+                    index
                 }) 
             }); 
 
@@ -164,12 +148,26 @@
           }
         },
         launchModal(value) {
-        this.request = value.request_id;
-        this.activateModal = true;
+          if ( this.isAdmin && value.event.type === 'ip') {
+            this.ineligiblePeriod = this.ineligibles[value.event.index]
+            this.vacationRequest = null;
+            this.activateModal = value.event.type;
+          } else if (value.event.type !== 'ip') {
+            this.vacationRequest = this.requests[value.event.index];
+            this.ineligiblePeriod = null;
+            this.activateModal = value.event.type;
+          }
+          this.rerender = false;
       },
       closeModal() {
-        this.request = 0;
-        this.activateModal = false;
+        this.activateModal = '';
+        setTimeout(() => {
+          this.rerender = true;
+          setTimeout(() => {
+            this.ineligiblePeriod = null;
+            this.vacationRequest = null;
+          }, 500);
+        }, 500);
       }
     },
   }
