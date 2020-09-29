@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="request && request.status">
         <v-card-title>
             <span class="headline">{{ request.title }}</span>
             <v-chip class="ma-2" :color="getColor(request.status.status)" text-color="white">
