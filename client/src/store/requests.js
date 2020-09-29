@@ -18,6 +18,9 @@ export default {
         updateRequests(state, request) {
             const index = state.allRequests.findIndex(x => x.id == request.id)
             Vue.set(state.allRequests, index, request);
+        },
+        addRequest(state, request) {
+            state.allRequests = [...state.allRequests, request];
         }
     },
     actions: {
@@ -53,6 +56,24 @@ export default {
                         reject(error.response);
                     });
             });
+        },
+        createVacationRequest({commit, rootGetters}, request) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .post(`request`, request, {
+                        headers: {
+                            authorization: `Bearer ${rootGetters.getToken}`
+                        }
+                    })
+                    .then(response => {
+                        const newRequest = response.data.data;
+                        commit("addRequest", newRequest);
+                        resolve(newRequest);
+                    })
+                    .catch(error => {
+                        reject(error.response);
+                    });
+            })
         }
     }
 };
