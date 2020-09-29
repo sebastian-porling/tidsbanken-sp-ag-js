@@ -173,4 +173,19 @@ public class VacationRequest {
                 (this.start.after(ip.getEnd()) && this.end.after(ip.getEnd()));
     }
 
+    @Override
+    public String toString() {
+        return "VacationRequest{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                ", owner=" + owner +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", moderator=" + moderator +
+                ", moderationDate=" + moderationDate +
+                '}';
+    }
 }
