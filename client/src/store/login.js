@@ -35,6 +35,10 @@ export default {
         },
         destroyToken(state) {
             state.token = null;
+        },
+        updateCurrentUser(state, user) {
+            localStorage.setItem("user", JSON.stringify(user));
+            state.user = user;
         }
     },
     actions: {

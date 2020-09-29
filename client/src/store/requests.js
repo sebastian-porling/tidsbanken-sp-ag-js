@@ -18,6 +18,9 @@ export default {
         updateRequests(state, request) {
             const index = state.allRequests.findIndex(x => x.id == request.id)
             Vue.set(state.allRequests, index, request);
+        },
+        removeRequest(state, requestId) {
+            state.allRequests = state.allRequests.filter(x => x.id !== requestId)
         }
     },
     actions: {
@@ -57,13 +60,14 @@ export default {
         deleteRequest(context, request) {
             return new Promise((resolve, reject) => {
                 axios
-                    .delete(`request/${request.id}`, request, {
+                    .delete(`request/${request.id}`, {
                         headers: {
                             authorization: `Bearer ${context.rootGetters.getToken}`
                         }
                     })
                     .then(response => {
-                        resolve(response.data);
+                        context.commit("removeRequest", request.id);
+                        resolve(response);
                     })
                     .catch(error => {
                         reject(error.response);

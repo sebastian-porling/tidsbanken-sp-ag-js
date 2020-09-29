@@ -92,12 +92,10 @@ export default {
         this.$store
           .dispatch("deleteRequest", this.request)
           .then(() => {
-            alert("Request deleted!");
-            this.changeMode();
             this.closeModal();
           })
           .catch((error) => {
-            alert(error.data.message);
+            alert(error);
           });
       }
     },
