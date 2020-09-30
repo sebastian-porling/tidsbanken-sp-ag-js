@@ -83,6 +83,8 @@ public class UserController {
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()) {
             final User updatedUser = fetchedUser.get();
+            Set<ConstraintViolation<Object>> violations = validator.validate(user);
+            if(violations.isEmpty()) {
             if (user.getPassword() != null) return responseUtility.badRequest("Not allowed to patch password");
             if (authService.isAuthorizedAdmin(request)) {
                 if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
@@ -96,15 +98,15 @@ public class UserController {
             if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
-                Set<ConstraintViolation<Object>> violations = validator.validate(user);
-                if(violations.isEmpty()) {
+
                     final User patchedUser = userRepository.save(updatedUser);
                     if (authService.isAuthorizedAdmin(request))
                         observer.sendNotification("Your account have been modified!", updatedUser);
                     return responseUtility.ok("User updated successfully", patchedUser);
-                }
-                else return responseUtility.superBadRequest(violations);
+
             } catch (Exception e) { return responseUtility.errorMessage(); }
+            }
+            else return responseUtility.superBadRequest(violations);
         } else return responseUtility.notFound("User not found");
     }
 
