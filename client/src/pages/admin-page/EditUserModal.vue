@@ -24,6 +24,9 @@
             <v-col cols="10">
               <v-switch v-model="user.is_admin" label="Admin"></v-switch>
             </v-col>
+            <v-col cols="10">
+              <v-switch v-model="resetTwoFactor" label="Reset Two Factor Authentication"></v-switch>
+            </v-col>
           </v-row>
         </v-form>
         <small>*indicates required field</small>
@@ -59,6 +62,7 @@ export default {
           (v && parseInt(v) <= 30) || "Maxmum amount of days per year is 30",
       ],
       changePassword: false,
+      resetTwoFactor: false,
     };
   },
   props: ["user"],
@@ -78,6 +82,7 @@ export default {
             email: this.user.email,
             vacation_days: this.user.vacation_days,
             is_admin: this.user.is_admin,
+            two_factor_auth: this.resetTwoFactor ? !this.resetTwoFactor : null 
           })
           .then(() => {
             this.closeModal();
