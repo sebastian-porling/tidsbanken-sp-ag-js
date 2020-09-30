@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="request">
+  <v-card>
     <v-card-title>
       <span class="headline">{{ request.title }}</span>
       <v-chip
@@ -52,17 +52,17 @@
               <v-radio 
               color="warning"
               :label="status[0].status" 
-              :value="status[0]"
+              :value="status[0].id"
               ></v-radio>
               <v-radio 
               color="success"
               :label="status[1].status" 
-              :value="status[1]"
+              :value="status[1].id"
               ></v-radio>
               <v-radio 
               color="error"
               :label="status[2].status" 
-              :value="status[2]"
+              :value="status[2].id"
               ></v-radio>
             </v-radio-group>
           </v-col>
@@ -84,28 +84,28 @@ export default {
     return {
       today: new Date().toJSON().slice(0, 10),
       valid: true,
-      selectedStatus: this.request.status,
+      selectedStatus: this.request.status.id,
       titleRules: [
         (v) => (v && v.length >= 10) || "Title must be 10 characters or more",
       ],
       startRules: [
         (v) => !!v || "Start date is required",
         (v) =>
-          (this.checkifDateInPeriod(v) && this.checkPeriod(v, this.end)) ||
+          (this.checkifDateInPeriod(v) && this.checkPeriod(v, this.request.end)) ||
           "Period is ineligible for vacation request",
       ],
       endRules: [
         (v) => !!v || "Start date is required",
-        (v) => (v && v > this.start) || "End date can not be before start date",
+        (v) => (v && v > this.request.start) || "End date can not be before start date",
         (v) =>
-          (this.checkifDateInPeriod(v) && this.checkPeriod(this.start, v)) ||
+          (this.checkifDateInPeriod(v) && this.checkPeriod(this.request.start, v)) ||
           "Period is ineligible for vacation request",
       ],
     };
   },
   props: ["request"],
   created() {
-    this.$store.dispatch("retrieveIneligiblePeriod");
+    this.$store.dispatch("retrieveIneligiblePeriods");
     this.$store.dispatch("retrieveStatus");
   },
   computed: {
@@ -148,7 +148,7 @@ export default {
             title: this.title,
             start: this.start,
             end: this.end,
-            status: this.selectedStatus
+            status: this.status.filter(s => s.id === this.selectedStatus)[0]
           })
           .then(() => {
             this.changeMode();

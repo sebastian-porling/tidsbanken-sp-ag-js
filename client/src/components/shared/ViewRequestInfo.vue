@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="request">
+  <v-card>
     <v-card-title>
       <span class="headline">{{ request.title }}</span>
       <v-chip
@@ -72,7 +72,7 @@ export default {
   props: ["request"],
   methods: {
     closeModal() {
-      this.$emit("closeModal");
+        this.$emit("closeModal");
     },
     changeMode() {
       this.$emit("changeMode");

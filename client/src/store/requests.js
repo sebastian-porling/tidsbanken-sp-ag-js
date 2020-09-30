@@ -1,5 +1,5 @@
 import axios from "axios";
-import Vue from 'vue';
+import Vue from "vue";
 axios.defaults.baseURL = "http://localhost:3400/";
 
 export default {
@@ -16,17 +16,22 @@ export default {
             state.allRequests = requests;
         },
         updateRequests(state, request) {
-            const index = state.allRequests.findIndex(x => x.id == request.id)
+            const index = state.allRequests.findIndex(x => x.id == request.id);
             Vue.set(state.allRequests, index, request);
         },
+        addRequest(state, request) {
+            state.allRequests = [...state.allRequests, request];
+        },
         removeRequest(state, requestId) {
-            state.allRequests = state.allRequests.filter(x => x.id !== requestId)
+            state.allRequests = state.allRequests.filter(
+                x => x.id !== requestId
+            );
         }
     },
     actions: {
         retrieveAllRequests(context) {
             axios
-                .get('request', {
+                .get("request", {
                     headers: {
                         authorization: `Bearer ${context.rootGetters.getToken}`
                     }
@@ -51,6 +56,24 @@ export default {
                         const newRequest = response.data.data;
                         context.commit("updateRequests", newRequest);
                         resolve(response.data);
+                    })
+                    .catch(error => {
+                        reject(error.response);
+                    });
+            });
+        },
+        createVacationRequest({ commit, rootGetters }, request) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .post(`request`, request, {
+                        headers: {
+                            authorization: `Bearer ${rootGetters.getToken}`
+                        }
+                    })
+                    .then(response => {
+                        const newRequest = response.data.data;
+                        commit("addRequest", newRequest);
+                        resolve(newRequest);
                     })
                     .catch(error => {
                         reject(error.response);

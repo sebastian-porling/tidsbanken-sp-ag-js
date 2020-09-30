@@ -7,10 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import se.experis.tidsbanken.server.models.*;
-import se.experis.tidsbanken.server.repositories.CommentRepository;
-import se.experis.tidsbanken.server.repositories.IneligiblePeriodRepository;
-import se.experis.tidsbanken.server.repositories.UserRepository;
-import se.experis.tidsbanken.server.repositories.VacationRequestRepository;
+import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
@@ -35,7 +32,7 @@ public class VacationController{
 
     @Autowired private IneligiblePeriodRepository ipRepository;
 
-    @Autowired private UserRepository userRepository;
+    @Autowired private SettingRepository settingRepository;
 
     @Autowired private NotificationObserver observer;
 
@@ -71,8 +68,8 @@ public class VacationController{
         final User currentUser = authService.currentUser(request);
         final List<VacationRequest> vacationRequests = vrRepository.findAllByOwner(currentUser);
         final List<IneligiblePeriod> ips = ipRepository.findAllByOrderByStartDesc();
-        if (!vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
-                !ips.stream().allMatch(vacationRequest::excludesInIP)) {
+        if (vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
+                ips.stream().allMatch(vacationRequest::excludesInIP)) {
             try {
                 Set<ConstraintViolation<Object>> violations = validator.validate(vacationRequest);
                 if(violations.isEmpty()) {
@@ -82,7 +79,7 @@ public class VacationController{
                 }
                 else return responseUtility.superBadRequest(violations);
             } catch (Exception e) { return responseUtility.errorMessage(); }
-        } else return responseUtility.badRequest("Overlaps with existing requests");
+        } else { return responseUtility.badRequest("Overlaps with existing requests"); }
     }
 
     @GetMapping("/request/{request_id}")
@@ -133,6 +130,9 @@ public class VacationController{
                             final int days = vr.getEnd().toLocalDate().compareTo(vr.getStart().toLocalDate());
                             final int userDays = vr.getOriginalOwner().getVacationDays() - vr.getOriginalOwner().getUsedVacationDays();
                             if (days > userDays) return responseUtility.badRequest("Not enough vacation days");
+                            final Optional<Setting> maxVacationDays = settingRepository.findByKey("maxVacationDays");
+                            if (maxVacationDays.isPresent() && Long.parseLong((String) maxVacationDays.get().getValue()) < days)
+                                return responseUtility.badRequest("Request exceeds vacation day limit!");
                             vr.getOriginalOwner().setUsedVacationDays(vr.getOriginalOwner().getUsedVacationDays()+days);
                         }
                     } else {if (vacationRequest.getStatus() != null || !vr.isPending()) return responseUtility.forbidden(); }

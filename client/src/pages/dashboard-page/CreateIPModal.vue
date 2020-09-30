@@ -3,6 +3,8 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
           v-bind="attrs"
+          text
+          :color="'blue darken-2'"
           v-on="on">
             <v-icon>mdi-plus</v-icon> 
             Ineligible Period
@@ -14,7 +16,7 @@
         </v-card-title>
         <v-card-text>
             <p>{{ errorMessage }}</p>
-            <v-date-picker v-model="dates" range :min="today"></v-date-picker>
+            <v-date-picker v-model="dates" range :min="today" :rules="dateRules"></v-date-picker>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -32,41 +34,31 @@ export default {
         return {
             dialog: false,
             dates: [null, null],
-            ineligible_period: {
-              period_start: null,
-              period_end: null,
-            },
             today: new Date().toJSON().slice(0,10),
             errorMessage: "",
+            dateRules: [
+              v => !!v || "Required!",
+              v => v.length < 2 || "Two dates are required!"
+            ]
         }
     },
     methods: {
       validateData() {
-        this.setDates(this.dates);
-
-        if(this.period_start != null && this.period_end != null){
-          if(this.period_start < this.period_end) {
+        if(this.dates[0] != null && this.dates[1] != null){
+          if(this.dates[0] > this.dates[1]) this.switchDates();
+          this.$store.dispatch('createIneligiblePeriod', {start: this.dates[0], end: this.dates[1]})
+            .then(() => {
               this.dialog = false;
-              // Connect to api
-              alert("New Ineligible Period has been added between " + this.period_start + " and " + this.period_end);
-          } else {
-            this.switchDates();
-            this.dialog = false;
-            // Connect to api
-              alert("New Ineligible Period has been added between " + this.period_start + " and " + this.period_end);
-          }
+            })
+            .catch(error => {
+              this.errorMessage = error.data.message;
+            });
         } else {
           this.errorMessage = "You need to enter a start and an end date..";
         }
       },
-      setDates(dates) {
-        this.period_end = dates[1];
-        this.period_start = dates[0];
-      },
       switchDates(){
-        let temp = this.period_start;
-        this.period_start = this.period_end;
-        this.period_end = temp;
+        this.dates = [this.dates[1], this.dates[0]]
       }
     },    
 }
