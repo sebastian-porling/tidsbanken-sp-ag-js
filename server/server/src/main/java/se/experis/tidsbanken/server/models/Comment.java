@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.sql.Date;
 import java.util.HashMap;
 
@@ -17,18 +18,24 @@ public class Comment {
 
     @Column(nullable = false)
     @NonNull
+    @Size(min = 2, max = 250, message = "Comment has to be between 2 and 250 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Comment can not contain any special characters")
     private String message;
 
     @ManyToOne
+    @NotNull(message = "Request can not be null")
     private VacationRequest request;
 
     @ManyToOne
+    @NotNull(message = "User can not be null")
     private User user;
 
     @Column(nullable = false)
+    @PastOrPresent
     private Date createdAt = new java.sql.Date(System.currentTimeMillis());
 
     @Column(nullable = false)
+    @PastOrPresent
     private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 
     public Comment() { }

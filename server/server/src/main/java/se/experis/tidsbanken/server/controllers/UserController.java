@@ -2,6 +2,7 @@ package se.experis.tidsbanken.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.*;
@@ -10,6 +11,7 @@ import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.*;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +31,9 @@ public class UserController {
 
     @Autowired private NotificationObserver observer;
 
+    @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    @Autowired private Validator validator = factory.getValidator();
+
     @GetMapping("/user")
     public ResponseEntity<CommonResponse> getUser(HttpServletRequest request) {
         if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
@@ -44,9 +49,13 @@ public class UserController {
         final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(user.getEmail());
         if (fetchedUser.isEmpty()) {
             try {
-                return responseUtility.created(
-                        "New user with email " + user.getEmail(),
-                        userRepository.save(user));
+                Set<ConstraintViolation<Object>> violations = validator.validate(user);
+                if(violations.isEmpty()) {
+                    return responseUtility.created(
+                            "New user with email " + user.getEmail(),
+                            userRepository.save(user));
+                }
+                else return responseUtility.superBadRequest(violations);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.badRequest("User already exists");
     }
@@ -87,10 +96,14 @@ public class UserController {
             if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
-                final User patchedUser = userRepository.save(updatedUser);
-                if (authService.isAuthorizedAdmin(request))
-                    observer.sendNotification("Your account have been modified!", updatedUser);
-                return responseUtility.ok("User updated successfully", patchedUser);
+                Set<ConstraintViolation<Object>> violations = validator.validate(user);
+                if(violations.isEmpty()) {
+                    final User patchedUser = userRepository.save(updatedUser);
+                    if (authService.isAuthorizedAdmin(request))
+                        observer.sendNotification("Your account have been modified!", updatedUser);
+                    return responseUtility.ok("User updated successfully", patchedUser);
+                }
+                else return responseUtility.superBadRequest(violations);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");
     }
@@ -148,10 +161,14 @@ public class UserController {
             final User updatedUser = fetchedUser.get();
             if (user.getPassword() != null) updatedUser.setPassword(user.getPassword());
             try {
-                userRepository.save(updatedUser);
-                if(authService.isAuthorizedAdmin(request) && !authService.currentUser(request).getId().equals(user.getId()))
-                    observer.sendNotification("Your password have been updated!", updatedUser);
-                return responseUtility.ok("User password updated successfully", null);
+                Set<ConstraintViolation<Object>> violations = validator.validate(user);
+                if(violations.isEmpty()) {
+                    userRepository.save(updatedUser);
+                    if(authService.isAuthorizedAdmin(request) && !authService.currentUser(request).getId().equals(user.getId()))
+                        observer.sendNotification("Your password have been updated!", updatedUser);
+                    return responseUtility.ok("User password updated successfully", null);
+                }
+                else return responseUtility.superBadRequest(violations);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");
     }

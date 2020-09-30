@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.PastOrPresent;
 import java.sql.Date;
 import java.util.HashMap;
 
@@ -17,10 +20,12 @@ public class IneligiblePeriod {
 
     @Column(nullable = false)
     @NotNull
+    @FutureOrPresent(message = "Start date needs to be today or future")
     private Date start;
 
     @Column(nullable = false)
     @NotNull
+    @Future(message = "End date needs to be in the future")
     private Date end;
 
     @ManyToOne
@@ -28,8 +33,11 @@ public class IneligiblePeriod {
     private User moderator;
 
     @Column(nullable = false)
+    @PastOrPresent
     private Date createdAt = new java.sql.Date(System.currentTimeMillis());
+
     @Column(nullable = false)
+    @PastOrPresent
     private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 
     public IneligiblePeriod() {}
