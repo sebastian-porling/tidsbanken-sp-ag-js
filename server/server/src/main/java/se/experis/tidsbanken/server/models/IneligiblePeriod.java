@@ -7,7 +7,6 @@ import com.sun.istack.NotNull;
 import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.PastOrPresent;
 import java.sql.Date;
 import java.util.HashMap;
 
@@ -29,15 +28,12 @@ public class IneligiblePeriod {
     private Date end;
 
     @ManyToOne
-    @NotNull
     private User moderator;
 
     @Column(nullable = false)
-    @PastOrPresent
     private Date createdAt = new java.sql.Date(System.currentTimeMillis());
 
     @Column(nullable = false)
-    @PastOrPresent
     private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 
     public IneligiblePeriod() {}

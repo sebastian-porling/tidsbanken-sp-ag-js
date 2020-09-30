@@ -3,7 +3,6 @@ package se.experis.tidsbanken.server.models;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 @Entity
 public class Notification {
@@ -13,8 +12,6 @@ public class Notification {
     private Long id;
 
     @NonNull
-    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Notification message can not contain any special " +
-            "characters")
     private String message;
 
     @NonNull

@@ -17,24 +17,22 @@ public class Comment {
     private Long id;
 
     @Column
-    //@NotNull(message = "Comment message can not be null")
+    @NotNull(message = "Comment message can not be null")
     @Size(min = 2, max = 250, message = "Comment has to be between 2 and 250 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Comment can not contain any special characters")
+    //  Change pattern to allow ! . , etc
+    // @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Comment can not contain any special characters")
     private String message;
 
     @ManyToOne
     private VacationRequest request;
 
     @ManyToOne
-    //@NotNull(message = "User can not be null")
     private User user;
 
     @Column(nullable = false)
-    //@PastOrPresent
     private Date createdAt = new java.sql.Date(System.currentTimeMillis());
 
     @Column(nullable = false)
-    //@PastOrPresent
     private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 
     public Comment() { }

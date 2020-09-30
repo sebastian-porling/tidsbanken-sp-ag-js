@@ -28,7 +28,6 @@ public class User {
     private String password;
 
     @Column
-    //@NotNull(message = "IsAdmin can not be null")
     private Boolean isAdmin;
 
     @Column(columnDefinition = "varchar(255) default null")
@@ -39,23 +38,20 @@ public class User {
     private boolean twoFactorAuth = false;
 
     @Column(nullable = false)
-    //Positive(message = "Vacation days must be a positive number")
+    @Positive(message = "Vacation days must be a positive number")
     @Max(value = 30, message = "Vacation days can't exceed 30 days")
     private Integer vacationDays;
 
     @Column(nullable = false ,columnDefinition = "Integer default 0")
-    //@PositiveOrZero(message = "Used vacation days must be a positive number or zero")
     private Integer usedVacationDays = 0;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive = true;
 
     @Column(nullable = false)
-    //@PastOrPresent
     private Date createdAt = new java.sql.Timestamp(new Date().getTime());
 
     @Column(nullable = false)
-    //@PastOrPresent
     private Date modifiedAt = new java.sql.Timestamp(new Date().getTime());
 
     @Column(columnDefinition = "varchar(255) default null")

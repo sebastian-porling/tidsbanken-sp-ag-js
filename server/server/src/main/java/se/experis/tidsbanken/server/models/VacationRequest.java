@@ -25,15 +25,15 @@ public class VacationRequest {
     private String title;
 
     @Column(nullable = false)
-    @Future(message = "Start date must be a future date")
+    // TODO: Implement a check in request controller that prevents users from editing a past request.
+    //@Future(message = "Start date must be a future date")
     private Date start;
 
     @Column(nullable = false)
-    @Future(message = "End date must be a future date")
+    //@Future(message = "End date must be a future date")
     private Date end;
 
     @ManyToOne
-    @NotNull
     private User owner;
 
     @ManyToOne
@@ -41,19 +41,15 @@ public class VacationRequest {
     private Status status;
 
     @Column(nullable = false)
-    @PastOrPresent
     private Date createdAt = new Date(System.currentTimeMillis());
 
     @Column(nullable = false)
-    @PastOrPresent
     private Date modifiedAt = new Date(System.currentTimeMillis());
 
     @ManyToOne
-    @NotNull
     private User moderator;
 
     @Column
-    @PastOrPresent
     private Date moderationDate;
 
     public VacationRequest() {}
