@@ -47,6 +47,7 @@ public class UserController {
         final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(user.getEmail());
         if (fetchedUser.isEmpty()) {
             try {
+                System.out.println(user);
                 return responseUtility.created(
                         "New user with email " + user.getEmail(),
                         userRepository.save(user));

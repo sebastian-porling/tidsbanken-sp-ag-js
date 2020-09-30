@@ -98,9 +98,7 @@ public class VacationController{
         final Optional<VacationRequest> vrOp = vrRepository.findById(requestId);
         if (vrOp.isPresent()) {
             final VacationRequest vr = vrOp.get();
-            if(!vr.isPending()) {
-                return responseUtility.forbidden();
-            }
+            if(!vr.isPending()) return responseUtility.forbidden();
             final boolean isAdmin = authService.isAuthorizedAdmin(request);
             final User currentUser = authService.currentUser(request);
             final boolean isOwner = vr.getOriginalOwner().getId().equals(currentUser.getId());
@@ -115,7 +113,7 @@ public class VacationController{
                             return responseUtility.badRequest("Patched Vacation Request Overlaps");
                     }
                     if (isAdmin && !isOwner) {
-                        if (vacationRequest.getStatus() != null) {
+                        if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) {
                             vr.setStatus(vacationRequest.getStatus());
                             vr.setModerationDate(new Date(System.currentTimeMillis()));
                             vr.setModerator(currentUser);
@@ -127,7 +125,7 @@ public class VacationController{
                                 return responseUtility.badRequest("Request exceeds vacation day limit!");
                             vr.getOriginalOwner().setUsedVacationDays(vr.getOriginalOwner().getUsedVacationDays()+days);
                         }
-                    } else {if (vacationRequest.getStatus() != null || !vr.isPending()) return responseUtility.forbidden(); }
+                    } else {if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) return responseUtility.forbidden(); }
                     vr.setModifiedAt(new Date(System.currentTimeMillis()));
                     final VacationRequest patchedVr = vrRepository.save(vr);
                     notify(patchedVr, currentUser, " modified Vacation Request ");

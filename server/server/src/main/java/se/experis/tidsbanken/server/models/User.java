@@ -87,7 +87,6 @@ public class User {
         this.fullName = fullName;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -166,5 +165,24 @@ public class User {
 
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", password='" + password + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", profilePic='" + profilePic + '\'' +
+                ", twoFactorAuth=" + twoFactorAuth +
+                ", vacationDays=" + vacationDays +
+                ", usedVacationDays=" + usedVacationDays +
+                ", isActive=" + isActive +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", secret='" + secret + '\'' +
+                '}';
     }
 }
