@@ -1,7 +1,6 @@
 <template>
   <v-card>
     <v-card-title>
-        {{request.status.status === status[0].status}}
       <span class="headline">{{ request.title }}</span>
       <v-chip
         class="ma-2"
