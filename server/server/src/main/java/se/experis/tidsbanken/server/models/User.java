@@ -14,20 +14,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column
     @Email(message = "Must be a valid email")
     private String email;
 
-    @Column(nullable = false)
+    @Column
     @Size(min = 5, message = "Full name must be longer than 5 characters")
     @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Full name cannot contain any special characters")
     private String fullName;
 
-    @Column(nullable = false)
-    @Size(min = 6, max = 30, message = "Passoword needs to be between 6 and 30 characters")
+    @Column
+    @Size(min = 6, max = 30, message = "Password needs to be between 6 and 30 characters")
     private String password;
 
-    @Column(nullable = false)
+    @Column
+    //@NotNull(message = "IsAdmin can not be null")
     private Boolean isAdmin;
 
     @Column(columnDefinition = "varchar(255) default null")
@@ -38,23 +39,23 @@ public class User {
     private boolean twoFactorAuth = false;
 
     @Column(nullable = false)
-    @Positive(message = "Vacation days must be a positive number")
+    //Positive(message = "Vacation days must be a positive number")
     @Max(value = 30, message = "Vacation days can't exceed 30 days")
     private Integer vacationDays;
 
     @Column(nullable = false ,columnDefinition = "Integer default 0")
-    @PositiveOrZero(message = "Used vacation days must be a positive number or zero")
+    //@PositiveOrZero(message = "Used vacation days must be a positive number or zero")
     private Integer usedVacationDays = 0;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive = true;
 
     @Column(nullable = false)
-    @PastOrPresent
+    //@PastOrPresent
     private Date createdAt = new java.sql.Timestamp(new Date().getTime());
 
     @Column(nullable = false)
-    @PastOrPresent
+    //@PastOrPresent
     private Date modifiedAt = new java.sql.Timestamp(new Date().getTime());
 
     @Column(columnDefinition = "varchar(255) default null")
@@ -94,7 +95,6 @@ public class User {
         this.fullName = fullName;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }

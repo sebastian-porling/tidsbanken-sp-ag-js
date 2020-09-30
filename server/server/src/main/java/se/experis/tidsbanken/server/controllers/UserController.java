@@ -56,7 +56,9 @@ public class UserController {
                             userRepository.save(user));
                 }
                 else return responseUtility.superBadRequest(violations);
-            } catch (Exception e) { return responseUtility.errorMessage(); }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return responseUtility.errorMessage(); }
         } else return responseUtility.badRequest("User already exists");
     }
 

@@ -14,9 +14,10 @@ import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import javax.validation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -32,6 +33,10 @@ public class CommentController{
     @Autowired private ResponseUtility responseUtility;
 
     @Autowired private NotificationObserver observer;
+
+    @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    @Autowired private Validator validator = factory.getValidator();
+
 
     @GetMapping("/request/{request_id}/comment")
     public ResponseEntity<CommonResponse> getComments(@PathVariable("request_id") Long requestId,
@@ -61,10 +66,16 @@ public class CommentController{
                 final User currentUser = authService.currentUser(request);
                 if (isRequestOwner(vr, request) || authService.isAuthorizedAdmin(request)) {
                     try{
-                        final Comment saved = commentRepository.save(comment.setUser(currentUser).setRequest(vr));
-                        notifyUsers(vr, currentUser, " has commented on ");
-                        return responseUtility.ok("Saved Comment", saved);
-                    } catch (Exception e) { return responseUtility.errorMessage(); }
+                        Set<ConstraintViolation<Object>> violations = validator.validate(comment);
+                        if(violations.isEmpty()) {
+                            final Comment saved = commentRepository.save(comment.setUser(currentUser).setRequest(vr));
+                            notifyUsers(vr, currentUser, " has commented on ");
+                            return responseUtility.ok("Saved Comment", saved);
+                        }
+                        else return responseUtility.superBadRequest(violations);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return responseUtility.errorMessage(); }
                 } else return responseUtility.forbidden();
             } else return responseUtility.notFound("Vacation Request Not Found");
         } catch (Exception e) { return responseUtility.errorMessage(); }
