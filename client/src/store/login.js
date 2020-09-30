@@ -4,8 +4,6 @@ export default {
     state: {
         token: localStorage.getItem("access_token") || null,
         user: JSON.parse(localStorage.getItem("user")) || null,
-        qrCode: null,
-        uri: ''
     },
     getters: {
         loggedIn(state) {
@@ -20,21 +18,12 @@ export default {
         getToken(state) {
             return state.token;
         },
-        getQrCode(state) {
-            return state.qrCode;
-        },
-        getUri(state) {
-            return state.uri;
-        }
+        
     },
     mutations: {
         setCurrentUser(state, user) {
             state.user = user.user;
             state.token = user.token;
-        },
-        setMultiAuth(state, multiAuth) {
-            state.qrCode = multiAuth.qr_code_png;
-            state.uri = multiAuth.uri
         },
         destroyToken(state) {
             state.token = null;

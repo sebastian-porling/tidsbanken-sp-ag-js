@@ -8,6 +8,7 @@ import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
+import se.experis.tidsbanken.server.utils.TwoFactorAuth;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -24,6 +25,8 @@ public class UserController {
     @Autowired private VacationRequestRepository vacationRequestRepository;
 
     @Autowired private AuthorizationService authService;
+
+    @Autowired private TwoFactorAuth twoFactorAuth;
 
     @Autowired private ResponseUtility responseUtility;
 
@@ -82,13 +85,17 @@ public class UserController {
             } else {
                 if (user.isAdmin() != null ) return responseUtility.forbidden();
             }
+            if (user.isTwoFactorAuth() != null && !user.isTwoFactorAuth()) {
+                updatedUser.setTwoFactorAuth(false);
+                updatedUser.resetSecret();
+            }
             if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
             if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
             if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
             updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
             try {
                 final User patchedUser = userRepository.save(updatedUser);
-                if (authService.isAuthorizedAdmin(request))
+                if (authService.isAuthorizedAdmin(request) && authService.currentUser(request).getId().compareTo(updatedUser.getId()) != 0)
                     observer.sendNotification("Your account have been modified!", updatedUser);
                 return responseUtility.ok("User updated successfully", patchedUser);
             } catch (Exception e) { return responseUtility.errorMessage(); }
@@ -149,11 +156,29 @@ public class UserController {
             if (user.getPassword() != null) updatedUser.setPassword(user.getPassword());
             try {
                 userRepository.save(updatedUser);
-                if(authService.isAuthorizedAdmin(request) && !authService.currentUser(request).getId().equals(user.getId()))
+                if(authService.isAuthorizedAdmin(request) && authService.currentUser(request).getId().compareTo(updatedUser.getId()) != 0)
                     observer.sendNotification("Your password have been updated!", updatedUser);
                 return responseUtility.ok("User password updated successfully", null);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else return responseUtility.notFound("User not found");
+    }
+
+    @PostMapping("/user/{user_id}/generate_two_factor")
+    public ResponseEntity<CommonResponse> generateNewTwoFactorAuth(@PathVariable("user_id") Long userId,
+                                                                   HttpServletRequest request) {
+        if(authService.currentUser(request).getId().compareTo(userId) != 0) return responseUtility.unauthorized();
+
+        final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
+        if (fetchedUser.isPresent()) {
+            final User updatedUser = fetchedUser.get();
+            updatedUser.setTwoFactorAuth(true);
+            final String secret = updatedUser.generateSecret();
+            userRepository.save(updatedUser);
+            try {
+                return responseUtility.ok("New Two Factor Generated",
+                        twoFactorAuth.generateQrAuth(secret, updatedUser.getEmail()));
+            } catch(Exception e) { return responseUtility.errorMessage(); }
+        } else return responseUtility.notFound("User Not Found");
     }
 
     @GetMapping("/user/all")

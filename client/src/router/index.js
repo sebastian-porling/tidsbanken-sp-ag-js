@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import AdminPage from '../pages/admin-page/AdminPage'
-import DashboardPage from '../pages/dashboard-page/DashboardPage'
-import LoginPage from '../pages/login-page/LoginPage'
-import RequestHistoryPage from '../pages/request-history-page/RequestHistoryPage'
-import UserPage from '../pages/user-profile-page/UserPage'
-import RequestTable from '../pages/admin-page/RequestTable'
-import UserTable from '../pages/admin-page/UserTable'
+const AdminPage = () => import('../pages/admin-page/AdminPage')
+const DashboardPage = () => import('../pages/dashboard-page/DashboardPage')
+const LoginPage = () => import('../pages/login-page/LoginPage')
+const RequestHistoryPage = () => import('../pages/request-history-page/RequestHistoryPage')
+const UserPage = () => import('../pages/user-profile-page/UserPage')
+const RequestTable = () => import('../pages/admin-page/RequestTable')
+const UserTable = () => import('../pages/admin-page/UserTable')
 
 Vue.use(Router)
 

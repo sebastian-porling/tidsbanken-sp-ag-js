@@ -29,7 +29,7 @@ public class User {
     private String profilePic;
 
     @Column(nullable = false)
-    private boolean twoFactorAuth = false;
+    private Boolean twoFactorAuth = false;
 
     @Column(nullable = false)
     private Integer vacationDays;
@@ -53,6 +53,10 @@ public class User {
     public String generateSecret() {
         this.secret = new DefaultSecretGenerator().generate();
         return this.secret;
+    }
+
+    public void resetSecret() {
+        this.secret = null;
     }
 
     @JsonIgnore
@@ -111,7 +115,7 @@ public class User {
     }
 
     @JsonProperty("two_factor_auth")
-    public boolean isTwoFactorAuth() {
+    public Boolean isTwoFactorAuth() {
         return twoFactorAuth;
     }
 
