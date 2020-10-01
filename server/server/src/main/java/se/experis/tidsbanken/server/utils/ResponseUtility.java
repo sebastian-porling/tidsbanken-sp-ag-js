@@ -46,6 +46,10 @@ public class ResponseUtility {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResponse().message(message).data(data));
     }
 
+    public ResponseEntity<CommonResponse> tooManyRequests() {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(new CommonResponse().message("Too Many Failed Attempts"));
+    }
+
     private ResponseEntity<CommonResponse> buildResponse(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(new CommonResponse().message(message));
     }

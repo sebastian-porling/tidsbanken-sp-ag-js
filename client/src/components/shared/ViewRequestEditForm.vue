@@ -145,9 +145,9 @@ export default {
         this.$store
           .dispatch("patchRequest", {
             id: this.request.id,
-            title: this.title,
-            start: this.start,
-            end: this.end,
+            title: this.request.title,
+            start: this.request.start,
+            end: this.request.end,
             status: this.status.filter(s => s.id === this.selectedStatus)[0]
           })
           .then(() => {

@@ -4,27 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import se.experis.tidsbanken.server.DTOs.LoginDTO;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.UserRepository;
+import se.experis.tidsbanken.server.services.LoginAttemptService;
 import se.experis.tidsbanken.server.utils.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
 
     @Autowired private UserRepository userRepository;
-
     @Autowired private JwtUtil jwtUtil;
-
     @Autowired private ResponseUtility responseUtility;
-
     @Autowired private TwoFactorAuth twoFactorAuth;
+    @Autowired private LoginAttemptService loginAttemptService;
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse> login(@RequestBody Credentials credentials) {
+    public ResponseEntity<CommonResponse> login(@RequestBody Credentials credentials,
+                                                HttpServletRequest request) {
         try {
             if (credentials.getEmail() != null && credentials.getPassword() != null) {
                 final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(credentials.getEmail());
@@ -41,7 +42,10 @@ public class AuthController {
                         final String jwt = jwtUtil.generateToken(presentUser, userRole.toString());
                         return responseUtility.ok("User credentials approved", new LoginDTO(jwt,presentUser));
                     } else { throw new Exception("Wrong code!"); }
-                } else { throw new Exception(""); }
+                } else {
+                    loginAttemptService.addFailedLoginAttempt(request);
+                    throw new Exception("");
+                }
             } else { throw new Exception(""); }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

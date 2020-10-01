@@ -1,4 +1,6 @@
-package se.experis.tidsbanken.server.models;
+package se.experis.tidsbanken.server.DTOs;
+
+import se.experis.tidsbanken.server.models.User;
 
 import java.util.HashMap;
 

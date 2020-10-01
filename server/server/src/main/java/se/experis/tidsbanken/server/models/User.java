@@ -35,7 +35,7 @@ public class User {
     private String profilePic;
 
     @Column(nullable = false)
-    private boolean twoFactorAuth = false;
+    private Boolean twoFactorAuth = false;
 
     @Column(nullable = false)
     @Positive(message = "Vacation days must be a positive number")
@@ -61,6 +61,10 @@ public class User {
     public String generateSecret() {
         this.secret = new DefaultSecretGenerator().generate();
         return this.secret;
+    }
+
+    public void resetSecret() {
+        this.secret = null;
     }
 
     @JsonIgnore
@@ -118,7 +122,7 @@ public class User {
     }
 
     @JsonProperty("two_factor_auth")
-    public boolean isTwoFactorAuth() {
+    public Boolean isTwoFactorAuth() {
         return twoFactorAuth;
     }
 
@@ -169,5 +173,24 @@ public class User {
 
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", password='" + password + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", profilePic='" + profilePic + '\'' +
+                ", twoFactorAuth=" + twoFactorAuth +
+                ", vacationDays=" + vacationDays +
+                ", usedVacationDays=" + usedVacationDays +
+                ", isActive=" + isActive +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", secret='" + secret + '\'' +
+                '}';
     }
 }

@@ -16,24 +16,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
 import java.sql.Date;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class VacationController{
 
     @Autowired private VacationRequestRepository vrRepository;
-
     @Autowired private AuthorizationService authService;
-
     @Autowired private ResponseUtility responseUtility;
-
     @Autowired private CommentRepository commentRepository;
-
     @Autowired private IneligiblePeriodRepository ipRepository;
-
     @Autowired private SettingRepository settingRepository;
-
     @Autowired private NotificationObserver observer;
 
     @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -106,9 +100,7 @@ public class VacationController{
         final Optional<VacationRequest> vrOp = vrRepository.findById(requestId);
         if (vrOp.isPresent()) {
             final VacationRequest vr = vrOp.get();
-            if(!vr.isPending()) {
-                return responseUtility.forbidden();
-            }
+            if(!vr.isPending()) return responseUtility.forbidden();
             final boolean isAdmin = authService.isAuthorizedAdmin(request);
             final User currentUser = authService.currentUser(request);
             final boolean isOwner = vr.getOriginalOwner().getId().equals(currentUser.getId());
@@ -123,19 +115,20 @@ public class VacationController{
                             return responseUtility.badRequest("Patched Vacation Request Overlaps");
                     }
                     if (isAdmin && !isOwner) {
-                        if (vacationRequest.getStatus() != null) {
+                        if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) {
                             vr.setStatus(vacationRequest.getStatus());
                             vr.setModerationDate(new Date(System.currentTimeMillis()));
                             vr.setModerator(currentUser);
-                            final int days = vr.getEnd().toLocalDate().compareTo(vr.getStart().toLocalDate());
+                            final Long days = TimeUnit.DAYS.convert(vr.getEnd().getTime() - vr.getStart().getTime(), TimeUnit.MILLISECONDS);
                             final int userDays = vr.getOriginalOwner().getVacationDays() - vr.getOriginalOwner().getUsedVacationDays();
                             if (days > userDays) return responseUtility.badRequest("Not enough vacation days");
                             final Optional<Setting> maxVacationDays = settingRepository.findByKey("maxVacationDays");
+                            maxVacationDays.ifPresent(v -> System.out.println((Long.parseLong((String) v.getValue()) < days) + " " + Long.parseLong((String) v.getValue()) + " " + days) );
                             if (maxVacationDays.isPresent() && Long.parseLong((String) maxVacationDays.get().getValue()) < days)
                                 return responseUtility.badRequest("Request exceeds vacation day limit!");
-                            vr.getOriginalOwner().setUsedVacationDays(vr.getOriginalOwner().getUsedVacationDays()+days);
+                            vr.getOriginalOwner().setUsedVacationDays(vr.getOriginalOwner().getUsedVacationDays()+days.intValue());
                         }
-                    } else {if (vacationRequest.getStatus() != null || !vr.isPending()) return responseUtility.forbidden(); }
+                    } else {if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) return responseUtility.forbidden(); }
                     vr.setModifiedAt(new Date(System.currentTimeMillis()));
                     Set<ConstraintViolation<Object>> violations = validator.validate(vacationRequest);
                     if(violations.isEmpty()) {

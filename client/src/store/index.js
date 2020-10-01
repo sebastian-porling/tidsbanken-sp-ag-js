@@ -12,6 +12,7 @@ import responses from "./responses";
 import ineligible from "./ineligible";
 import import_export from "./import_export";
 import status from "./status";
+import two_factor from "./two_factor";
 
 // Load vuex
 Vue.use(Vuex);
@@ -30,5 +31,6 @@ export const store = new Vuex.Store({
         ineligible,
         import_export,
         status,
+        two_factor,
     ]
 });

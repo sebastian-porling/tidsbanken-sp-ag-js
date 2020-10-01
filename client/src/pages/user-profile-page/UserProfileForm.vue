@@ -11,7 +11,7 @@
           <change-profile-picture-modal :active="activateModal" :user="user" @closeModal="closeModal" />
 
           <br />
-          <v-btn color="default" @click="launchModal" style="margin: 4%">Change Picture</v-btn>
+          <v-btn color="default" @click="launchModal" style="margin: 4%" text>Change Picture</v-btn>
           <v-form v-model="valid">
             <v-row>
               <v-col cols="10">
@@ -44,6 +44,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn color="blue darken-2" text @click="openTwoFactorModal">Generate new 2FA</v-btn>
           <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
         </v-card-actions>
       </v-card>
@@ -122,6 +123,9 @@ export default {
           });
       }
     },
+    openTwoFactorModal() {
+      this.$emit('openTwoFactorModal');
+    }
   },
 };
 </script>
