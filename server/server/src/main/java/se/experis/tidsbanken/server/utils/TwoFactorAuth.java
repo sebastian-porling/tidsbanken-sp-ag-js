@@ -6,7 +6,7 @@ import dev.samstevens.totp.qr.ZxingPngQrGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import org.springframework.stereotype.Component;
-import se.experis.tidsbanken.server.models.TwoAuthDTO;
+import se.experis.tidsbanken.server.DTOs.TwoAuthDTO;
 
 @Component
 public class TwoFactorAuth {

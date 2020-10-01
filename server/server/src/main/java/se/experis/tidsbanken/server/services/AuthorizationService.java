@@ -25,7 +25,6 @@ public class AuthorizationService {
     public Boolean isAuthorizedUser(HttpServletRequest request) {
         try { return isAuthorizedRole(request, UserRole.USER);
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -35,7 +34,6 @@ public class AuthorizationService {
             final String jwt = extractToken(request);
             return isAuthorized(jwt);
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -46,7 +44,6 @@ public class AuthorizationService {
             final User user = userRepository.findByIdAndIsActiveTrue(userId).get();
             return jwtUtil.validateToken(jwt, user);
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -58,7 +55,6 @@ public class AuthorizationService {
             final User user = userRepository.findByIdAndIsActiveTrue(userId).get();
             return jwtUtil.validateToken(jwt, user, userRole.toString());
         }catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -75,7 +71,6 @@ public class AuthorizationService {
             final String jwt = extractToken(request);
             return currentUser(jwt);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -85,7 +80,6 @@ public class AuthorizationService {
             final Long userId = jwtUtil.extractUserId(jwt);
             return userRepository.findByIdAndIsActiveTrue(userId).get();
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }

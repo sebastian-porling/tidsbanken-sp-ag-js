@@ -8,18 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.CommonResponse;
 import se.experis.tidsbanken.server.models.Setting;
 import se.experis.tidsbanken.server.models.User;
-import se.experis.tidsbanken.server.repositories.SettingRepository;
-import se.experis.tidsbanken.server.repositories.UserRepository;
+import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SettingsController {
 
     @Autowired private ResponseUtility responseUtility;

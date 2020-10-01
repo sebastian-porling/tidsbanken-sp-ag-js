@@ -1,7 +1,8 @@
-package se.experis.tidsbanken.server.models;
+package se.experis.tidsbanken.server.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
+import se.experis.tidsbanken.server.DTOs.CommentDTO;
 
 import java.sql.Date;
 import java.util.List;

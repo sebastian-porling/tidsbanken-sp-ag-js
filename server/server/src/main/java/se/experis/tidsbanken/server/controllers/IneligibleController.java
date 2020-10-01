@@ -17,7 +17,6 @@ import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class IneligibleController{
     @Autowired private IneligiblePeriodRepository ipRepository;
 
@@ -31,7 +30,6 @@ public class IneligibleController{
 
     @GetMapping("/ineligible")
     public ResponseEntity<CommonResponse> getIneligiblePeriod(HttpServletRequest request){
-        if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         try { return responseUtility.ok("All ineligible periods",
                     ipRepository.findAllByOrderByStartDesc());
         } catch (Exception e) { return responseUtility.errorMessage(); }

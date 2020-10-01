@@ -7,8 +7,7 @@ import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.socket.NotificationObserver;
-import se.experis.tidsbanken.server.utils.ResponseUtility;
-import se.experis.tidsbanken.server.utils.TwoFactorAuth;
+import se.experis.tidsbanken.server.utils.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -17,24 +16,17 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/")
-@CrossOrigin(origins = "*", allowedHeaders = "*") 
 public class UserController {
 
     @Autowired private UserRepository userRepository;
-
     @Autowired private VacationRequestRepository vacationRequestRepository;
-
     @Autowired private AuthorizationService authService;
-
     @Autowired private TwoFactorAuth twoFactorAuth;
-
     @Autowired private ResponseUtility responseUtility;
-
     @Autowired private NotificationObserver observer;
 
     @GetMapping("/user")
     public ResponseEntity<CommonResponse> getUser(HttpServletRequest request) {
-        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/user/" + authService.currentUser(request).getId()));
         return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
@@ -58,7 +50,6 @@ public class UserController {
     @GetMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> getUser(@PathVariable("user_id") Long userId,
                                                   HttpServletRequest request){
-        if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()){
             return responseUtility
@@ -124,7 +115,6 @@ public class UserController {
     @GetMapping("/user/{user_id}/requests")
     public ResponseEntity<CommonResponse> getUserVacationRequests(@PathVariable("user_id") Long userId,
                                                                   HttpServletRequest request){
-        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()){
             Object data;

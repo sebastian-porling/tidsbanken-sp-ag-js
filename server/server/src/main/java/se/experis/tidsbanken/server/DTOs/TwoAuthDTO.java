@@ -1,4 +1,4 @@
-package se.experis.tidsbanken.server.models;
+package se.experis.tidsbanken.server.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
