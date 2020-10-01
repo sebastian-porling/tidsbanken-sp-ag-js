@@ -7,8 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import se.experis.tidsbanken.server.models.*;
-import se.experis.tidsbanken.server.repositories.CommentRepository;
-import se.experis.tidsbanken.server.repositories.VacationRequestRepository;
+import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
@@ -19,7 +18,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CommentController{
 
     @Autowired private CommentRepository commentRepository;
@@ -35,7 +33,6 @@ public class CommentController{
     @GetMapping("/request/{request_id}/comment")
     public ResponseEntity<CommonResponse> getComments(@PathVariable("request_id") Long requestId,
                                                       HttpServletRequest request){
-        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         try{
             final Optional<VacationRequest> vacationRequestOp = requestRepository.findById(requestId);
             if (vacationRequestOp.isPresent()) {
@@ -52,7 +49,6 @@ public class CommentController{
     public ResponseEntity<CommonResponse> createComment(@PathVariable("request_id") Long requestId,
                                                         @RequestBody Comment comment,
                                                         HttpServletRequest request) {
-        if(!authService.isAuthorized(request)) { responseUtility.unauthorized(); }
         try{
             final Optional<VacationRequest> vacationRequestOp = requestRepository.findById(requestId);
             if (vacationRequestOp.isPresent()) {
@@ -73,7 +69,6 @@ public class CommentController{
     public ResponseEntity<CommonResponse> getComment(@PathVariable("request_id") Long requestId,
                                                      @PathVariable("comment_id") Long commentId,
                                                      HttpServletRequest request){
-        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if (vrOp.isPresent()) {
             if (!authService.isAuthorizedAdmin(request) && !isRequestOwner(vrOp.get(), request))
@@ -92,7 +87,6 @@ public class CommentController{
                                                         @PathVariable("comment_id") Long commentId,
                                                         @RequestBody Comment comment,
                                                         HttpServletRequest request) {
-        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if(vrOp.isPresent()) {
             try {
@@ -115,7 +109,6 @@ public class CommentController{
     public ResponseEntity<CommonResponse> deleteComment(@PathVariable("request_id") Long requestId,
                                                         @PathVariable("comment_id") Long commentId,
                                                         HttpServletRequest request){
-        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if (vrOp.isPresent()) {
             final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
