@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.sql.Date;
 import java.util.HashMap;
 
@@ -15,8 +16,11 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @NonNull
+    @Column
+    @NotNull(message = "Comment message can not be null")
+    @Size(min = 2, max = 250, message = "Comment has to be between 2 and 250 characters")
+    //  Change pattern to allow ! . , etc
+    // @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Comment can not contain any special characters")
     private String message;
 
     @ManyToOne

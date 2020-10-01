@@ -2,6 +2,7 @@ package se.experis.tidsbanken.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.*;
@@ -10,6 +11,7 @@ import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.*;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,6 +26,8 @@ public class UserController {
     @Autowired private TwoFactorAuth twoFactorAuth;
     @Autowired private ResponseUtility responseUtility;
     @Autowired private NotificationObserver observer;
+    @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    @Autowired private Validator validator = factory.getValidator();
 
     @GetMapping("/user")
     public ResponseEntity<CommonResponse> getUser(HttpServletRequest request) {
@@ -35,23 +39,33 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<CommonResponse> createUser(@RequestBody User user,
                                                      HttpServletRequest request) {
-        if (!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
+        if (!authService.isAuthorizedAdmin(request)) {
+            return responseUtility.unauthorized();
+        }
         final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(user.getEmail());
         if (fetchedUser.isEmpty()) {
             try {
-                System.out.println(user);
-                return responseUtility.created(
-                        "New user with email " + user.getEmail(),
-                        userRepository.save(user));
-            } catch (Exception e) { return responseUtility.errorMessage(); }
+                Set<ConstraintViolation<Object>> violations = validator.validate(user);
+                if (violations.isEmpty()) {
+                    return responseUtility.created(
+                            "New user with email " + user.getEmail(),
+                            userRepository.save(user));
+                } else return responseUtility.superBadRequest(violations);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return responseUtility.errorMessage();
+            }
         } else return responseUtility.badRequest("User already exists");
     }
 
     @GetMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> getUser(@PathVariable("user_id") Long userId,
-                                                  HttpServletRequest request){
+                                                  HttpServletRequest request) {
+        if (!authService.isAuthorized(request)) {
+            return responseUtility.unauthorized();
+        }
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
-        if (fetchedUser.isPresent()){
+        if (fetchedUser.isPresent()) {
             return responseUtility
                     .ok("User fetched successfully", authService.isAuthorizedAdmin(request)
                             ? getAdminResponse(fetchedUser.get())
@@ -64,41 +78,49 @@ public class UserController {
                                                      @RequestBody User user,
                                                      HttpServletRequest request) {
         if (!authService.isAuthorizedAdmin(request) &&
-                authService.currentUser(request).getId().compareTo(userId) != 0)
-        { return responseUtility.unauthorized(); }
+                authService.currentUser(request).getId().compareTo(userId) != 0) {
+            return responseUtility.unauthorized();
+        }
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
         if (fetchedUser.isPresent()) {
             final User updatedUser = fetchedUser.get();
-            if (user.getPassword() != null) return responseUtility.badRequest("Not allowed to patch password");
-            if (authService.isAuthorizedAdmin(request)) {
-                if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
-                if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
-                if (user.isAdmin() != null) updatedUser.setAdmin(user.isAdmin());
-            } else {
-                if (user.isAdmin() != null ) return responseUtility.forbidden();
-            }
-            if (user.isTwoFactorAuth() != null && !user.isTwoFactorAuth()) {
-                updatedUser.setTwoFactorAuth(false);
-                updatedUser.resetSecret();
-            }
-            if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
-            if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
-            if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
-            updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
-            try {
-                final User patchedUser = userRepository.save(updatedUser);
-                if (authService.isAuthorizedAdmin(request) && authService.currentUser(request).getId().compareTo(updatedUser.getId()) != 0)
-                    observer.sendNotification("Your account have been modified!", updatedUser);
-                return responseUtility.ok("User updated successfully", patchedUser);
-            } catch (Exception e) { return responseUtility.errorMessage(); }
+            Set<ConstraintViolation<Object>> violations = validator.validate(user);
+            if (violations.isEmpty()) {
+                if (user.getPassword() != null) return responseUtility.badRequest("Not allowed to patch password");
+                if (authService.isAuthorizedAdmin(request)) {
+                    if (user.getVacationDays() != null) updatedUser.setVacationDays(user.getVacationDays());
+                    if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
+                    if (user.isAdmin() != null) updatedUser.setAdmin(user.isAdmin());
+                } else {
+                    if (user.isAdmin() != null) return responseUtility.forbidden();
+                }
+                if (user.isTwoFactorAuth() != null && !user.isTwoFactorAuth()) {
+                    updatedUser.setTwoFactorAuth(false);
+                    updatedUser.resetSecret();
+                }
+                if (user.getEmail() != null) updatedUser.setEmail(user.getEmail());
+                if (user.getFullName() != null) updatedUser.setFullName(user.getFullName());
+                if (user.getProfilePic() != null) updatedUser.setProfilePic(user.getProfilePic());
+                updatedUser.setModifiedAt(new java.sql.Timestamp(new Date().getTime()));
+                try {
+                    final User patchedUser = userRepository.save(updatedUser);
+                    if (authService.isAuthorizedAdmin(request) && authService.currentUser(request).getId().compareTo(updatedUser.getId()) != 0)
+                        observer.sendNotification("Your account have been modified!", updatedUser);
+                    return responseUtility.ok("User updated successfully", patchedUser);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return responseUtility.errorMessage();
+                }
+            } else return responseUtility.superBadRequest(violations);
         } else return responseUtility.notFound("User not found");
     }
 
     @DeleteMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> deleteUser(@PathVariable("user_id") Long userId,
-                                                     HttpServletRequest request){
+                                                     HttpServletRequest request) {
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
-        if(!authService.isAuthorizedAdmin(request) &&
+        if (!authService.isAuthorizedAdmin(request) &&
                 authService.currentUser(request).getId().compareTo(userId) != 0) {
             return responseUtility.forbidden();
         }
@@ -108,18 +130,23 @@ public class UserController {
             try {
                 userRepository.save(user);
                 return responseUtility.ok("User deactivated successfully", null);
-            } catch (Exception e) { return responseUtility.errorMessage(); }
+            } catch (Exception e) {
+                return responseUtility.errorMessage();
+            }
         } else return responseUtility.notFound("User not found");
     }
 
     @GetMapping("/user/{user_id}/requests")
     public ResponseEntity<CommonResponse> getUserVacationRequests(@PathVariable("user_id") Long userId,
-                                                                  HttpServletRequest request){
+                                                                  HttpServletRequest request) {
+        if (!authService.isAuthorized(request)) {
+            return responseUtility.unauthorized();
+        }
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
-        if (fetchedUser.isPresent()){
+        if (fetchedUser.isPresent()) {
             Object data;
             final List<VacationRequest> allVacationRequests =
-                   vacationRequestRepository.findAllByOwner(fetchedUser.get());
+                    vacationRequestRepository.findAllByOwner(fetchedUser.get());
             final String message = "Vacation requests for user " +
                     fetchedUser.get().getFullName() + " fetched successfully";
             if (authService.isAuthorizedAdmin(request) ||
@@ -138,7 +165,7 @@ public class UserController {
                                                          @RequestBody User user,
                                                          HttpServletRequest request) {
         final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
-        if(!authService.isAuthorizedAdmin(request) &&
+        if (!authService.isAuthorizedAdmin(request) &&
                 authService.currentUser(request).getId().compareTo(userId) != 0) {
             return responseUtility.unauthorized();
         }
@@ -146,11 +173,16 @@ public class UserController {
             final User updatedUser = fetchedUser.get();
             if (user.getPassword() != null) updatedUser.setPassword(user.getPassword());
             try {
-                userRepository.save(updatedUser);
-                if(authService.isAuthorizedAdmin(request) && authService.currentUser(request).getId().compareTo(updatedUser.getId()) != 0)
-                    observer.sendNotification("Your password have been updated!", updatedUser);
-                return responseUtility.ok("User password updated successfully", null);
-            } catch (Exception e) { return responseUtility.errorMessage(); }
+                Set<ConstraintViolation<Object>> violations = validator.validate(user);
+                if (violations.isEmpty()) {
+                    userRepository.save(updatedUser);
+                    if(authService.isAuthorizedAdmin(request) && authService.currentUser(request).getId().compareTo(updatedUser.getId()) != 0)
+                        observer.sendNotification("Your password have been updated!", updatedUser);
+                    return responseUtility.ok("User password updated successfully", null);
+                } else return responseUtility.superBadRequest(violations);
+            } catch (Exception e) {
+                return responseUtility.errorMessage();
+            }
         } else return responseUtility.notFound("User not found");
     }
 
@@ -174,10 +206,12 @@ public class UserController {
 
     @GetMapping("/user/all")
     public ResponseEntity<CommonResponse> getAllUsers(HttpServletRequest request) {
-        if(authService.isAuthorizedAdmin(request)) {
-            try{
+        if (authService.isAuthorizedAdmin(request)) {
+            try {
                 return responseUtility.ok("All users", userRepository.findAllByIsActiveTrue());
-            } catch (Exception e) { return responseUtility.errorMessage(); }
+            } catch (Exception e) {
+                return responseUtility.errorMessage();
+            }
         } else return responseUtility.unauthorized();
     }
 

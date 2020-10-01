@@ -8,6 +8,7 @@ import requests from "./requests";
 import users from "./users";
 import settings from "./settings";
 import notifications from "./notifications";
+import responses from "./responses";
 import ineligible from "./ineligible";
 import import_export from "./import_export";
 import status from "./status";
@@ -26,6 +27,7 @@ export const store = new Vuex.Store({
         users,
         settings,
         notifications,
+        responses,
         ineligible,
         import_export,
         status,

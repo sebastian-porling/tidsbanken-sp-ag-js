@@ -67,8 +67,7 @@ export default {
         .then(() => {
           this.closeModal();
         })
-        .catch(error => {
-          this.errorMessage = error.data.message;
+        .catch(() => {
         })
       }
     },

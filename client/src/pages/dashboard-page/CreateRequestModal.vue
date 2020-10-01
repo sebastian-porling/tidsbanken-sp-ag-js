@@ -80,8 +80,7 @@ export default {
             this.$emit("openRequestModal", request);
             this.reset();
           })
-          .catch(error => {
-            this.errorMessage = error.data.message;
+          .catch(() => {
           })
         } else {
           this.errorMessage = "You have to fill out all the required fields";

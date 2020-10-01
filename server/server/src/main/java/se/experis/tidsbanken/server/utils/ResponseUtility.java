@@ -4,6 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import se.experis.tidsbanken.server.models.CommonResponse;
+import se.experis.tidsbanken.server.models.User;
+
+import javax.validation.ConstraintViolation;
+import java.util.Set;
 
 @Component
 public class ResponseUtility {
@@ -27,6 +31,11 @@ public class ResponseUtility {
 
     public ResponseEntity<CommonResponse> badRequest(String message) {
         return buildResponse(HttpStatus.BAD_REQUEST, message);
+    }
+
+    public ResponseEntity<CommonResponse> superBadRequest(Set<ConstraintViolation<Object>> violations) {
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                violations.stream().map(ConstraintViolation::getMessage).reduce((a, b) -> a + ", " + b + ", ").get());
     }
 
     public ResponseEntity<CommonResponse> ok(String message, Object data) {

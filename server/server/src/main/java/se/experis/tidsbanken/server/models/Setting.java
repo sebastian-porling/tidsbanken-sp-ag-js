@@ -3,11 +3,15 @@ package se.experis.tidsbanken.server.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
+
 @Document
 public class Setting {
     @Id
     private String id;
+    @NotNull
     private String key;
+    @NotNull
     private Object value;
 
     public Setting(String key, Object value) {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Entity
@@ -13,25 +14,32 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column
+    @Email(message = "Must be a valid email")
     private String email;
 
-    @Column(nullable = false)
+    @Column
+    @Size(min = 5, message = "Full name must be longer than 5 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Full name cannot contain any special characters")
     private String fullName;
 
-    @Column(nullable = false)
+    @Column
+    @Size(min = 6, max = 30, message = "Password needs to be between 6 and 30 characters")
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private Boolean isAdmin;
 
     @Column(columnDefinition = "varchar(255) default null")
+    @Pattern(regexp = "^(https?|chrome):\\/\\/[^\\s$.?#].[^\\s]*$", message = "Profile pic url must be a valid format")
     private String profilePic;
 
     @Column(nullable = false)
     private Boolean twoFactorAuth = false;
 
     @Column(nullable = false)
+    @Positive(message = "Vacation days must be a positive number")
+    @Max(value = 30, message = "Vacation days can't exceed 30 days")
     private Integer vacationDays;
 
     @Column(nullable = false ,columnDefinition = "Integer default 0")

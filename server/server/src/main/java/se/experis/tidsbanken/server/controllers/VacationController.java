@@ -13,6 +13,7 @@ import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.*;
 import java.sql.Date;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,9 @@ public class VacationController{
     @Autowired private IneligiblePeriodRepository ipRepository;
     @Autowired private SettingRepository settingRepository;
     @Autowired private NotificationObserver observer;
+
+    @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    @Autowired private Validator validator = factory.getValidator();
 
     @GetMapping("/request")
     public ResponseEntity<CommonResponse> getRequests( HttpServletRequest request,
@@ -61,9 +65,13 @@ public class VacationController{
         if (vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
                 ips.stream().allMatch(vacationRequest::excludesInIP)) {
             try {
-                final VacationRequest vr = vrRepository
-                        .save(vacationRequest.setStatus(StatusType.PENDING.getStatus()).setOwner(currentUser));
-                return responseUtility.created("Created", vr);
+                Set<ConstraintViolation<Object>> violations = validator.validate(vacationRequest);
+                if(violations.isEmpty()) {
+                    final VacationRequest vr = vrRepository
+                            .save(vacationRequest.setStatus(StatusType.PENDING.getStatus()).setOwner(currentUser));
+                    return responseUtility.created("Created", vr);
+                }
+                else return responseUtility.superBadRequest(violations);
             } catch (Exception e) { return responseUtility.errorMessage(); }
         } else { return responseUtility.badRequest("Overlaps with existing requests"); }
     }
@@ -122,9 +130,13 @@ public class VacationController{
                         }
                     } else {if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) return responseUtility.forbidden(); }
                     vr.setModifiedAt(new Date(System.currentTimeMillis()));
-                    final VacationRequest patchedVr = vrRepository.save(vr);
-                    notify(patchedVr, currentUser, " modified Vacation Request ");
-                    return responseUtility.ok("Updated", patchedVr);
+                    Set<ConstraintViolation<Object>> violations = validator.validate(vacationRequest);
+                    if(violations.isEmpty()) {
+                        final VacationRequest patchedVr = vrRepository.save(vr);
+                        notify(patchedVr, currentUser, " modified Vacation Request ");
+                        return responseUtility.ok("Updated", patchedVr);
+                    }
+                    else return responseUtility.superBadRequest(violations);
                 } catch(Exception e) { return responseUtility.errorMessage(); }
             } else return responseUtility.forbidden();
         } else return responseUtility.notFound("Vacation Request Not Found");

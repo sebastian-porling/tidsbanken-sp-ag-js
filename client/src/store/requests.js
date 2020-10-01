@@ -56,9 +56,14 @@ export default {
                         const newRequest = response.data.data;
                         context.commit("updateRequests", newRequest);
                         resolve(response.data);
+                        context.commit("setResponse", response.data.message);
+                        context.commit("setIsAlert", true);
                     })
                     .catch(error => {
                         reject(error.response);
+                        context.commit("setResponse", error.response.data.message);
+                        context.commit("setTypeIsError", true)
+                        context.commit("setIsAlert", true);
                     });
             });
         },
@@ -74,9 +79,14 @@ export default {
                         const newRequest = response.data.data;
                         commit("addRequest", newRequest);
                         resolve(newRequest);
+                        commit("setResponse", response.data.message);
+                        commit("setIsAlert", true);
                     })
                     .catch(error => {
                         reject(error.response);
+                        commit("setResponse", error.response.data.message);
+                        commit("setTypeIsError", true)
+                        commit("setIsAlert", true);
                     });
             });
         },
@@ -91,9 +101,14 @@ export default {
                     .then(response => {
                         context.commit("removeRequest", request.id);
                         resolve(response);
+                        context.commit("setResponse", response.data.message);
+                        context.commit("setIsAlert", true);
                     })
                     .catch(error => {
                         reject(error.response);
+                        context.commit("setResponse", error.response.data.message);
+                        context.commit("setTypeIsError", true)
+                        context.commit("setIsAlert", true);
                     });
             });
         }
