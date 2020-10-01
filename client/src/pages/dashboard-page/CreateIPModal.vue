@@ -50,8 +50,7 @@ export default {
             .then(() => {
               this.dialog = false;
             })
-            .catch(error => {
-              this.errorMessage = error.data.message;
+            .catch(() => {
             });
         } else {
           this.errorMessage = "You need to enter a start and an end date..";

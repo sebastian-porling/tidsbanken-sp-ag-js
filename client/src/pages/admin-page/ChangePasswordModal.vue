@@ -54,10 +54,8 @@ export default {
         this.$store
           .dispatch("changePassword", this.user.id, this.password)
           .then(() => {
-            alert("Password is updated");
           })
-          .catch((error) => {
-            alert(error.data.message);
+          .catch(() => {
           });
       }
     },

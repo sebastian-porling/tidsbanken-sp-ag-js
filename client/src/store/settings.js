@@ -42,7 +42,12 @@ export default {
                 }
             })
             .then(commit('removeSettingById', settingId))
-            .catch(error => console.log(error.response));
+            .catch(error => {
+                console.log(error.response)
+                commit("setTypeIsError", true)
+                commit("setIsAlert", true);
+            }
+            );
         },
         retrieveSettingById({rootGetters}, settingId){
             return new Promise((resolve, reject) => {
@@ -70,8 +75,16 @@ export default {
                     authorization: `Bearer ${rootGetters.getToken}`
                 }
             })
-            .then(response => commit('addSetting', response.data.data))
-            .catch(error => console.log(error));
+            .then(response => {
+                commit('addSetting', response.data.data)
+                commit("setResponse", response.data.message);
+                commit("setIsAlert", true);
+            })
+            .catch(error => {
+                console.log(error)
+                commit("setTypeIsError", true)
+                commit("setIsAlert", true)
+            });
         }
     }
 }

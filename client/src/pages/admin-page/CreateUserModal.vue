@@ -99,8 +99,8 @@ export default {
           .then(() => {
             this.dialog = false;
           })
-          .catch((error) => {
-            alert(error.data.message);
+          .catch(() => {
+            
           });
       }
     },

@@ -154,8 +154,7 @@ export default {
             this.changeMode();
             this.closeModal();
           })
-          .catch((error) => {
-            alert(error.data.message);
+          .catch(() => {
           });
       } else {
         alert("You have to fill out all the required fields");
