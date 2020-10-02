@@ -76,22 +76,29 @@ public class IneligibleController{
         if(!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
         final Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
         if (fetchedPeriod.isPresent()) {
-            Set<ConstraintViolation<Object>> violations = validator.validate(ip);
-            if(violations.isEmpty()) {
-                final IneligiblePeriod updatedPeriod = fetchedPeriod.get();
-                if (ip.getStart() != null) updatedPeriod.setStart(ip.getStart());
-                if (ip.getEnd() != null) updatedPeriod.setEnd(ip.getEnd());
-                if(!ipRepository.findAllByIdNot(ip_id).stream().allMatch(updatedPeriod::excludesInPeriod))
-                    return responseUtility.badRequest("Patched Ineligible Period Overlaps, Try Again");
-                updatedPeriod.setModerator(authService.currentUser(request));
-                updatedPeriod.setModifiedAt(new java.sql.Date(System.currentTimeMillis()));
-                try {
-                    final IneligiblePeriod patchedIp = ipRepository.save(updatedPeriod);
-                    notify(patchedIp, authService.currentUser(request), " has updated an Ineligible Period");
-                    return responseUtility.ok("Ineligible period updated successfully", patchedIp);
-                } catch (Exception e) { return responseUtility.errorMessage(); }
+            if(fetchedPeriod.get().getStart().after(new Date())) {
+                Set<ConstraintViolation<Object>> violations = validator.validate(ip);
+                if(violations.isEmpty()) {
+                    final IneligiblePeriod updatedPeriod = fetchedPeriod.get();
+                    if (ip.getStart() != null && ip.getEnd() != null) {
+                        if(ip.getStart().after(new Date())) updatedPeriod.setStart(ip.getStart());
+                        else if(ip.getStart().before(new Date())) updatedPeriod.setEnd(ip.getEnd());
+                        else return responseUtility.badRequest("Can't update period to a date that has passed.");
+                    }
+                    if(!ipRepository.findAllByIdNot(ip_id).stream().allMatch(updatedPeriod::excludesInPeriod))
+                        return responseUtility.badRequest("Patched Ineligible Period Overlaps, Try Again");
+                    updatedPeriod.setModerator(authService.currentUser(request));
+                    updatedPeriod.setModifiedAt(new java.sql.Date(System.currentTimeMillis()));
+                    try {
+                        final IneligiblePeriod patchedIp = ipRepository.save(updatedPeriod);
+                        notify(patchedIp, authService.currentUser(request), " has updated an Ineligible Period");
+                        return responseUtility.ok("Ineligible period updated successfully", patchedIp);
+                    } catch (Exception e) { return responseUtility.errorMessage(); }
+                }
+                else return responseUtility.superBadRequest(violations);
+            } else {
+                return responseUtility.badRequest("Can't edit an ineligible period that has passed");
             }
-            else return responseUtility.superBadRequest(violations);
         } else return responseUtility.notFound("Ineligible period not found");
     }
 
