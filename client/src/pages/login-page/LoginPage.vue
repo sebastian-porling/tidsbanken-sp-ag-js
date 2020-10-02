@@ -1,8 +1,8 @@
 <template>
-<v-row justify="center" align="center">
+<v-container class="login-page">
   <LoginForm v-if="!multiAuth" @loginMultiAuth="loginMultiAuth"/>
   <LoginMultiAuthForm v-else :email="email" :password="password"/>
-</v-row>
+</v-container>
 </template>
 
 <script>
@@ -33,5 +33,10 @@ export default {
 </script>
 
 <style>
-
+.login-page{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  height: 100%;
+}
 </style>
