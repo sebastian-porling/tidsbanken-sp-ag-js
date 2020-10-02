@@ -149,7 +149,7 @@ public class VacationController{
         final User currentUser = authService.currentUser(request);
         final Optional<VacationRequest> vrOp = vrRepository.findById(requestId);
         if (vrOp.isPresent()) {
-            commentRepository.findAllByRequestOrderByCreatedAtDesc(vrOp.get()).forEach(commentRepository::delete);
+            commentRepository.findAllByRequestOrderByCreatedAtAsc(vrOp.get()).forEach(commentRepository::delete);
             vrRepository.delete(vrOp.get());
             notify(vrOp.get(), currentUser, " deleted Vacation Request ");
             return responseUtility.ok("Deleted", null);
@@ -162,7 +162,7 @@ public class VacationController{
     }
 
     private void notify(VacationRequest vr, User performer, String message) {
-        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
+        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtAsc(vr);
         final List<User> users = comments.stream().map(Comment::getOriginalUser).collect(Collectors.toList());
         users.add(vr.getOriginalOwner());
         Optional.ofNullable(vr.getOriginalModerator()).ifPresent(users::add);
