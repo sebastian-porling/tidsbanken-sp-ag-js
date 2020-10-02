@@ -19,12 +19,10 @@ public class IneligiblePeriod {
 
     @Column(nullable = false)
     @NotNull
-    @FutureOrPresent(message = "Start date needs to be today or future")
     private Date start;
 
     @Column(nullable = false)
     @NotNull
-    @Future(message = "End date needs to be in the future")
     private Date end;
 
     @ManyToOne

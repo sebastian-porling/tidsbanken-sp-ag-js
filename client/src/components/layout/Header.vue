@@ -47,7 +47,12 @@
             <v-toolbar-title>Tidsbanken</v-toolbar-title>
             <v-spacer></v-spacer>
             <header-notifications v-if="loggedIn" />
-            <v-btn v-if="loggedIn" text>
+            <router-link
+            v-if="loggedIn"
+                    :to="{ name: 'UserProfile' }"
+                    class="white--text"
+                    style="text-decoration: none; padding: 2%"
+                    >
                 <v-avatar color="light-blue" size="36">
                     <span v-if="!user.profile_pic" class="white--text headline"
                         >A</span
@@ -58,15 +63,11 @@
                         alt="profilePic"
                     />
                 </v-avatar>
-                <router-link
-                    :to="{ name: 'UserProfile' }"
-                    class="white--text"
-                    style="text-decoration: none;"
-                    ><strong style="margin-left: 5px">{{
+                <strong style="margin-left: 5px">{{
                         user.full_name
-                    }}</strong></router-link
-                >
-            </v-btn>
+                    }}</strong>
+                
+            </router-link>
             <v-btn v-if="!loggedIn" router-link :to="{ name: 'Login' }" text>
                 Login
             </v-btn>
