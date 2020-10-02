@@ -32,6 +32,7 @@
                 solo
                 name="input-7-4"
                 label="Comment"
+                v-model="comment"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -56,6 +57,7 @@ export default {
             today: new Date().toJSON().slice(0,10),
             valid: true,
             title: "",
+            comment: "",
             errorMessage: "",
             titleRules: [
               v => !!v || "Title is required",
@@ -77,15 +79,18 @@ export default {
         if (this.valid) {
           this.$store.dispatch('createVacationRequest', {title: this.title, start: this.start, end: this.end})
           .then(request => {
-            this.$emit("openRequestModal", request);
-            this.reset();
+            if (this.comment !== "") {
+              this.$store.dispatch('createComment', { requestId: request.id, message: this.comment })
+            }
+              this.$emit("openRequestModal", request);
+              this.reset();
           })
-          .catch(error => {
-            this.errorMessage = error.data.message;
+          .catch(() => {
           })
         } else {
           this.errorMessage = "You have to fill out all the required fields";
         }
+
       },
       reset() {
         this.valid = true;

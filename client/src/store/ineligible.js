@@ -37,13 +37,18 @@ export default {
         deleteIneligiblePeriod({commit, rootGetters}, ineligiblePeriodId) {
             return new Promise((resolve, reject) => {
                 axios.delete(`/ineligible/${ineligiblePeriodId}`, headers(rootGetters.getToken))
-                .then(() => {
+                .then((response) => {
                     commit('removeIneligiblePeriod', ineligiblePeriodId);
-                    resolve();
+                    resolve(response);
+                    commit("setResponse", response.data.message);
+                    commit("setIsAlert", true);
                 })
                 .catch(error => {
                     console.log(error.response);
                     reject(error.response);
+                    commit("setResponse", error.response.data.message);
+                    commit("setTypeIsError", true)
+                    commit("setIsAlert", true);
                 });
             });
         },
@@ -53,10 +58,15 @@ export default {
                 .then(response => {
                     commit('replaceIneligiblePeriod', response.data.data);
                     resolve(response.data.data);
+                    commit("setResponse", response.data.message);
+                    commit("setIsAlert", true);
                 })
                 .catch(error => {
                     console.log(error.response);
                     reject(error.response);
+                    commit("setResponse", error.response.data.message);
+                    commit("setTypeIsError", true)
+                    commit("setIsAlert", true);
                 });
             });
         },
@@ -67,10 +77,15 @@ export default {
                     console.log('CREATED', response.data.data);
                     commit('addIneligiblePeriod', response.data.data);
                     resolve(response.data.data);
+                    commit("setResponse", response.data.message);
+                    commit("setIsAlert", true);
                 })
                 .catch(error => {
                     console.log(error.response);
                     reject(error.response);
+                    commit("setResponse", error.response.data.message);
+                    commit("setTypeIsError", true)
+                    commit("setIsAlert", true);
                 })
             })
             

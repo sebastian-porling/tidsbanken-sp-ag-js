@@ -18,6 +18,7 @@ public class Notification {
     private Boolean read = false;
 
     @ManyToOne
+    @NonNull
     private User user;
 
     public Notification() { }

@@ -105,12 +105,10 @@ export default {
           full_name: this.user.full_name,
           email: this.user.email,
         })
-        .then((response) => {
-          alert(response.data.message);
+        .then(() => {
           this.changePassword();
         })
-        .catch((error) => {
-          alert(error.data.message);
+        .catch(() => {
         });
     },
     changePassword() {
@@ -118,10 +116,8 @@ export default {
         this.$store
           .dispatch("changePassword", this.user.id, this.password)
           .then(() => {
-            alert("User updated successfully");
           })
-          .catch((error) => {
-            alert(error.data.message);
+          .catch(() => {
           });
       }
     },

@@ -8,13 +8,20 @@ import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.CommonResponse;
 import se.experis.tidsbanken.server.models.Setting;
 import se.experis.tidsbanken.server.models.User;
+import se.experis.tidsbanken.server.models.VacationRequest;
 import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class SettingsController {
@@ -29,6 +36,9 @@ public class SettingsController {
 
     @Autowired private NotificationObserver observer;
 
+    @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    @Autowired private Validator validator = factory.getValidator();
+
     @GetMapping("/setting")
     public ResponseEntity<CommonResponse> getSettings(HttpServletRequest request){
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
@@ -42,9 +52,13 @@ public class SettingsController {
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
         try {
             if (!settingRepository.existsByKey(setting.getKey())){
-                final Setting saved = settingRepository.save(setting);
-                notify(saved, authService.currentUser(request), " created setting ");
-                return responseUtility.created("Setting added", saved);
+                Set<ConstraintViolation<Object>> violations = validator.validate(setting);
+                if(violations.isEmpty()) {
+                    final Setting saved = settingRepository.save(setting);
+                    notify(saved, authService.currentUser(request), " created setting ");
+                    return responseUtility.created("Setting added", saved);
+                }
+                else return responseUtility.superBadRequest(violations);
             }
             return responseUtility.badRequest("Setting already exists");
         }catch (Exception e) { return responseUtility.errorMessage(); }
@@ -58,12 +72,16 @@ public class SettingsController {
         try {
             final Optional<Setting> settingOp = settingRepository.findById(settingId);
             if (settingOp.isPresent()){
-                final Setting settingPayload = settingOp.get();
-                if (setting.getKey() != null) settingPayload.setKey(setting.getKey());
-                if (setting.getValue() != null) settingPayload.setValue(setting.getValue());
-                final Setting saved = settingRepository.save(settingPayload);
-                notify(saved, authService.currentUser(request), " modified setting ");
-                return responseUtility.ok("Setting updated", saved);
+                Set<ConstraintViolation<Object>> violations = validator.validate(setting);
+                if(violations.isEmpty()) {
+                    final Setting settingPayload = settingOp.get();
+                    if (setting.getKey() != null) settingPayload.setKey(setting.getKey());
+                    if (setting.getValue() != null) settingPayload.setValue(setting.getValue());
+                    final Setting saved = settingRepository.save(settingPayload);
+                    notify(saved, authService.currentUser(request), " modified setting ");
+                    return responseUtility.ok("Setting updated", saved);
+                }
+                else return responseUtility.superBadRequest(violations);
             } else return responseUtility.notFound("Setting not found");
         } catch(Exception e) { return responseUtility.errorMessage(); }
     }

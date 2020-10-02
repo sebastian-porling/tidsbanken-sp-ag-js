@@ -32,8 +32,7 @@ export default {
             this.comment = "";
             this.dialog = false;
           })
-          .catch((error) => {
-            alert(error.data.message);
+          .catch(() => {
           });
       }
     },

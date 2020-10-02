@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import java.sql.Date;
 import java.util.HashMap;
 
@@ -24,11 +26,11 @@ public class IneligiblePeriod {
     private Date end;
 
     @ManyToOne
-    @NotNull
     private User moderator;
 
     @Column(nullable = false)
     private Date createdAt = new java.sql.Date(System.currentTimeMillis());
+
     @Column(nullable = false)
     private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 

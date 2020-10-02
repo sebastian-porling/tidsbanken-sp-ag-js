@@ -13,8 +13,10 @@ import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -30,6 +32,10 @@ public class CommentController{
 
     @Autowired private NotificationObserver observer;
 
+    @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    @Autowired private Validator validator = factory.getValidator();
+
+
     @GetMapping("/request/{request_id}/comment")
     public ResponseEntity<CommonResponse> getComments(@PathVariable("request_id") Long requestId,
                                                       HttpServletRequest request){
@@ -38,7 +44,7 @@ public class CommentController{
             if (vacationRequestOp.isPresent()) {
                 final VacationRequest vr = vacationRequestOp.get();
                 if (isRequestOwner(vr, request) || authService.isAuthorizedAdmin(request)) {
-                    final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
+                    final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtAsc(vr);
                     return responseUtility.ok("All Comments For Request: " + vr.getId(), comments);
                 } else return responseUtility.forbidden();
             } else return responseUtility.notFound("Vacation Request Not Found");
@@ -56,10 +62,16 @@ public class CommentController{
                 final User currentUser = authService.currentUser(request);
                 if (isRequestOwner(vr, request) || authService.isAuthorizedAdmin(request)) {
                     try{
-                        final Comment saved = commentRepository.save(comment.setUser(currentUser).setRequest(vr));
-                        notifyUsers(vr, currentUser, " has commented on ");
-                        return responseUtility.ok("Saved Comment", saved);
-                    } catch (Exception e) { return responseUtility.errorMessage(); }
+                        Set<ConstraintViolation<Object>> violations = validator.validate(comment);
+                        if(violations.isEmpty()) {
+                            final Comment saved = commentRepository.save(comment.setUser(currentUser).setRequest(vr));
+                            notifyUsers(vr, currentUser, " has commented on ");
+                            return responseUtility.ok("Saved Comment", saved);
+                        }
+                        else return responseUtility.superBadRequest(violations);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return responseUtility.errorMessage(); }
                 } else return responseUtility.forbidden();
             } else return responseUtility.notFound("Vacation Request Not Found");
         } catch (Exception e) { return responseUtility.errorMessage(); }
@@ -74,7 +86,7 @@ public class CommentController{
             if (!authService.isAuthorizedAdmin(request) && !isRequestOwner(vrOp.get(), request))
                 return responseUtility.forbidden();
             try {
-                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
+                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
                 return commentOp.map(comment -> responseUtility
                         .ok("Successfully retrieved comment", comment))
                         .orElseGet(() -> responseUtility.notFound("Comment Not Found"));
@@ -90,7 +102,7 @@ public class CommentController{
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if(vrOp.isPresent()) {
             try {
-                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
+                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
                 if (commentOp.isPresent()) {
                     final Comment patchComment = commentOp.get();
                     if(isCommentOwner(patchComment, request) && isPastTwentyFourHours(patchComment)) {
@@ -111,7 +123,7 @@ public class CommentController{
                                                         HttpServletRequest request){
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if (vrOp.isPresent()) {
-            final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
+            final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
             if (commentOp.isPresent()) {
                 if (!authService.isAuthorizedAdmin(request) && !isCommentOwner(commentOp.get(), request))
                     return responseUtility.forbidden();
@@ -138,7 +150,7 @@ public class CommentController{
     }
 
     private void notifyUsers(VacationRequest vr, User performer, String message) {
-        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
+        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtAsc(vr);
         final List<User> users = comments.stream().map(Comment::getOriginalUser).collect(Collectors.toList());
         users.add(vr.getOriginalOwner());
         if(vr.getOriginalModerator() != null) users.add(vr.getOriginalModerator());

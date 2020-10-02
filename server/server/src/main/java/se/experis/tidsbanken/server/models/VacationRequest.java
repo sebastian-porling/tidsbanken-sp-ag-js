@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.sql.Date;
 import java.util.HashMap;
-import java.util.List;
 
 @Entity
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -20,18 +20,24 @@ public class VacationRequest {
     private Long id;
 
     @Column(nullable = false)
+    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "Title can not contain any special characters")
+    @Size(min = 6, max = 100, message = "Title must be between 6 and 100 characters")
     private String title;
 
     @Column(nullable = false)
+    // TODO: Implement a check in request controller that prevents users from editing a past request.
+    //@Future(message = "Start date must be a future date")
     private Date start;
 
     @Column(nullable = false)
+    //@Future(message = "End date must be a future date")
     private Date end;
 
     @ManyToOne
     private User owner;
 
     @ManyToOne
+    @NotNull
     private Status status;
 
     @Column(nullable = false)
