@@ -7,6 +7,7 @@ const RequestHistoryPage = () => import('../pages/request-history-page/RequestHi
 const UserPage = () => import('../pages/user-profile-page/UserPage')
 const RequestTable = () => import('../pages/admin-page/RequestTable')
 const UserTable = () => import('../pages/admin-page/UserTable')
+const NotFound = () => import('../pages/error/NotFound')
 
 Vue.use(Router)
 
@@ -67,6 +68,15 @@ export default new Router ({
             path: '/users',
             name: 'ViewUsers',
             component: UserTable
+        },
+        {
+            path: '*',
+            name: '404',
+            component: NotFound,
+            meta: {
+                requiresAuth: true
+            }
         }
+
     ]
 })
