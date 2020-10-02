@@ -1,10 +1,13 @@
 <template>
 <v-row justify="center" align="center">
+   <v-col cols="12" sm="8" md="6" lg="4" xl="3">
+    <v-card style="margin: 0 20px;">
+      <v-card-title>Sign in with 2fa</v-card-title>
     <v-form
       ref="form"
       @submit.prevent="login"
     >
-
+      <v-card-text>
       <v-text-field
         v-model="email"
         :rules="emailRules"
@@ -28,7 +31,9 @@
         label="Code"
         required
       ></v-text-field>
-
+      </v-card-text>
+      <v-card-actions>
+      <v-spacer />
       <v-btn
       type="submit"
         class="submit"
@@ -37,7 +42,10 @@
       >
         Login
       </v-btn>
+      </v-card-actions>
     </v-form>
+    </v-card>
+   </v-col>
 </v-row>
 </template>
 

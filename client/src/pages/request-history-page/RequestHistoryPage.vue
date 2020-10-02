@@ -1,17 +1,15 @@
 <template>
-  <v-col class="container">
-    <br />
-    <br />
-    <div v-if="user">
+  <v-container class="request-history-page">
+    <v-card style="padding: 10px;">
       <v-row>
         <UserInfoComponent :user="user" />
       </v-row>
       <br />
-      <v-row>
+      <v-card-text>
         <RequestHistoryTable :user="user" />
-      </v-row>
-    </div>
-  </v-col>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -51,4 +49,10 @@ export default {
 </script>
 
 <style>
+.request-history-page{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 100px;
+}
 </style>

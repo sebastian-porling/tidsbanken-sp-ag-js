@@ -1,9 +1,8 @@
 <template>
-<v-container>
-  <v-row>
-    <h1>Vacations request from all users</h1>
-  </v-row>
-  <v-row>
+<v-card style="padding: 10px;">
+  <v-card-title class="justify-center">
+    Vacations request from all users
+  </v-card-title>
     
       <v-data-table
     :headers="headers"
@@ -19,8 +18,7 @@
     </template>
   </v-data-table>
   <view-request-modal :active="activateModal" :request="request"  @closeModal="closeModal"/>
-  </v-row>
-</v-container>
+</v-card>
 </template>
 
 <script>
