@@ -44,7 +44,7 @@ public class CommentController{
             if (vacationRequestOp.isPresent()) {
                 final VacationRequest vr = vacationRequestOp.get();
                 if (isRequestOwner(vr, request) || authService.isAuthorizedAdmin(request)) {
-                    final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
+                    final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtAsc(vr);
                     return responseUtility.ok("All Comments For Request: " + vr.getId(), comments);
                 } else return responseUtility.forbidden();
             } else return responseUtility.notFound("Vacation Request Not Found");
@@ -86,7 +86,7 @@ public class CommentController{
             if (!authService.isAuthorizedAdmin(request) && !isRequestOwner(vrOp.get(), request))
                 return responseUtility.forbidden();
             try {
-                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
+                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
                 return commentOp.map(comment -> responseUtility
                         .ok("Successfully retrieved comment", comment))
                         .orElseGet(() -> responseUtility.notFound("Comment Not Found"));
@@ -102,7 +102,7 @@ public class CommentController{
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if(vrOp.isPresent()) {
             try {
-                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
+                final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
                 if (commentOp.isPresent()) {
                     final Comment patchComment = commentOp.get();
                     if(isCommentOwner(patchComment, request) && isPastTwentyFourHours(patchComment)) {
@@ -123,7 +123,7 @@ public class CommentController{
                                                         HttpServletRequest request){
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if (vrOp.isPresent()) {
-            final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtDesc(commentId, vrOp.get());
+            final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
             if (commentOp.isPresent()) {
                 if (!authService.isAuthorizedAdmin(request) && !isCommentOwner(commentOp.get(), request))
                     return responseUtility.forbidden();
@@ -150,7 +150,7 @@ public class CommentController{
     }
 
     private void notifyUsers(VacationRequest vr, User performer, String message) {
-        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtDesc(vr);
+        final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtAsc(vr);
         final List<User> users = comments.stream().map(Comment::getOriginalUser).collect(Collectors.toList());
         users.add(vr.getOriginalOwner());
         if(vr.getOriginalModerator() != null) users.add(vr.getOriginalModerator());
