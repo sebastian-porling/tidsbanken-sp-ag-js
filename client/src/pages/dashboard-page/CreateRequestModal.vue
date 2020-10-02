@@ -81,9 +81,9 @@ export default {
           .then(request => {
             if (this.comment !== "") {
               this.$store.dispatch('createComment', { requestId: request.id, message: this.comment })
+            }
               this.$emit("openRequestModal", request);
               this.reset();
-            }
           })
           .catch(() => {
           })
