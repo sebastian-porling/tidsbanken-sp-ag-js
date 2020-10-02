@@ -1,5 +1,7 @@
 package se.experis.tidsbanken.server.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ public class ImportExportController {
     @Autowired private ResponseUtility responseUtility;
     @Autowired private NotificationObserver observer;
     @Autowired private ImportExportService importExportService;
+    private Logger logger = LoggerFactory.getLogger(CommentController.class);
 
     @GetMapping("/export")
     public ResponseEntity<CommonResponse> exportVacations(HttpServletRequest request) {
@@ -27,7 +30,10 @@ public class ImportExportController {
         try{
             return responseUtility
                     .ok("All Export Data", importExportService.getExportData());
-        } catch(Exception e) { return responseUtility.errorMessage(); }
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("export vacations");
+        }
     }
 
     @PostMapping("/import")
@@ -39,7 +45,8 @@ public class ImportExportController {
             return responseUtility.created("All Data Was Imported!", null);
         } catch(Exception e) {
             /* TODO: Add different error messages depending on what went wrong */
-            return responseUtility.errorMessage();
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("import vacations");
         }
     }
 
