@@ -1,5 +1,7 @@
 package se.experis.tidsbanken.server.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import se.experis.tidsbanken.server.models.CommonResponse;
 import se.experis.tidsbanken.server.models.Setting;
 import se.experis.tidsbanken.server.models.User;
-import se.experis.tidsbanken.server.models.VacationRequest;
 import se.experis.tidsbanken.server.repositories.*;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.socket.NotificationObserver;
@@ -19,7 +20,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,24 +27,23 @@ import java.util.Set;
 public class SettingsController {
 
     @Autowired private ResponseUtility responseUtility;
-
     @Autowired private SettingRepository settingRepository;
-
     @Autowired private AuthorizationService authService;
-
     @Autowired private UserRepository userRepository;
-
     @Autowired private NotificationObserver observer;
-
     @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     @Autowired private Validator validator = factory.getValidator();
+    private Logger logger = LoggerFactory.getLogger(CommentController.class);
 
     @GetMapping("/setting")
     public ResponseEntity<CommonResponse> getSettings(HttpServletRequest request){
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
         try{
             return responseUtility.ok("All settings", settingRepository.findAll());
-        } catch (Exception e) { return responseUtility.errorMessage(); }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("fetch settings");
+        }
     }
 
     @PostMapping("/setting")
@@ -61,7 +60,10 @@ public class SettingsController {
                 else return responseUtility.superBadRequest(violations);
             }
             return responseUtility.badRequest("Setting already exists");
-        }catch (Exception e) { return responseUtility.errorMessage(); }
+        }catch (Exception e) {
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("create new setting");
+        }
     }
 
     @PatchMapping("/setting/{setting_id}")
@@ -83,7 +85,10 @@ public class SettingsController {
                 }
                 else return responseUtility.superBadRequest(violations);
             } else return responseUtility.notFound("Setting not found");
-        } catch(Exception e) { return responseUtility.errorMessage(); }
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("update of setting with id " + settingId);
+        }
     }
 
     @GetMapping("/setting/{setting_id}")
@@ -95,7 +100,10 @@ public class SettingsController {
             if (settingOp.isPresent())
                 return responseUtility.ok("Setting found", settingOp.get());
             return responseUtility.notFound("Setting with id: " + settingId + " Not found!");
-        } catch(Exception e) { return responseUtility.errorMessage(); }
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("fetch of setting with id " + settingId);
+        }
     }
 
     @DeleteMapping("/setting/{setting_id}")
@@ -110,7 +118,10 @@ public class SettingsController {
                 return responseUtility.ok("Setting deleted", null);
             }
             return responseUtility.notFound("Setting with id: " + settingId + " Not found!");
-        } catch(Exception e) { return responseUtility.errorMessage(); }
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("delete of setting with id " + settingId);
+        }
     }
 
     private void notify(Setting setting, User performer, String message) {

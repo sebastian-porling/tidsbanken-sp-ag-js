@@ -20,9 +20,9 @@ public class ResponseUtility {
         return buildResponse(HttpStatus.FORBIDDEN, "Forbidden");
     }
 
-    public ResponseEntity<CommonResponse> errorMessage() {
+    public ResponseEntity<CommonResponse> errorMessage(String process) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Something went wrong when trying to process the request");
+                "Something went wrong on the server when trying to " + process);
     }
 
     public ResponseEntity<CommonResponse> notFound(String message) {
