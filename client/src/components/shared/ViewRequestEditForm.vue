@@ -14,7 +14,7 @@
           <v-col cols="12">
             <v-btn text>
               <v-avatar color="light-blue" size="36">
-                <span v-if="!request.owner.profile_pic" class="white--text headline">UU</span>
+                <span v-if="!request.owner.profile_pic" class="white--text headline">{{ request.owner.full_name | initials }}</span>
                 <img
                   v-if="request.owner.profile_pic"
                   :src="request.owner.profile_pic"
@@ -122,6 +122,16 @@ export default {
         return this.$store.getters.getStatus;
       }
     }
+  },
+  filters: {
+    initials: (data) => {
+            if (!data) return '😁';
+            data = data.toString();
+            data = data.split(' ');
+            if(data.length < 2) return '😁';
+            return  data[0].charAt(0).toUpperCase() + 
+                    data[1].charAt(0).toUpperCase();
+        },
   },
   methods: {
     closeModal() {
