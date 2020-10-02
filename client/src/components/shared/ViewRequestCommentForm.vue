@@ -1,6 +1,6 @@
 <template>
   <v-form v-model="valid">
-    <v-textarea v-model="comment" name="input-7-4" label="Comment" :counter="250" :rules="rules"></v-textarea>
+    <v-textarea v-model="comment" name="input-7-4" rows="2" label="Comment" :counter="250" :rules="rules"></v-textarea>
     <v-container class="d-flex flex-row-reverse">
       <v-btn color="green darken-1" text :disabled="!valid" @click="submit">Submit</v-btn>
     </v-container>
