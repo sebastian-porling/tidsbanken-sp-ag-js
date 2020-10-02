@@ -1,17 +1,27 @@
 <template>
   <v-main>
     <v-row>
-      <user-modal :active="activateModal" :user="user" @closeModal="closeModal" />
+      <user-modal
+        :active="activateModal"
+        :user="user"
+        @closeModal="closeModal"
+      />
       <create-user-modal />
     </v-row>
-    <v-row>      
+    <v-row>
       <v-data-table
         :headers="headers"
         :items="users"
         :items-per-page="10"
         class="elevation-1"
-        @click:row="launchModal"
-      ></v-data-table>
+      >
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="launchModal(item)"
+            >mdi-pencil</v-icon
+          >
+          <v-icon small @click="deleteUser(item)">mdi-delete</v-icon>
+        </template>
+      </v-data-table>
     </v-row>
   </v-main>
 </template>
@@ -36,6 +46,7 @@ export default {
         { text: "Id", value: "id" },
         { text: "Name", value: "full_name" },
         { text: "Email", value: "email" },
+        { text: "Actions", value: "actions" },
       ],
       user: {},
       activateModal: false,
@@ -60,6 +71,11 @@ export default {
       this.user = {};
       this.activateModal = false;
     },
+    deleteUser(user) {
+      if (confirm(`You sure you want to delete user ${user.full_name}?`)) {
+         this.$store.dispatch("deactivateUser", user.id)
+      }
+    }
   },
 };
 </script>
