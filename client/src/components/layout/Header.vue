@@ -1,5 +1,5 @@
 <template>
-    <div v-if="user">
+    <div>
         <v-navigation-drawer v-model="drawer" app temporary v-if="loggedIn">
             <v-list dense>
                 <v-list-item router-link :to="{ name: 'Dashboard' }">
@@ -48,10 +48,10 @@
             <v-spacer></v-spacer>
             <header-notifications v-if="loggedIn" />
             <v-btn v-if="loggedIn" text>
-                <v-avatar color="light-blue" size="36">
-                    <span v-if="!user.profile_pic" class="white--text headline"
-                        >A</span
-                    >
+                <v-avatar color="light-blue" size="34">
+                    <span v-if="!user.profile_pic" class="white--text headline">
+                      {{ user.full_name | initials }}
+                    </span>
                     <img
                         v-if="user.profile_pic"
                         :src="user.profile_pic"
@@ -62,9 +62,9 @@
                     :to="{ name: 'UserProfile' }"
                     class="white--text"
                     style="text-decoration: none;"
-                    ><strong style="margin-left: 5px">{{
-                        user.full_name
-                    }}</strong></router-link
+                    ><strong style="margin-left: 5px">
+                      {{user.full_name | shorten}}
+                    </strong></router-link
                 >
             </v-btn>
             <v-btn v-if="!loggedIn" router-link :to="{ name: 'Login' }" text>
@@ -105,6 +105,20 @@ export default {
             return this.$store.dispatch("destroyToken").then(() => {
                 this.$router.push("/login");
             });
+        }
+    },
+    filters: {
+      initials: (data) => {
+            if (!data) return '😁';
+            data = data.toString();
+            data = data.split(' ');
+            if(data.length < 2) return '😁';
+            return  data[0].charAt(0).toUpperCase() + 
+                    data[1].charAt(0).toUpperCase();
+        },
+        shorten: (data) => {
+          if(window.innerWidth < 440) return ''
+          return data; 
         }
     }
 };
