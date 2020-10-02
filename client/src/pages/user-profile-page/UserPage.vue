@@ -1,8 +1,8 @@
 <template>
-<div>
+<v-container class="user-profile">
     <UserProfileForm @openTwoFactorModal="openModal"/>
     <GenerateTwoFactorModal :active="displayModal" @closeModal="closeModal" />
-</div>
+</v-container>
 </template>
 
 <script>
@@ -30,3 +30,11 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.user-profile{
+    display: flex;
+    margin-top: 100px;
+    justify-content: center;
+}
+</style>

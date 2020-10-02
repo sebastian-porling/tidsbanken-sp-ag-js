@@ -1,10 +1,10 @@
 <template>
-  <v-container>
-    <v-row align="center" justify="center">
-      <v-card max-width="600px" style="padding: 2%; margin: 5%">
+      <v-card max-width="600px" style="padding: 10px; margin: 10px;">
         <v-card-text align="center" justify="center">
           <v-avatar color="indigo" size="120" v-model="user.profile_pic">
-            <span v-if="!user.profile_pic" class="white--text headline">A</span>
+            <span v-if="!user.profile_pic" class="white--text headline">
+              {{ user.full_name | initials }}
+            </span>
             <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic" />
           </v-avatar>
 
@@ -14,14 +14,14 @@
           <v-btn color="default" @click="launchModal" style="margin: 4%" text>Change Picture</v-btn>
           <v-form v-model="valid">
             <v-row>
-              <v-col cols="10">
+              <v-col cols="12">
                 <v-text-field v-model="user.full_name" label="Name" required :rules="nameRules"></v-text-field>
               </v-col>
-              <v-col cols="10">
+              <v-col cols="12">
                 <v-text-field v-model="user.email" label="Email" required :rules="emailRules"></v-text-field>
               </v-col>
               <br />
-              <v-col cols="10">
+              <v-col cols="12">
                 <v-text-field
                   type="password"
                   v-model="password"
@@ -44,12 +44,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-2" text @click="openTwoFactorModal">Generate new 2FA</v-btn>
+          <v-btn color="blue darken-2" text @click="openTwoFactorModal">New 2FA</v-btn>
           <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
         </v-card-actions>
       </v-card>
-    </v-row>
-  </v-container>
 </template>
 
 <script>
@@ -131,6 +129,16 @@ export default {
       this.$emit('openTwoFactorModal');
     }
   },
+  filters: {
+      initials: (data) => {
+            if (!data) return '😁';
+            data = data.toString();
+            data = data.split(' ');
+            if(data.length < 2) return '😁';
+            return  data[0].charAt(0).toUpperCase() + 
+                    data[1].charAt(0).toUpperCase();
+        },
+    }
 };
 </script>
 
