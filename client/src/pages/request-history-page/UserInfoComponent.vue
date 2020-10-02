@@ -2,7 +2,9 @@
   <v-col>
     <v-row justify="center" align="center">
       <v-avatar color="indigo" size="60" class="my-4" v-model="user.profile_pic">
-        <span v-if="!user.profile_pic" class="white--text headline">A</span>
+        <span v-if="!user.profile_pic" class="white--text headline">
+          {{ user.full_name | initials }}
+        </span>
         <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic" />
       </v-avatar>
       <h1 class="px-6">{{ user.full_name }}</h1>
@@ -26,6 +28,16 @@ export default {
       return this.$store.getters.getCurrentUser;
     },
   },
+  filters: {
+      initials: (data) => {
+            if (!data) return '😁';
+            data = data.toString();
+            data = data.split(' ');
+            if(data.length < 2) return '😁';
+            return  data[0].charAt(0).toUpperCase() + 
+                    data[1].charAt(0).toUpperCase();
+        },
+    }
 };
 </script>
 

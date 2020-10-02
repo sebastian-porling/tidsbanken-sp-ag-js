@@ -14,7 +14,9 @@
           <v-col cols="12">
             <v-btn text>
               <v-avatar color="light-blue" size="36">
-                <span v-if="!request.owner.profile_pic" class="white--text headline">UU</span>
+                <span v-if="!request.owner.profile_pic" class="white--text headline">
+                  {{ request.owner.full_name | initials }}
+                </span>
                 <img
                   v-if="request.owner.profile_pic"
                   :src="request.owner.profile_pic"
@@ -29,10 +31,10 @@
               </router-link>
             </v-btn>
           </v-col>
-          <v-col cols="12" sm="6" md="6">
+          <v-col cols="12" xs="6" sm="6" md="6">
             <v-text-field type="date" label="Start" :value="request.start | formatDate" disabled></v-text-field>
           </v-col>
-          <v-col cols="12" sm="6" md="6">
+          <v-col cols="12" xs="6" sm="6" md="6">
             <v-text-field type="date" label="End" :value="request.end | formatDate" disabled></v-text-field>
           </v-col>
           <v-col cols="12" v-if="request.owner.owner_id === currentUser.id || currentUser.is_admin">
@@ -68,6 +70,14 @@ export default {
       }
       return date.substring(0, 10);
     },
+    initials: (data) => {
+            if (!data) return '😁';
+            data = data.toString();
+            data = data.split(' ');
+            if(data.length < 2) return '😁';
+            return  data[0].charAt(0).toUpperCase() + 
+                    data[1].charAt(0).toUpperCase();
+        },
   },
   props: ["request"],
   methods: {

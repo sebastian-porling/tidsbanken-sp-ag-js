@@ -1,19 +1,19 @@
 <template>
-  <v-main>
-    <v-row>
-      <user-modal :active="activateModal" :user="user" @closeModal="closeModal" />
+  <v-card class="users">
+    <user-modal :active="activateModal" :user="user" @closeModal="closeModal" />
       <create-user-modal />
-    </v-row>
-    <v-row>      
-      <v-data-table
+      <v-card-title class="justify-center">Users of Tidsbanken</v-card-title>    
+      <v-card-text>
+        <v-data-table
         :headers="headers"
         :items="users"
         :items-per-page="10"
         class="elevation-1"
         @click:row="launchModal"
       ></v-data-table>
-    </v-row>
-  </v-main>
+      </v-card-text>
+      
+  </v-card>
 </template>
 
 <script>
@@ -65,4 +65,7 @@ export default {
 </script>
 
 <style>
+.users{
+  position: relative;
+}
 </style>

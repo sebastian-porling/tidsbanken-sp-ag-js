@@ -1,8 +1,7 @@
 <template>
   <v-dialog v-model="dialog" persistent width="600px">
     <template v-slot:activator="{ on, attrs }">
-      <h1>Users of Tidsbanken</h1>
-      <v-btn v-bind="attrs" fab v-on="on" color="success">+</v-btn>
+      <v-btn v-bind="attrs" fab small v-on="on" color="success" class="add-btn">+</v-btn>
     </template>
     <v-card>
       <v-card-title>
@@ -109,4 +108,9 @@ export default {
 </script>
 
 <style>
+.add-btn {
+   position: absolute;
+   right: 10px; 
+   top: 10px;
+}
 </style>
