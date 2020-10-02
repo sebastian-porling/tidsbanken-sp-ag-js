@@ -21,6 +21,9 @@ export default {
     },
     addUser(state, user) {
       state.allUsers = [...state.allUsers, user];
+    },
+    removeUser(state, userId) {
+      state.allUsers.filter(u => u.id != userId);
     }
   },
   actions: {
@@ -107,5 +110,23 @@ export default {
             });
         });
       },
+      deactivateUser(context, userId) {
+        axios
+            .delete(`user/${userId}`, {
+              headers: {
+                authorization: `Bearer ${context.rootGetters.getToken}`,
+              },
+            })
+            .then((response) => {
+              context.commit("removeUser", userId);
+              context.commit("setResponse", response.data.message);
+              context.commit("setIsAlert", true);
+            })
+            .catch((error) => {
+              context.commit("setResponse", error.response.data.message);
+              context.commit("setTypeIsError", true)
+              context.commit("setIsAlert", true);
+            });
+      }
   },
 };
