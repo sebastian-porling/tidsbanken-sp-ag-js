@@ -12,6 +12,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> getByEmailAndIsActiveTrue(String email);
 
+    Optional<User> getByEmail(String email);
+
     Optional<User> findByIdAndIsActiveTrue(Long id);
 
     List<User> findAllByIsActiveTrue();

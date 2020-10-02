@@ -42,7 +42,7 @@ public class UserController {
         if (!authService.isAuthorizedAdmin(request)) {
             return responseUtility.unauthorized();
         }
-        final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(user.getEmail());
+        final Optional<User> fetchedUser = userRepository.getByEmail(user.getEmail());
         if (fetchedUser.isEmpty()) {
             try {
                 Set<ConstraintViolation<Object>> violations = validator.validate(user);
