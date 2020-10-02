@@ -52,8 +52,6 @@ export default {
             const comment = response.data.data;
             context.commit("updateComments", comment);
             resolve(response);
-            context.commit("setResponse", response.data.message);
-            context.commit("setIsAlert", true);
           })
           .catch((error) => {
             reject(error.response);
