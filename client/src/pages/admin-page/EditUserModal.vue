@@ -35,12 +35,7 @@
         <v-spacer></v-spacer>
         <v-btn color="grey darken-1" text @click="changeMode">Change password</v-btn>
         <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-        
-        <v-progress-circular
-        v-if="isLoading"
-        indeterminate
-        color="green"
-        ></v-progress-circular>
+        <v-progress-circular v-if="isLoading" indeterminate color="green"></v-progress-circular>
         <v-btn v-if="!isLoading" color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
       
       </v-card-actions>
@@ -82,8 +77,8 @@ export default {
       this.$emit("changeMode");
     },
     submit() {
-      this.isLoading = true;
       if (this.valid) {
+        this.isLoading = true;
         this.$store
           .dispatch("updateUser", {
             id: this.user.id,

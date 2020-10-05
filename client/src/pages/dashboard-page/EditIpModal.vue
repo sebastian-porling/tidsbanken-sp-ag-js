@@ -12,7 +12,8 @@
           <v-spacer></v-spacer>
           <v-btn color="red darken" text @click="deleteIp">Delete</v-btn>
           <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="validateData">Submit</v-btn>
+          <v-progress-circular v-if="isLoading" indeterminate color="green"></v-progress-circular>
+          <v-btn v-if="!isLoading" color="green darken-1" text @click="validateData">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -24,6 +25,7 @@ export default {
     props: ['active', 'ineligible'],
     data() {
         return {
+            isLoading: false,
             dates: [],
             today: '',
             errorMessage: ''
@@ -46,13 +48,16 @@ export default {
           this.$emit('closeModal');
         },
         validateData() {
+          this.isLoading = true
         if(this.dates[0] != null && this.dates[1] != null){
           if(this.dates[0] > this.dates[1]) this.switchDates();
           this.$store.dispatch('updateIneligiblePeriod', {id: this.ineligible.id, start: this.dates[0], end: this.dates[1]})
             .then(() => {
+              this.isLoading = false
               this.$emit('closeModal');
             })
             .catch(error => {
+              this.isLoading = false;
               this.errorMessage = error.data.message;
             });
         } else {
