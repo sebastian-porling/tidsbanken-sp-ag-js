@@ -5,6 +5,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import se.experis.tidsbanken.server.filters.AuthenticationFilter;
+import se.experis.tidsbanken.server.filters.RedirectToClientFilter;
 import se.experis.tidsbanken.server.filters.RequestAttemptFilter;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.services.LoginAttemptService;
@@ -22,7 +23,7 @@ public class FilterConfig {
 
         registrationBean.setFilter(new AuthenticationFilter(authorizationService));
         registrationBean.addUrlPatterns("/user/*", "/request/*", "/setting/*", "/import", "/export", "/ineligible/*", "/status/*");
-        registrationBean.setOrder(1);
+        registrationBean.setOrder(2);
         return registrationBean;
     }
 
@@ -30,6 +31,15 @@ public class FilterConfig {
     public FilterRegistrationBean<RequestAttemptFilter> requestAttemptFilter() {
         FilterRegistrationBean<RequestAttemptFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new RequestAttemptFilter(loginAttemptService));
+        registrationBean.addUrlPatterns("*");
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<RedirectToClientFilter> redirectToClientFilterFilter() {
+        FilterRegistrationBean<RedirectToClientFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new RedirectToClientFilter());
         registrationBean.addUrlPatterns("*");
         registrationBean.setOrder(0);
         return registrationBean;
