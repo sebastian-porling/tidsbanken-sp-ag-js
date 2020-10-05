@@ -7,13 +7,7 @@ spring:
     url: jdbc:h2:mem:tidsbanken
     driverClassName: org.h2.Driver
     username: sa
-  cloud:
-    appId:
-    gcp:
-      sql:
-        instance-connection-name:
-        database-name:
-          
+
 server:
   port: 3400
 
