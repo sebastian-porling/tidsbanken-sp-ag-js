@@ -41,4 +41,13 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+.v-progress-circular {
+  margin: 1rem;
+}
 </style>
