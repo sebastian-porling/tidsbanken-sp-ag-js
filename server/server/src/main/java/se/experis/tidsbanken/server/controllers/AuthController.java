@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class AuthController {
 
     @Autowired private UserRepository userRepository;

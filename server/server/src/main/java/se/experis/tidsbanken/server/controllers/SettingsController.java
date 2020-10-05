@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class SettingsController {
 
     @Autowired private ResponseUtility responseUtility;

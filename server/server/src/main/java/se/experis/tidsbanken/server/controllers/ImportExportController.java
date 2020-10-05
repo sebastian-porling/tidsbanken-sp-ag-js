@@ -13,7 +13,8 @@ import se.experis.tidsbanken.server.utils.ResponseUtility;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class ImportExportController {
 
     @Autowired private AuthorizationService authService;
