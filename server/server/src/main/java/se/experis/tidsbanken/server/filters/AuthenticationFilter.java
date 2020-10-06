@@ -26,6 +26,10 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) servletRequest;
+        if (req.getRequestURI().startsWith("/api/login")) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
         if (!authorizationService.isAuthorized(req)) {
             ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;

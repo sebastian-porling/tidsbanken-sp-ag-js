@@ -22,7 +22,7 @@ public class FilterConfig {
                 = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(new AuthenticationFilter(authorizationService));
-        registrationBean.addUrlPatterns("/user/*", "/request/*", "/setting/*", "/import", "/export", "/ineligible/*", "/status/*");
+        registrationBean.addUrlPatterns("/api/*");
         registrationBean.setOrder(2);
         return registrationBean;
     }
