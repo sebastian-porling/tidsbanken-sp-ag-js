@@ -1,5 +1,6 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3400/";
+import { API_URL } from "@/constants/"
+axios.defaults.baseURL = API_URL;
 export default {
     state: {
         token: localStorage.getItem("access_token") || null,
