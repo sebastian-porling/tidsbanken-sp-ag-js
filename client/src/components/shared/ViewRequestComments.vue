@@ -119,12 +119,12 @@ export default {
   },
   methods: {
     deleteComment(comment) {
-      console.log(comment.message);
-      // Delete comment
-      this.$store.dispatch("deleteComment", {
-        requestId: this.request_id,
-        commentId: comment.id,
-      });
+      if (confirm(`You sure you want to delete this comment?`)) {
+        this.$store.dispatch("deleteComment", {
+          requestId: this.request_id,
+          commentId: comment.id,
+        });
+      }
     },
     editComment(comment) {
       console.log(comment.message);
