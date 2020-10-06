@@ -121,6 +121,14 @@ export default {
       get() {
         return this.$store.getters.getStatus;
       }
+    },
+    originalRequest: {
+      get() {
+        return this.originalRequest
+      },
+      set() {
+        return this.request
+      }
     }
   },
   filters: {
@@ -165,6 +173,7 @@ export default {
             this.closeModal();
           })
           .catch(() => {
+            this.request = this.originalRequest
           });
       } else {
         alert("You have to fill out all the required fields");

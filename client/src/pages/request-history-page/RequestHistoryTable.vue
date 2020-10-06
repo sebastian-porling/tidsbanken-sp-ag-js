@@ -61,6 +61,9 @@ export default {
         requests: {
             get() {
                 return this.$store.getters.getRequestHistory;
+            },
+            set() {
+                return this.$store.getters.getRequestHistory;
             }
         }
     },
