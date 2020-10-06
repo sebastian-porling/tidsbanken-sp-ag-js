@@ -90,6 +90,9 @@ export default {
       get() {
         return this.$store.getters.getAllUsers;
       },
+      set() {
+        return this.$store.getters.getAllUsers;
+      }
     },
   },
   methods: {

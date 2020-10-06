@@ -92,11 +92,17 @@ export default {
       get() {
         return this.$store.getters.getCurrentUser;
       },
+      set() {
+        return this.$store.getters.getCurrentUser;
+      }
     },
     requests: {
       get() {
         return this.$store.getters.getAllRequests;
       },
+      set() {
+        return this.$store.getters.getAllRequests;
+      }
     },
   },
   methods: {

@@ -23,7 +23,7 @@ export default {
       state.allUsers = [...state.allUsers, user];
     },
     removeUser(state, userId) {
-      state.allUsers.filter(u => u.id != userId);
+      state.allUsers = state.allUsers.filter(u => u.id != userId);
     }
   },
   actions: {
