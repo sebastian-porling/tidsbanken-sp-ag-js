@@ -110,7 +110,8 @@ public class UserController {
                         if (user.getUsedVacationDays() != null) updatedUser.setUsedVacationDays(user.getUsedVacationDays());
                         if (user.isAdmin() != null) updatedUser.setAdmin(user.isAdmin());
                     } else {
-                        if (user.isAdmin() != null) return responseUtility.forbidden();
+                        if (user.isAdmin() != null) return responseUtility.forbidden("Not authorized to change \"Is " +
+                                "Admin\" property");
                     }
                     if (user.isTwoFactorAuth() != null && !user.isTwoFactorAuth()) {
                         updatedUser.setTwoFactorAuth(false);
@@ -145,7 +146,7 @@ public class UserController {
             final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
             if (!authService.isAuthorizedAdmin(request) &&
                     authService.currentUser(request).getId().compareTo(userId) != 0) {
-                return responseUtility.forbidden();
+                return responseUtility.forbidden("Not authorized to deactivate user.");
             }
             if (fetchedUser.isPresent()) {
                 final User user = fetchedUser.get();

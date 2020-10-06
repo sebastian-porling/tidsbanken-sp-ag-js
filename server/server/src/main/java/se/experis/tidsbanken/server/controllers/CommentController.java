@@ -44,7 +44,7 @@ public class CommentController{
                 if (isRequestOwner(vr, request) || authService.isAuthorizedAdmin(request)) {
                     final List<Comment> comments = commentRepository.findAllByRequestOrderByCreatedAtAsc(vr);
                     return responseUtility.ok("All Comments For Request: " + vr.getId(), comments);
-                } else return responseUtility.forbidden();
+                } else return responseUtility.forbidden("Not authorized to fetch comments for this post");
             } else return responseUtility.notFound("Vacation Request Not Found");
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -73,7 +73,7 @@ public class CommentController{
                     } catch (Exception e) {
                         logger.error(e.getMessage());
                         return responseUtility.errorMessage("create comment"); }
-                } else return responseUtility.forbidden();
+                } else return responseUtility.forbidden("Not authorized to create comment on this post.");
             } else return responseUtility.notFound("Vacation Request Not Found");
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -88,7 +88,7 @@ public class CommentController{
         final Optional<VacationRequest> vrOp = requestRepository.findById(requestId);
         if (vrOp.isPresent()) {
             if (!authService.isAuthorizedAdmin(request) && !isRequestOwner(vrOp.get(), request))
-                return responseUtility.forbidden();
+                return responseUtility.forbidden("Not authorized to fetch comment.");
             try {
                 final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
                 return commentOp.map(comment -> responseUtility
@@ -112,13 +112,15 @@ public class CommentController{
                 final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
                 if (commentOp.isPresent()) {
                     final Comment patchComment = commentOp.get();
-                    if(isCommentOwner(patchComment, request) && isPastTwentyFourHours(patchComment)) {
-                        if(comment.getMessage() != null) patchComment.setMessage(comment.getMessage());
-                        patchComment.updateModifiedAt();
-                        final Comment updatedComment = commentRepository.save(patchComment);
-                        notifyUsers(vrOp.get(), authService.currentUser(request), " has updated their comment on ");
-                        return responseUtility.ok("Updated", updatedComment);
-                    } else return responseUtility.forbidden();
+                    if(isCommentOwner(patchComment, request)) {
+                        if(isPastTwentyFourHours(patchComment)) {
+                            if(comment.getMessage() != null) patchComment.setMessage(comment.getMessage());
+                            patchComment.updateModifiedAt();
+                            final Comment updatedComment = commentRepository.save(patchComment);
+                            notifyUsers(vrOp.get(), authService.currentUser(request), " has updated their comment on ");
+                            return responseUtility.ok("Updated", updatedComment);
+                        } else return responseUtility.forbidden("Not allowed to edit comments after 24 hours.");
+                    } else return responseUtility.forbidden("Can not edit comments from other users.");
                 } else return responseUtility.notFound("Comment Not Found");
             } catch (Exception e) {
                 logger.error(e.getMessage());
@@ -137,7 +139,7 @@ public class CommentController{
                 final Optional<Comment> commentOp = commentRepository.findByIdAndRequestOrderByCreatedAtAsc(commentId, vrOp.get());
                 if (commentOp.isPresent()) {
                     if (!authService.isAuthorizedAdmin(request) && !isCommentOwner(commentOp.get(), request))
-                        return responseUtility.forbidden();
+                        return responseUtility.forbidden("Not authorized to delete comment.");
                     if (isPastTwentyFourHours(commentOp.get())) {
                         commentRepository.delete(commentOp.get());
                         notifyUsers(vrOp.get(), authService.currentUser(request), " has deleted their comment on ");

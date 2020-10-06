@@ -107,7 +107,7 @@ public class VacationController{
                     return responseUtility.ok("Vacation Request Found", vr);
                 if (filterApprovedAndOwnerRequests(vr, request)) {
                     return responseUtility.ok("Vacation Request Found", vr);
-                } else return responseUtility.forbidden();
+                } else return responseUtility.forbidden("Not authorized to view this request.");
             }
             return responseUtility.notFound("Vacation Request Not Found");
         } catch (Exception e) {
@@ -125,7 +125,8 @@ public class VacationController{
             final Optional<VacationRequest> vrOp = vrRepository.findById(requestId);
             if (vrOp.isPresent()) {
                 final VacationRequest vr = vrOp.get();
-                if(!vr.isPending()) return responseUtility.forbidden();
+                if(!vr.isPending()) return responseUtility.forbidden("Not authorized to update a request that is " +
+                        "moderated.");
                 final boolean isAdmin = authService.isAuthorizedAdmin(request);
                 final User currentUser = authService.currentUser(request);
                 final boolean isOwner = vr.getOriginalOwner().getId().equals(currentUser.getId());
@@ -156,7 +157,7 @@ public class VacationController{
                                     return responseUtility.badRequest("Request exceeds vacation day limit!");
                                 vr.getOriginalOwner().setUsedVacationDays(vr.getOriginalOwner().getUsedVacationDays()+days.intValue());
                             }
-                        } else {if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) return responseUtility.forbidden(); }
+                        } else {if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) return responseUtility.forbidden("Not authorized to change status on this request."); }
                         vr.setModifiedAt(new Date(System.currentTimeMillis()));
                         Set<ConstraintViolation<Object>> violations = validator.validate(vacationRequest);
                         if(violations.isEmpty()) {
@@ -168,7 +169,7 @@ public class VacationController{
                     } catch(Exception e) {
                         logger.error(e.getMessage());
                         return responseUtility.errorMessage("update request with id " + requestId); }
-                } else return responseUtility.forbidden();
+                } else return responseUtility.forbidden("Not authorized to edit this request.");
             } else return responseUtility.notFound("Vacation Request Not Found");
         } catch (Exception e) {
             logger.error(e.getMessage());
