@@ -62,7 +62,10 @@ public class SettingsController {
                 else return responseUtility.superBadRequest(violations);
             }
             return responseUtility.badRequest("Setting already exists");
-        }catch (Exception e) { return responseUtility.errorMessage(); }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return responseUtility.errorMessage();
+        }
     }
 
     @PatchMapping("/setting/{setting_id}")
