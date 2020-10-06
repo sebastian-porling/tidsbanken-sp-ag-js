@@ -14,7 +14,11 @@
     <v-list style="max-height: 225px" class="overflow-y-auto" v-if="!isLoading">
       <v-list-item v-for="comment in comments" :key="comment.id">
         <v-list-item-avatar>
-          <v-avatar color="light-blue" size="36">
+          <router-link
+                :to="{ name: 'RequestHistory', params: { id: comment.user.user_id.toString() } }"
+                style="text-decoration: none;"
+              >
+               <v-avatar color="light-blue" size="36">
             <img
               v-if="comment.user.profile_pic"
               :src="comment.user.profile_pic"
@@ -24,6 +28,8 @@
               comment.user.name | initials
             }}</span>
           </v-avatar>
+              </router-link>
+          
         </v-list-item-avatar>
 
         <v-list-item-content>
