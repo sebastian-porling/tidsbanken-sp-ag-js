@@ -1,59 +1,99 @@
 <template>
-  <v-list style="max-height: 225px" class="overflow-y-auto">
-    <v-list-item v-for="comment in comments" :key="comment.id">
-      <v-list-item-avatar>
-        <v-avatar color="light-blue" size="36">
-          <img
-            v-if="comment.user.profile_pic"
-            :src="comment.user.profile_pic"
-            :alt="comment.user.name | initials"
-          />
-          <span v-else class="white--text headline">{{
-            comment.user.name | initials
-          }}</span>
-        </v-avatar>
-      </v-list-item-avatar>
+  <v-container>
+    <v-skeleton-loader
+      v-if="isLoading"
+      v-bind="attrs"
+      type="list-item-avatar-three-line"
+    ></v-skeleton-loader>
+    <v-skeleton-loader
+      v-if="isLoading"
+      v-bind="attrs"
+      type="list-item-avatar-three-line"
+    ></v-skeleton-loader>
 
-      <v-list-item-content>
-        <v-list-item-title>{{ comment.user.name }}</v-list-item-title>
-        <v-list-item-subtitle>
+    <v-list style="max-height: 225px" class="overflow-y-auto" v-if="!isLoading">
+      <v-list-item v-for="comment in comments" :key="comment.id">
+        <v-list-item-avatar>
+          <v-avatar color="light-blue" size="36">
+            <img
+              v-if="comment.user.profile_pic"
+              :src="comment.user.profile_pic"
+              :alt="comment.user.name | initials"
+            />
+            <span v-else class="white--text headline">{{
+              comment.user.name | initials
+            }}</span>
+          </v-avatar>
+        </v-list-item-avatar>
 
-          <p>{{ comment.modified_at | formatDate }}</p>
+        <v-list-item-content>
+          <v-list-item-title>{{ comment.user.name }}</v-list-item-title>
+          <v-list-item-subtitle>
+            <p>{{ comment.modified_at | formatDate }}</p>
 
-          <p v-if="!editMode || currentComment !== comment.id" class="text-wrap" style="color: black">{{ comment.message }}</p>
+            <p
+              v-if="!editMode || currentComment !== comment.id"
+              class="text-wrap"
+              style="color: black"
+            >
+              {{ comment.message }}
+            </p>
 
-          <v-text-field 
-          v-if="editMode && currentComment === comment.id" 
-          v-on:keyup.enter="editComment(comment)" 
-          v-model="comment.message"
-          ></v-text-field>
+            <v-text-field
+              v-if="editMode && currentComment === comment.id"
+              v-on:keyup.enter="editComment(comment)"
+              v-model="comment.message"
+            ></v-text-field>
+          </v-list-item-subtitle>
+        </v-list-item-content>
 
-        </v-list-item-subtitle>
-      </v-list-item-content>
-
-      <v-list-item-action>
-            <v-icon small v-if="!editMode || currentComment !== comment.id" class="mr-2" @click="changeMode(comment.id)">mdi-pencil</v-icon>
-            <v-icon small v-if="editMode && currentComment === comment.id" class="mr-2" @click="changeMode(0)">mdi-close</v-icon>
+        <v-list-item-action>
+          <v-icon
+            small
+            v-if="!editMode || currentComment !== comment.id"
+            class="mr-2"
+            @click="changeMode(comment.id)"
+            >mdi-pencil</v-icon
+          >
+          <v-icon
+            small
+            v-if="editMode && currentComment === comment.id"
+            class="mr-2"
+            @click="changeMode(0)"
+            >mdi-close</v-icon
+          >
         </v-list-item-action>
         <v-list-item-action>
-              <v-icon small @click="deleteComment(comment)">mdi-delete</v-icon>
+          <v-icon small @click="deleteComment(comment)">mdi-delete</v-icon>
         </v-list-item-action>
-
-    </v-list-item>
-  </v-list>
+      </v-list-item>
+    </v-list>
+  </v-container>
 </template>
 
 <script>
 export default {
   props: ["request_id"],
   data() {
-      return {
-          editMode: false,
-          currentComment: null
-      }
+    return {
+      isLoading: true,
+      editMode: false,
+      currentComment: null,
+    };
   },
   created() {
-    this.$store.dispatch("retrieveComments", this.request_id);
+    this.$store
+      .dispatch("retrieveComments", this.request_id)
+      .then(() => {
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500);
+      });
   },
   computed: {
     comments: {
@@ -78,35 +118,33 @@ export default {
     },
   },
   methods: {
-      deleteComment(comment) {
-          console.log(comment.message);
-          // Delete comment
-          this.$store
-          .dispatch("deleteComment", {
-            requestId: this.request_id, 
-            commentId: comment.id
-            })
-      }, 
-      editComment(comment) {
-          console.log(comment.message);
-          // patch comment
-          this.$store
-          .dispatch("updateComment", {
-            requestId: this.request_id, 
-            message: comment.message,
-            commentId: comment.id
-            })
-          .then(() => {
-            this.changeMode(0);
-          })
-          .catch(() => {
-          });
-      },
-      changeMode(id){
-          this.editMode = !this.editMode;
-          this.currentComment = id;
+    deleteComment(comment) {
+      if (confirm(`You sure you want to delete this comment?`)) {
+        this.$store.dispatch("deleteComment", {
+          requestId: this.request_id,
+          commentId: comment.id,
+        });
       }
-  }
+    },
+    editComment(comment) {
+      console.log(comment.message);
+      // patch comment
+      this.$store
+        .dispatch("updateComment", {
+          requestId: this.request_id,
+          message: comment.message,
+          commentId: comment.id,
+        })
+        .then(() => {
+          this.changeMode(0);
+        })
+        .catch(() => {});
+    },
+    changeMode(id) {
+      this.editMode = !this.editMode;
+      this.currentComment = id;
+    },
+  },
 };
 </script>
 

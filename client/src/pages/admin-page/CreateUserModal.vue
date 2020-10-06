@@ -1,7 +1,9 @@
 <template>
   <v-dialog v-model="dialog" persistent width="600px">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn v-bind="attrs" fab small v-on="on" color="success" class="add-btn">+</v-btn>
+      <v-btn v-bind="attrs" fab small v-on="on" color="success" class="add-btn"
+        >+</v-btn
+      >
     </template>
     <v-card>
       <v-card-title>
@@ -11,10 +13,20 @@
         <v-form v-model="valid">
           <v-row>
             <v-col cols="10">
-              <v-text-field label="Name*" v-model="name" required :rules="nameRules"></v-text-field>
+              <v-text-field
+                label="Name*"
+                v-model="name"
+                required
+                :rules="nameRules"
+              ></v-text-field>
             </v-col>
             <v-col cols="10">
-              <v-text-field label="Email*" v-model="email" required :rules="emailRules"></v-text-field>
+              <v-text-field
+                label="Email*"
+                v-model="email"
+                required
+                :rules="emailRules"
+              ></v-text-field>
             </v-col>
             <v-col cols="10">
               <v-text-field
@@ -44,7 +56,10 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="red darken-1" text @click="dialog = false">Cancel</v-btn>
-        <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Create</v-btn>
+        <v-progress-circular v-if="isLoading" indeterminate color="green"></v-progress-circular>
+        <v-btn v-if="!isLoading" color="green darken-1" text @click="submit" :disabled="!valid"
+          >Create</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -55,6 +70,7 @@ export default {
   name: "CreateUserModal",
   data() {
     return {
+      isLoading: false,
       dialog: false,
       valid: true,
       name: "",
@@ -87,6 +103,7 @@ export default {
   methods: {
     submit() {
       if (this.valid) {
+        this.isLoading = true;
         this.$store
           .dispatch("createUser", {
             full_name: this.name,
@@ -96,11 +113,10 @@ export default {
             is_admin: this.admin,
           })
           .then(() => {
+            this.isLoading = false;
             this.dialog = false;
           })
-          .catch(() => {
-            
-          });
+          .catch(() => this.isLoading = false);
       }
     },
   },
@@ -109,8 +125,8 @@ export default {
 
 <style>
 .add-btn {
-   position: absolute;
-   right: 10px; 
-   top: 10px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 </style>

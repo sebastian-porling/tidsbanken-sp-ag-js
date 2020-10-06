@@ -42,7 +42,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red darken-1" text @click="dialog = false">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Submit</v-btn>
+          <v-progress-circular v-if="isLoading" indeterminate color="green"></v-progress-circular>
+          <v-btn v-if="!isLoading" color="green darken-1" text @click="submit" :disabled="!valid">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -53,6 +54,7 @@ export default {
     name: 'CreateRequestModal',
     data() {
         return {
+          isLoading: false,
             dialog: false,
             today: new Date().toJSON().slice(0,10),
             valid: true,
@@ -77,6 +79,7 @@ export default {
     methods: {
       submit() {
         if (this.valid) {
+          this.isLoading = true
           this.$store.dispatch('createVacationRequest', {title: this.title, start: this.start, end: this.end})
           .then(request => {
             if (this.comment !== "") {
@@ -84,9 +87,9 @@ export default {
             }
               this.$emit("openRequestModal", request);
               this.reset();
+              this.isLoading = false
           })
-          .catch(() => {
-          })
+          .catch(() => this.isLoading = false)
         } else {
           this.errorMessage = "You have to fill out all the required fields";
         }
