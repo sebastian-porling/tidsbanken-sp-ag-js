@@ -30,7 +30,7 @@ export default {
     components: {
         "view-request-modal": ViewRequestModal
     },
-    props: [ 'user' ],
+    props: [ 'user', 'userId' ],
     data() {
         return {
             headers: [
@@ -54,7 +54,7 @@ export default {
     },
     created() {
         this.$store.dispatch(
-            "retrieveRequestHistory", this.user.id
+            "retrieveRequestHistory", this.userId
         );
     },
     computed: {

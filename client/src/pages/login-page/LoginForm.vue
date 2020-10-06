@@ -47,22 +47,6 @@
         </v-form>
       </v-card>
     </v-col>
-
-    <!-- Does not look nice. Makes the page look like its flickering.. Remove?  -->
-      <v-col cols="12" sm="8" md="6" lg="4" xl="3" v-if="isLoading" class="qr">
-      <v-sheet v-if="isLoading" 
-      class="pa-2" 
-      :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
-      >
-        <v-skeleton-loader
-          v-bind="attrs"
-          class="mx-auto"
-          max-width="600"
-          max-height="275"
-          type="card-heading, list-item,  list-item,  actions"
-        ></v-skeleton-loader>
-      </v-sheet>
-    </v-col>
   </v-row>
 </template>
 
@@ -70,7 +54,6 @@
 export default {
   name: "LoginForm",
   data: () => ({
-    isLoading: true,
     submit: false,
     email: "",
     emailRules: [

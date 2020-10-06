@@ -6,7 +6,7 @@
       </v-row>
       <br />
       <v-card-text>
-        <RequestHistoryTable :user="user" />
+        <RequestHistoryTable :user="user" :userId="id" />
       </v-card-text>
     </v-card>
   </v-container>
@@ -29,20 +29,14 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch("retrieveAllUsers");
+    this.$store.dispatch("retrieveUser", this.id);
   },
   computed: {
     currentUser() {
       return this.$store.getters.getCurrentUser;
     },
     user() {
-      if (this.currentUser.is_admin) {
-        return this.$store.getters.getAllUsers.find(
-          (user) => user.id === parseInt(this.id)
-        )
-      } else {
-        return this.currentUser;
-      }
+      return this.$store.getters.getFetchedUser;
     },
   },
 };
