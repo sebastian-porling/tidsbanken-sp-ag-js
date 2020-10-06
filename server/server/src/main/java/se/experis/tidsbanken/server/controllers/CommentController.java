@@ -15,6 +15,7 @@ import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.*;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -160,7 +161,7 @@ public class CommentController{
 
     private boolean isPastTwentyFourHours(Comment comment) {
         final long DAY = 24 * 60 * 60 * 1000;
-        return comment.getCreatedAt().getTime() > System.currentTimeMillis() - DAY;
+        return comment.getCreatedAt().after(new Timestamp(System.currentTimeMillis() - DAY));
     }
 
     private void notifyUsers(VacationRequest vr, User performer, String message) {

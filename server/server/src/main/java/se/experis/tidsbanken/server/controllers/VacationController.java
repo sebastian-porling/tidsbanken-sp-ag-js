@@ -67,24 +67,28 @@ public class VacationController{
                                                         HttpServletRequest request) {
         try {
             if (!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
-            final User currentUser = authService.currentUser(request);
-            final List<VacationRequest> vacationRequests = vrRepository.findAllByOwner(currentUser);
-            final List<IneligiblePeriod> ips = ipRepository.findAllByOrderByStartDesc();
-            if (vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
-                    ips.stream().allMatch(vacationRequest::excludesInIP)) {
-                try {
-                    Set<ConstraintViolation<Object>> violations = validator.validate(vacationRequest);
-                    if(violations.isEmpty()) {
-                        final VacationRequest vr = vrRepository
-                                .save(vacationRequest.setStatus(StatusType.PENDING.getStatus()).setOwner(currentUser));
-                        return responseUtility.created("Created", vr);
-                    }
-                    else return responseUtility.superBadRequest(violations);
-                } catch (Exception e) {
-                    logger.error(e.getMessage());
-                    return responseUtility.errorMessage("create request");
-                }
-            } else { return responseUtility.badRequest("Overlaps with existing requests"); }
+            if (vacationRequest.getTitle() != null && vacationRequest.getStart() != null && vacationRequest.getEnd() != null ) {
+                final User currentUser = authService.currentUser(request);
+                final List<VacationRequest> vacationRequests = vrRepository.findAllByOwner(currentUser);
+                final List<IneligiblePeriod> ips = ipRepository.findAllByOrderByStartDesc();
+                if( vacationRequest.getStart().before(vacationRequest.getEnd())) {
+                    if (vacationRequests.stream().allMatch(vacationRequest::excludesInPeriod) &&
+                            ips.stream().allMatch(vacationRequest::excludesInIP)) {
+                        try {
+                            Set<ConstraintViolation<Object>> violations = validator.validate(vacationRequest);
+                            if(violations.isEmpty()) {
+                                final VacationRequest vr = vrRepository
+                                        .save(vacationRequest.setStatus(StatusType.PENDING.getStatus()).setOwner(currentUser));
+                                return responseUtility.created("Created", vr);
+                            }
+                            else return responseUtility.superBadRequest(violations);
+                        } catch (Exception e) {
+                            logger.error(e.getMessage());
+                            return responseUtility.errorMessage("create request");
+                        }
+                    } else { return responseUtility.badRequest("Overlaps with existing requests"); }
+                } else { return responseUtility.badRequest("End date can't be before start date."); }
+            } else { return responseUtility.badRequest("Could not process request. Missing some fields."); }
         } catch (Exception e) {
             logger.error(e.getMessage());
             return responseUtility.errorMessage("create request");
@@ -132,8 +136,11 @@ public class VacationController{
                         if (vacationRequest.getEnd() != null) vr.setEnd(vacationRequest.getEnd());
                         if (vacationRequest.getStart() != null || vacationRequest.getEnd() != null) {
                             if (!vrRepository.findAllByOwnerAndIdNot(vr.getOriginalOwner(), vr.getId()).stream().allMatch(vr::excludesInPeriod)
-                                    || !ipRepository.findAllByOrderByStartDesc().stream().allMatch(vr::excludesInIP))
+                                    || !ipRepository.findAllByOrderByStartDesc().stream().allMatch(vr::excludesInIP)) {
                                 return responseUtility.badRequest("Patched Vacation Request Overlaps");
+                            } else if( vacationRequest.getStart().after(vacationRequest.getEnd())) {
+                                return responseUtility.badRequest("End date can't be before start date.");
+                            }
                         }
                         if (isAdmin && !isOwner) {
                             if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) {

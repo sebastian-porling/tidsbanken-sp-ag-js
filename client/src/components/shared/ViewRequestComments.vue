@@ -35,7 +35,12 @@
         <v-list-item-content>
           <v-list-item-title>{{ comment.user.name }}</v-list-item-title>
           <v-list-item-subtitle>
-            <p>{{ comment.modified_at | formatDate }}</p>
+            <p>{{ comment.created_at | formatDate }}
+              <v-small
+              v-if="comment.created_at !== comment.modified_at"
+            small
+            ><i>(Edited)</i></v-small>
+            </p>
 
             <p
               v-if="!editMode || currentComment !== comment.id"
@@ -120,7 +125,8 @@ export default {
       if (!date) {
         return "";
       }
-      return date.substring(0, 10) + " at " + date.substring(11, 16);
+      console.log(date); //REMOVE
+      return date.substring(0, 10) + " at " + date.substring(11, 19);
     },
   },
   methods: {
