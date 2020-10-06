@@ -34,3 +34,4 @@ build/
 
 ### BUILD ###
 *static/
+*application-prod.yml
