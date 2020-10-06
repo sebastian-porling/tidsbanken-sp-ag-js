@@ -43,11 +43,6 @@
                 </template>
             </v-data-table>
         </v-card-text>
-        <v-card-actions>
-            <v-row justify="end" style="margin-right: 10px;">
-                <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-            </v-row>
-        </v-card-actions>
     </v-card>
 </template>
 
@@ -85,12 +80,6 @@ export default {
         }
     },
     methods: {
-        closeModal() {
-            this.$emit("closeModal");
-        },
-        openModal() {
-            this.dialog = true;
-        },
         deleteSetting(settingId) {
           this.$store.dispatch('deleteSetting', settingId);
         },

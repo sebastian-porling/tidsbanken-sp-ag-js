@@ -1,8 +1,8 @@
 <template>
-    <v-dialog v-model="active" persistent width="600px">
+    <v-container v-model="active">
         <settings-info v-if="!showEdit" @editSetting="toggleCard" @closeModal="closeModal"/>
         <settings-edit-form v-else @showSettings="toggleCard" :setting="setting"/>
-    </v-dialog>
+    </v-container>
 </template>
 
 <script>
