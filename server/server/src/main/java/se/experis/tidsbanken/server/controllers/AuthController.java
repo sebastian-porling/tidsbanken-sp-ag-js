@@ -49,12 +49,12 @@ public class AuthController {
                     } else { throw new Exception("Wrong code!"); }
                 } else {
                     loginAttemptService.addFailedLoginAttempt(request);
-                    throw new Exception("");
+                    return responseUtility.badRequest("Email or password is incorrect.");
                 }
-            } else { throw new Exception(""); }
+            } else { return responseUtility.badRequest("You need to provide both email and password to sign in"); }
         } catch (HttpServerErrorException.InternalServerError e) {
             logger.error(e.getMessage());
-            return responseUtility.errorMessage("login authentication");
+            return responseUtility.errorMessage("Login authentication failed");
         } catch (Exception e) {
             return responseUtility.unauthorized();
         }

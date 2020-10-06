@@ -32,7 +32,9 @@ export default {
                     authorization: `Bearer ${rootGetters.getToken}`
                 }
             })
-            .then(response => commit('setAllSettings', response.data.data))
+            .then(response => {
+                commit('setAllSettings', response.data.data)
+            })
             .catch(error => console.log(error.response));
         },
         deleteSetting({commit, rootGetters}, settingId) {
@@ -41,9 +43,12 @@ export default {
                     authorization: `Bearer ${rootGetters.getToken}`
                 }
             })
-            .then(commit('removeSettingById', settingId))
+            .then(() => {
+                commit('removeSettingById', settingId)
+            })
             .catch(error => {
                 console.log(error.response)
+                commit("setResponse", error.response.data.message);
                 commit("setTypeIsError", true)
                 commit("setIsAlert", true);
             }
@@ -66,8 +71,15 @@ export default {
                     authorization: `Bearer ${rootGetters.getToken}`
                 }
             })
-            .then(response => commit('replaceSetting', response.data.data))
-            .catch(error => console.log(error.response));
+            .then(response =>{
+                commit('replaceSetting', response.data.data)
+            })
+            .catch(error => {
+                console.log(error.response)
+                commit("setResponse", error.response.data.message);
+                commit("setTypeIsError", true)
+                commit("setIsAlert", true);
+            });
         },
         createSetting({commit, rootGetters}, setting) {
             axios.post(`/setting`, setting, {
@@ -77,11 +89,10 @@ export default {
             })
             .then(response => {
                 commit('addSetting', response.data.data)
-                commit("setResponse", response.data.message);
-                commit("setIsAlert", true);
             })
             .catch(error => {
                 console.log(error)
+                commit("setResponse", error.response.data.message);
                 commit("setTypeIsError", true)
                 commit("setIsAlert", true)
             });

@@ -37,7 +37,7 @@ export default {
                 })
             })
         },
-        importData({rootGetters}, data) {
+        importData({rootGetters, commit}, data) {
             return new Promise((resolve, reject) => {
                 axios.post('import', data, {
                     headers: {
@@ -46,9 +46,14 @@ export default {
                 })
                 .then(response => {
                     resolve(response);
+                    commit("setResponse", response.data.message);
+                    commit("setIsAlert", true);
                 })
                 .catch(error => {
                     reject(error);
+                    commit("setResponse", error.response.data.message);
+                    commit("setTypeIsError", true)
+                    commit("setIsAlert", true);
                 })
             })
         }

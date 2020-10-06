@@ -17,8 +17,7 @@ export default {
         },
         getToken(state) {
             return state.token;
-        },
-        
+        },    
     },
     mutations: {
         setCurrentUser(state, user) {
@@ -29,8 +28,10 @@ export default {
             state.token = null;
         },
         updateCurrentUser(state, user) {
-            localStorage.setItem("user", JSON.stringify(user));
-            state.user = user;
+            if (user.id === state.user.id) {
+                localStorage.setItem("user", JSON.stringify(user));
+                state.user = user;
+            }
         }
     },
     actions: {
@@ -68,6 +69,9 @@ export default {
                     })
                     .catch(error => {
                         reject(error.response);
+                        context.commit("setResponse", error.response.data.message);
+                        context.commit("setTypeIsError", true)
+                        context.commit("setIsAlert", true);
                     });
             });
         },

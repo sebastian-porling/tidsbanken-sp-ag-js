@@ -16,8 +16,8 @@ public class ResponseUtility {
         return buildResponse(HttpStatus.UNAUTHORIZED, "Not Authorized");
     }
 
-    public ResponseEntity<CommonResponse> forbidden() {
-        return buildResponse(HttpStatus.FORBIDDEN, "Forbidden");
+    public ResponseEntity<CommonResponse> forbidden(String message) {
+        return buildResponse(HttpStatus.FORBIDDEN, "Forbidden. " + message);
     }
 
     public ResponseEntity<CommonResponse> errorMessage(String process) {

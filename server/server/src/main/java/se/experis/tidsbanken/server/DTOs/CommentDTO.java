@@ -1,20 +1,24 @@
 package se.experis.tidsbanken.server.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.tomcat.jni.Local;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.*;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class CommentDTO {
     @NonNull
     private String message;
     @NonNull
     private Long userId;
-    private Date createdAt;
-    private Date modifiedAt;
+    private Timestamp createdAt;
+    private Timestamp modifiedAt;
 
-    public CommentDTO(String message, Long userId, Date createdAt, Date modifiedAt) {
+    public CommentDTO(String message, Long userId, Timestamp createdAt, Timestamp modifiedAt) {
         this.message = message;
         this.userId = userId;
         this.createdAt = createdAt;
@@ -31,12 +35,12 @@ public class CommentDTO {
     }
 
     @JsonProperty("created_at")
-    public Date getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
     @JsonProperty("modified_at")
-    public Date getModifiedAt() {
+    public Timestamp getModifiedAt() {
         return modifiedAt;
     }
 }

@@ -1,5 +1,6 @@
 package se.experis.tidsbanken.server.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
@@ -7,6 +8,9 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 @Entity
@@ -30,10 +34,14 @@ public class Comment {
     private User user;
 
     @Column(nullable = false)
-    private Date createdAt = new java.sql.Date(System.currentTimeMillis());
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd h:mm a")
+    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+    //private Date createdAt = new java.sql.Date(System.currentTimeMillis());
 
     @Column(nullable = false)
-    private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd h:mm a")
+    private Timestamp modifiedAt = new Timestamp(System.currentTimeMillis());
+    //private Date modifiedAt = new java.sql.Date(System.currentTimeMillis());
 
     public Comment() { }
 
@@ -68,12 +76,12 @@ public class Comment {
     }
 
     @JsonProperty("created_at")
-    public Date getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
     @JsonProperty("modified_at")
-    public Date getModifiedAt() {
+    public Timestamp getModifiedAt() {
         return modifiedAt;
     }
 
@@ -92,14 +100,14 @@ public class Comment {
     }
 
     public void updateModifiedAt() {
-        this.modifiedAt = new java.sql.Date(System.currentTimeMillis());
+        this.modifiedAt = new Timestamp(System.currentTimeMillis());
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setModifiedAt(Date modifiedAt) {
+    public void setModifiedAt(Timestamp modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }

@@ -6,7 +6,7 @@
       :multi-line="'multi-line'"
       :top="'top'"
     >
-        {{ response || "What?" }}
+        {{ response }}
       <template v-slot:action="{ attrs }">
         <v-btn
           dark

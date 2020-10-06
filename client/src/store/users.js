@@ -5,11 +5,15 @@ axios.defaults.baseURL = "http://localhost:3400/";
 export default {
   state: {
     allUsers: [],
+    fetchedUser: {}
   },
   getters: {
     getAllUsers(state) {
       return state.allUsers;
     },
+    getFetchedUser(state) {
+      return state.fetchedUser;
+    }
   },
   mutations: {
     setAllUsers(state, users) {
@@ -23,7 +27,10 @@ export default {
       state.allUsers = [...state.allUsers, user];
     },
     removeUser(state, userId) {
-      state.allUsers.filter(u => u.id != userId);
+      state.allUsers = state.allUsers.filter(u => u.id != userId);
+    },
+    setFetchedUser(state, user) {
+      state.fetchedUser = user;
     }
   },
   actions: {
@@ -37,6 +44,21 @@ export default {
         .then((response) => {
           const allUsers = response.data.data;
           context.commit("setAllUsers", allUsers);
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    },
+    retrieveUser(context, userId) {
+      axios
+        .get(`/user/${userId}`, {
+          headers: {
+            authorization: `Bearer ${context.rootGetters.getToken}`,
+          },
+        })
+        .then((response) => {
+          const user = response.data.data;
+          context.commit("setFetchedUser", user);
         })
         .catch((error) => {
           console.log(error.response);
