@@ -1,6 +1,5 @@
 <template>
   <v-app id="inspire">
-    <!-- Header should only be visible if the user is logged in  -->
     <Header />
     <response-alert v-if="isAlert" />
     <router-view :key="$route.path" />

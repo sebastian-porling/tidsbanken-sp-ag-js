@@ -16,7 +16,7 @@
       <v-btn text @click="loginMultiAuth" color="indigo lighten-2">Login</v-btn>
     </v-col>
 
-    <v-col cols="12" sm="8" md="6" lg="4" xl="3" v-else-if="!isLoading">
+    <v-col cols="12" sm="8" md="6" lg="4" xl="3" v-else>
       <v-card style="margin: 0 20px">
         <v-card-title>Sign in</v-card-title>
 
@@ -79,11 +79,6 @@ export default {
         return window.innerWidth < 700;
       },
     },
-  },
-  mounted() {
-    window.addEventListener('load', () => {
-      this.isLoading = false;
-    })
   },
   methods: {
     login() {

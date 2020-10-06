@@ -25,7 +25,8 @@ public class RequestAttemptFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) servletRequest;
         if (!loginAttemptService.checkFailedLoginAttempt(req)) {
-            ((HttpServletResponse) servletResponse).sendError(HttpStatus.TOO_MANY_REQUESTS.value());
+            ((HttpServletResponse) servletResponse).sendError(HttpStatus.TOO_MANY_REQUESTS.value(), "To many requests" +
+                    ". Your account is blocked. Try again later.");
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);

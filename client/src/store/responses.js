@@ -31,7 +31,6 @@ export default {
     },
     actions: {
         disableIsAlert(context) {
-            console.log("disabeling");
             context.commit("setIsAlert", false);
             context.commit("setResponse", null);
             context.commit("setTypeIsError", false);

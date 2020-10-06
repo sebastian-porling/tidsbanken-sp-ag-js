@@ -69,6 +69,9 @@ export default {
                     })
                     .catch(error => {
                         reject(error.response);
+                        context.commit("setResponse", error.response.data.message);
+                        context.commit("setTypeIsError", true)
+                        context.commit("setIsAlert", true);
                     });
             });
         },
