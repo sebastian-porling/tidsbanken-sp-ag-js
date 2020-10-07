@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-const API_URL = "http://localhost:4121";
+import { SOCKET_URL } from "@/constants/"
 
 export default {
     state: {
@@ -40,9 +40,10 @@ export default {
     actions: {
         establishClientSocket({commit, rootGetters}) {
             if (rootGetters.getToken === null) return; 
-            const socket = io(API_URL, {
+            const socket = io(SOCKET_URL, {
                 transports: ["websocket"],
-                query: { token: rootGetters.getToken}
+                query: { token: rootGetters.getToken},
+                secure: true,
             });
             socket.on('notification', (notification) => {
                 commit('addNotification', notification);

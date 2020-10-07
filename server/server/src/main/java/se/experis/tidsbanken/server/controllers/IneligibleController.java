@@ -22,7 +22,8 @@ import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class IneligibleController{
     @Autowired private IneligiblePeriodRepository ipRepository;
     @Autowired private AuthorizationService authService;

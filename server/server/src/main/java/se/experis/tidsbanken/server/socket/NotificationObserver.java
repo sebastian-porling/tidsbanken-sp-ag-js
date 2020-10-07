@@ -12,7 +12,6 @@ import java.util.Optional;
 public class NotificationObserver {
 
     @Autowired SocketStore socketStore;
-
     @Autowired NotificationRepository notificationRepository;
 
     public void sendNotification(String message, User recipient) {

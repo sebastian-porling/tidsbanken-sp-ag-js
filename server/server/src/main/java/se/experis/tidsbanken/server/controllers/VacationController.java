@@ -21,7 +21,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class VacationController{
 
     @Autowired private VacationRequestRepository vrRepository;

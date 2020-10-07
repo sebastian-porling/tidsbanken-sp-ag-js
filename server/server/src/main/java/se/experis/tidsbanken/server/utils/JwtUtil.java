@@ -1,6 +1,7 @@
 package se.experis.tidsbanken.server.utils;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import se.experis.tidsbanken.server.models.User;
 
@@ -10,7 +11,8 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    final private String SECRET = "test";
+    @Value("${jwt.secret}")
+    private String SECRET;
 
     public Long extractUserId(String token) {
         final Claims claims = extractAllClaims(token);

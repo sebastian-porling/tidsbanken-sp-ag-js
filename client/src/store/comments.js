@@ -1,7 +1,9 @@
 import axios from "axios";
+import { API_URL } from "@/constants/"
+axios.defaults.baseURL = API_URL;
 import Vue from "vue";
 
-axios.defaults.baseURL = "http://localhost:3400/";
+
 export default {
   state: {
     comments: [],

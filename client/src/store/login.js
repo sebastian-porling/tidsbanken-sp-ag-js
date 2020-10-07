@@ -1,5 +1,6 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3400/";
+import { API_URL } from "@/constants/"
+axios.defaults.baseURL = API_URL;
 export default {
     state: {
         token: localStorage.getItem("access_token") || null,
@@ -69,9 +70,11 @@ export default {
                     })
                     .catch(error => {
                         reject(error.response);
-                        context.commit("setResponse", error.response.data.message);
-                        context.commit("setTypeIsError", true)
-                        context.commit("setIsAlert", true);
+                        if (!error.respnse.data.message.inclues("code")) {
+                            context.commit("setResponse", error.response.data.message);
+                            context.commit("setTypeIsError", true)
+                            context.commit("setIsAlert", true);
+                        }
                     });
             });
         },
