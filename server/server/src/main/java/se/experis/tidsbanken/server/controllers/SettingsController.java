@@ -62,13 +62,8 @@ public class SettingsController {
             }
             return responseUtility.badRequest("Setting already exists");
         }catch (Exception e) {
-<<<<<<< HEAD
-            e.printStackTrace();
-            return responseUtility.errorMessage();
-=======
             logger.error(e.getMessage());
             return responseUtility.errorMessage("create new setting");
->>>>>>> 47897119bd8ae2427c0f89ef035a1a921039f60c
         }
     }
 

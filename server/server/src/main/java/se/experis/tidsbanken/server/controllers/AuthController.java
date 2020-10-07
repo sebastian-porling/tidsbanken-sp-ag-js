@@ -33,8 +33,11 @@ public class AuthController {
                                                 HttpServletRequest request) {
         try {
             if (credentials.getEmail() != null && credentials.getPassword() != null) {
+                System.out.println("In controller");
                 final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(credentials.getEmail());
+                System.out.println("fetched user");
                 if (fetchedUser.isPresent() && fetchedUser.get().getPassword().equals(credentials.getPassword())) {
+                    System.out.println("user exists!");
                     final User presentUser = fetchedUser.get();
                     if(!presentUser.isTwoFactorAuth()) {
                         presentUser.setTwoFactorAuth(true);
@@ -56,7 +59,8 @@ public class AuthController {
             logger.error(e.getMessage());
             return responseUtility.errorMessage("Login authentication failed");
         } catch (Exception e) {
-            return responseUtility.unauthorized();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new CommonResponse().message("Failed authentication " + e.getMessage()));
         }
     }
 }
