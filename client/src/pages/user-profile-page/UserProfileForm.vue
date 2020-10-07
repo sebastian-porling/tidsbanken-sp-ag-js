@@ -1,4 +1,28 @@
 <template>
+<div>
+<v-sheet
+      v-if="isLoading"
+      class="pa-8"
+    >
+    <v-layout
+          justify-center
+          align-center 
+        >
+    <v-row justify="center">
+      <v-skeleton-loader
+        v-bind="attrs"
+        class="mx-auto"
+        min-width="600"
+        min-height="1200"
+        type="avatar, card-heading, list-item, list-item, list-item, actions"
+      ></v-skeleton-loader>
+      </v-row>
+      </v-layout>
+    </v-sheet>
+   
+
+    <transition name="fade">
+      <v-row v-if="!isLoading">
       <v-card max-width="600px" style="padding: 10px; margin: 10px;">
         <v-card-text align="center" justify="center">
           <v-avatar color="indigo" size="120" v-model="user.profile_pic">
@@ -45,9 +69,21 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-2" text @click="openTwoFactorModal">New 2FA</v-btn>
-          <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
+            <v-progress-circular
+        v-if="isLoading"
+        indeterminate
+        color="green"
+        ></v-progress-circular>
+        <v-btn v-if="!isLoading" color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
         </v-card-actions>
       </v-card>
+      
+      
+      </v-row>
+      
+    </transition>
+    
+    </div>
 </template>
 
 <script>
@@ -57,7 +93,13 @@ export default {
   components: {
     "change-profile-picture-modal": ChangeProfilePictureModal
   },
+  inject: {
+    theme: {
+      default: { isDark: false },
+    },
+  },
   data: () => ({
+    isLoading: false || true,
     valid: true,
     activateModal: false,
     nameRules: [
@@ -78,6 +120,11 @@ export default {
       (v) => (v && v === this.password) || "Passwords does not match"
     ], */
   }),
+    created() {
+    this.$store.dispatch("retrieveAllUsers").then(() => {
+      setTimeout(() => (this.isLoading = false), 500);
+    });
+  },
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
@@ -85,6 +132,7 @@ export default {
     user: {
       get() {
         return this.$store.getters.getCurrentUser;
+        
       },
     },
   },
@@ -99,6 +147,7 @@ export default {
       this.activateModal = false;
     },
     submit() {
+      this.isLoading = true;
       this.$store
         .dispatch("updateUser", {
           id: this.user.id,
@@ -106,9 +155,15 @@ export default {
           email: this.user.email,
         })
         .then(() => {
+          setTimeout(() => {
+              this.isLoading = false;
           this.changePassword();
+          }, 500)
         })
         .catch(() => {
+          setTimeout(() => {
+            this.isLoading = false;
+            }, 500)
         });
     },
     changePassword() {

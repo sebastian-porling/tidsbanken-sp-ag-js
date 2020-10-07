@@ -1,5 +1,20 @@
 <template>
-    <v-row justify="center">
+<v-container>
+    <v-sheet
+      v-if="isLoading"
+      class="pa-10"
+    >
+      <v-skeleton-loader
+        v-bind="attrs"
+        class="mx-auto"
+        min-width="600"
+        max-height="800"
+        type="image, table-tfoot"
+      ></v-skeleton-loader>
+    </v-sheet>
+
+    <transition name="fade">
+      <v-row v-if="!isLoading">
         <v-data-table
             :headers="headers"
             :items="requests"
@@ -21,6 +36,8 @@
             @closeModal="closeModal"
         />
     </v-row>
+        </transition>
+  </v-container>
 </template>
 
 <script>
@@ -30,9 +47,15 @@ export default {
     components: {
         "view-request-modal": ViewRequestModal
     },
+      inject: {
+    theme: {
+      default: { isDark: false },
+    },
+  },
     props: [ 'user', 'userId' ],
     data() {
         return {
+             isLoading: true,
             headers: [
                 {
                     text: "Title",
@@ -54,7 +77,8 @@ export default {
     },
     created() {
         this.$store.dispatch(
-            "retrieveRequestHistory", this.userId
+            "retrieveRequestHistory", this.user.id,
+            setTimeout(() => (this.isLoading = false), 500)
         );
     },
     computed: {

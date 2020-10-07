@@ -22,9 +22,13 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-        <v-btn color="primary darken-1" text @click="submit" :disabled="!valid"
-          >Submit</v-btn
-        >
+        <v-progress-circular
+        v-if="isLoading"
+        indeterminate
+        color="green"
+        ></v-progress-circular>
+        <v-btn v-if="!isLoading" color="primary darken-1" text @click="submit" :disabled="!valid">Submit</v-btn>
+
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -35,6 +39,7 @@ export default {
   name: "ChangeProfilePictureModal",
   data() {
     return {
+       isLoading: false,
       valid: true,
       picRules: [
           (v) => !!v || "Url is required",
@@ -54,15 +59,22 @@ export default {
       this.dialog = true;
     },
     submit() {
+      this.isLoading = true;
       this.$store
         .dispatch("updateUser", {
           id: this.user.id,
           profile_pic: this.url,
         })
         .then(() => {
+            setTimeout(() => {
+          this.isLoading = false;
           this.closeModal();
+          }, 500)
         })
         .catch(() => {
+           setTimeout(() => {
+            this.isLoading = false;
+            }, 500)
         });
     },
   },

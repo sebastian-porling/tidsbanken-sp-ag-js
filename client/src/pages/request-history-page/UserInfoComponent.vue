@@ -1,6 +1,22 @@
 <template>
+<v-container>
+    <v-sheet
+      v-if="isLoading"
+      class="pa-10"
+    >
+      <v-skeleton-loader
+        v-bind="attrs"
+        class="mx-auto"
+        min-width="600"
+        max-height="140"
+        type="list-item-avatar, list-item"
+      ></v-skeleton-loader>
+    </v-sheet>
+
+    <transition name="fade">
+      <v-row v-if="!isLoading">
   <v-col>
-    <v-row justify="center" align="center">
+     <v-row justify="center" align="center">
       <v-avatar color="indigo" size="60" class="my-4" v-model="user.profile_pic">
         <span v-if="!user.profile_pic" class="white--text headline">
           {{ user.full_name | initials }}
@@ -8,7 +24,7 @@
         <img v-if="user.profile_pic" :src="user.profile_pic" alt="profilePic" />
       </v-avatar>
       <h1 class="px-6">{{ user.full_name }}</h1>
-    </v-row>
+      </v-row>
     <v-row justify="center" align="center" v-if="currentUser.id === user.id">
       <h3>
         Vacation days:
@@ -17,12 +33,31 @@
       </h3>
     </v-row>
   </v-col>
+      </v-row>
+     </transition>
+  </v-container>
 </template>
 
 <script>
 export default {
   name: "UserInfoComponent",
+   inject: {
+    theme: {
+      default: { isDark: false },
+    },
+  },
   props: ["user"],
+  data() {
+        return {
+             isLoading: true,
+        }
+  },
+  created() {
+        this.$store.dispatch(
+            "retrieveAllUsers", this.user.id,
+            setTimeout(() => (this.isLoading = false), 500)
+        );
+    },
   computed: {
     currentUser() {
       return this.$store.getters.getCurrentUser;

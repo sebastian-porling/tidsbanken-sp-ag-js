@@ -4,6 +4,7 @@
       v-if="isLoading"
       class="pa-10"
     >
+    
       <v-skeleton-loader
         v-bind="attrs"
         class="mx-auto"
