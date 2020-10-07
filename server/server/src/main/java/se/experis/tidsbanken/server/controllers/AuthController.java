@@ -1,13 +1,17 @@
 package se.experis.tidsbanken.server.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.client.HttpServerErrorException;
 import se.experis.tidsbanken.server.DTOs.LoginDTO;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.UserRepository;
 import se.experis.tidsbanken.server.services.LoginAttemptService;
+import se.experis.tidsbanken.server.socket.SocketHandler;
 import se.experis.tidsbanken.server.utils.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +26,7 @@ public class AuthController {
     @Autowired private ResponseUtility responseUtility;
     @Autowired private TwoFactorAuth twoFactorAuth;
     @Autowired private LoginAttemptService loginAttemptService;
+    private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/login")
     public ResponseEntity<CommonResponse> login(@RequestBody Credentials credentials,
@@ -44,12 +49,14 @@ public class AuthController {
                     } else { throw new Exception("Wrong code!"); }
                 } else {
                     loginAttemptService.addFailedLoginAttempt(request);
-                    throw new Exception("");
+                    return responseUtility.badRequest("Email or password is incorrect.");
                 }
-            } else { throw new Exception(""); }
+            } else { return responseUtility.badRequest("You need to provide both email and password to sign in"); }
+        } catch (HttpServerErrorException.InternalServerError e) {
+            logger.error(e.getMessage());
+            return responseUtility.errorMessage("Login authentication failed");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new CommonResponse().message("Failed authentication " + e.getMessage()));
+            return responseUtility.unauthorized();
         }
     }
 }

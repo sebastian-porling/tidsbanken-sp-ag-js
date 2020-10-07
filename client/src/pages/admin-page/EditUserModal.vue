@@ -35,7 +35,9 @@
         <v-spacer></v-spacer>
         <v-btn color="grey darken-1" text @click="changeMode">Change password</v-btn>
         <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-        <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
+        <v-progress-circular v-if="isLoading" indeterminate color="green"></v-progress-circular>
+        <v-btn v-if="!isLoading" color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
+      
       </v-card-actions>
     </v-card>
 </template>
@@ -45,6 +47,7 @@ export default {
   name: "EditUserModal",
   data() {
     return {
+      isLoading: false,
       valid: true,
       nameRules: [
         (v) => !!v || "Name is required",
@@ -75,6 +78,7 @@ export default {
     },
     submit() {
       if (this.valid) {
+        this.isLoading = true;
         this.$store
           .dispatch("updateUser", {
             id: this.user.id,
@@ -85,9 +89,15 @@ export default {
             two_factor_auth: this.resetTwoFactor ? !this.resetTwoFactor : null 
           })
           .then(() => {
-            this.closeModal();
+            setTimeout(() => {
+              this.isLoading = false;
+              this.closeModal();
+            }, 500)
           })
           .catch(() => {
+            setTimeout(() => {
+              this.isLoading = false;
+            }, 500)
           });
       }
     }

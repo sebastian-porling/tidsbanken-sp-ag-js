@@ -22,7 +22,8 @@
       <v-spacer></v-spacer>
       <v-btn color="grey darken-1" text @click="changeMode">Back</v-btn>
       <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-      <v-btn color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
+      <v-progress-circular v-if="isLoading" indeterminate color="green"></v-progress-circular>
+      <v-btn v-if="!isLoading" color="green darken-1" text @click="submit" :disabled="!valid">Save Changes</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -32,6 +33,7 @@ export default {
   name: "ChangePasswordModal",
   data() {
     return {
+      isLoading: false,
       valid: true,
       password: "",
       passwordRules: [
@@ -50,12 +52,19 @@ export default {
       this.$emit("changeMode");
     },
     submit() {
+      this.isLoading = true;
       if (this.valid) {
         this.$store
           .dispatch("changePassword", this.user.id, this.password)
           .then(() => {
+            setTimeout(() => {
+              this.isLoading = false;
+            }, 500)
           })
           .catch(() => {
+            setTimeout(() => {
+              this.isLoading = false;
+            }, 500)
           });
       }
     },

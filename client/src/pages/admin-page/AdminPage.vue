@@ -25,7 +25,7 @@
                                     </v-list-item-content>
                                 </v-list-item>
 
-                                <v-list-item @click="launchModal">
+                                <v-list-item @click="toggleTable('settings')">
                                     <v-list-item-icon>
                                         <v-icon>mdi-wrench</v-icon>
                                     </v-list-item-icon>
@@ -62,16 +62,14 @@
                         </v-list>
                     </v-navigation-drawer>
                 </v-card>
-                <application-settings-modal
-                    :active="activateModal"
-                    @closeModal="closeModal"
-                />
+                
             </v-col>
             <v-col cols="10" sm="8">
               <div style="max-width: 800px;">
                 <RequestTable v-if="activeTable === 'requests'" />
                 <UserTable v-if="activeTable === 'users'" />
                 <ImportComponent v-if="activeTable === 'import'" /> 
+                <application-settings-modal v-if="activeTable === 'settings'" />
               </div>
                 
             </v-col>

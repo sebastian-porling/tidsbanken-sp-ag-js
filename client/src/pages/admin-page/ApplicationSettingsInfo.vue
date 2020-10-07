@@ -20,7 +20,13 @@
                             :rules="valueRules"
                         ></v-text-field>
                     </v-col>
-                    <v-btn color="green" text v-on:click="addSetting" :disabled="!valid">Add</v-btn>
+
+                    <v-progress-circular
+                    v-if="isLoading"
+                    indeterminate
+                    color="green"
+                    ></v-progress-circular>
+                    <v-btn v-if="!isLoading" color="green" text v-on:click="addSetting" :disabled="!valid">Add</v-btn>
                 </v-row>
             </v-form>
 
@@ -37,11 +43,6 @@
                 </template>
             </v-data-table>
         </v-card-text>
-        <v-card-actions>
-            <v-row justify="end" style="margin-right: 10px;">
-                <v-btn color="red darken-1" text @click="closeModal">Cancel</v-btn>
-            </v-row>
-        </v-card-actions>
     </v-card>
 </template>
 
@@ -50,6 +51,7 @@ export default {
     name: 'ApplicationSettingsInfo',
     data() {
         return {
+            isLoading: false,
             valid: true,
             key: null,
             value: null,
@@ -78,19 +80,24 @@ export default {
         }
     },
     methods: {
-        closeModal() {
-            this.$emit("closeModal");
-        },
-        openModal() {
-            this.dialog = true;
-        },
         deleteSetting(settingId) {
           this.$store.dispatch('deleteSetting', settingId);
         },
         addSetting() {
+            this.isLoading = true;
           if(this.key && this.value) {
             console.log({key: this.key, value: this.value})
-            this.$store.dispatch('createSetting', {key: this.key, value: this.value});
+            this.$store.dispatch('createSetting', {key: this.key, value: this.value})
+            .then(() => {
+            setTimeout(() => {
+              this.isLoading = false;
+            }, 500);
+          })
+          .catch(() => {
+            setTimeout(() => {
+              this.isLoading = false;
+            }, 500);
+          });
             this.key = null;
             this.value = null;
           }

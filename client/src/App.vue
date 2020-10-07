@@ -1,6 +1,5 @@
 <template>
   <v-app id="inspire">
-    <!-- Header should only be visible if the user is logged in  -->
     <Header />
     <response-alert v-if="isAlert" />
     <router-view :key="$route.path" />
@@ -40,5 +39,14 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+.v-progress-circular {
+  margin: 1rem;
 }
 </style>

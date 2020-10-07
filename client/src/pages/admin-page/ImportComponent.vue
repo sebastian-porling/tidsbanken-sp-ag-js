@@ -4,6 +4,7 @@
             <v-card>
                 <v-card-title>Import data to the database</v-card-title>
                 <v-card-text>
+                    <v-form v-model="valid">
                     <v-file-input
                         v-model="file"
                         show-size
@@ -11,11 +12,14 @@
                         placeholder=".json"
                         label="Enter your import file"
                         style="max-width:300px;"
+                        :rules="importRules"
                     ></v-file-input>
+                    </v-form>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn text @click="importData" color="blue">Import</v-btn>
+                    <v-progress-circular v-if="isLoading" indeterminate color="blue"></v-progress-circular>
+                    <v-btn text @click="importData" color="blue" :disabled="!valid">Import</v-btn>
                 </v-card-actions>
             </v-card>
 
@@ -30,17 +34,31 @@ export default {
     components: {},
     data() {
         return {
-            file: null
+            file: null,
+            isLoading: false,
+            valid: true,
+            importRules: [
+                (v) => !!v || "You have to choose a file"
+            ]
         };
     },
     methods: {
         importData() {
+            this.isLoading = true;
             const fr = new FileReader();
             fr.onload = e => {
                 this.$store
                     .dispatch("importData", JSON.parse(e.target.result))
-                    .then(() => console.log("Success!"))
-                    .catch(error => console.log("fail...", error.response));
+                    .then(() => {
+                        this.isLoading = false;
+                        this.file = null;
+                        console.log("Success!")
+                        })
+                    .catch(error => {
+                        this.isLoading = false;
+                        this.file = null;
+                        console.log("fail...", error.response)
+                        });
             };
             fr.readAsText(this.file);
         }
