@@ -1,10 +1,8 @@
 import axios from "axios";
-<<<<<<< HEAD
 import { API_URL } from "@/constants/"
 axios.defaults.baseURL = API_URL;
-=======
 import Vue from "vue";
->>>>>>> 47897119bd8ae2427c0f89ef035a1a921039f60c
+
 
 export default {
   state: {

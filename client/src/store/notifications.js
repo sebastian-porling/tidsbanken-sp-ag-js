@@ -42,7 +42,8 @@ export default {
             if (rootGetters.getToken === null) return; 
             const socket = io(SOCKET_URL, {
                 transports: ["websocket"],
-                query: { token: rootGetters.getToken}
+                query: { token: rootGetters.getToken},
+                secure: true,
             });
             socket.on('notification', (notification) => {
                 commit('addNotification', notification);
