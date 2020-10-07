@@ -5,8 +5,6 @@ const DashboardPage = () => import('../pages/dashboard-page/DashboardPage')
 const LoginPage = () => import('../pages/login-page/LoginPage')
 const RequestHistoryPage = () => import('../pages/request-history-page/RequestHistoryPage')
 const UserPage = () => import('../pages/user-profile-page/UserPage')
-const RequestTable = () => import('../pages/admin-page/RequestTable')
-const UserTable = () => import('../pages/admin-page/UserTable')
 const NotFound = () => import('../pages/error/NotFound')
 
 Vue.use(Router)
@@ -38,6 +36,7 @@ export default new Router ({
             component: AdminPage,
             props: true,
             meta: {
+                requiresAuth: true,
                 requiresAdmin: true
             }
         }, 
@@ -58,16 +57,6 @@ export default new Router ({
             meta: {
                 requiresAuth: true
             }
-        },
-        {
-            path:'/requests',
-            name: 'View Requests',
-            component: RequestTable
-        },
-        {
-            path: '/users',
-            name: 'ViewUsers',
-            component: UserTable
         },
         {
             path: '*',

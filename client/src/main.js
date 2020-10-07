@@ -37,7 +37,7 @@ router.beforeEach((to, from, next) => {
       next({
         name: 'Dashboard',
       })
-    } else {
+    } else if (!store.getters.loggedIn){
       next ()
     }
   } 
