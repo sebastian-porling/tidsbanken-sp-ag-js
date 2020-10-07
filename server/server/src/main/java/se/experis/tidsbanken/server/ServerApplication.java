@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class ServerApplication {
 
-	private String host = "";
+	private String host = "172.31.28.73";
 	private Integer port = 4121;
 
 	@Bean
