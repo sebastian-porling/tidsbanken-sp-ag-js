@@ -30,12 +30,24 @@ export default {
             snackbar: false
         }
     },
-    created() {
-        this.$store.getters.getSocket.on('notification', (notification) => {
+    computed: {
+      socket: {
+        get() {
+          return this.$store.getters.getSocket;
+        }
+      }
+    },
+    watch: {
+      socket() {
+        let socket = this.$store.getters.getSocket;
+        if (socket !== null) {
+          this.$store.getters.getSocket.on('notification', (notification) => {
             this.notification = notification;
             this.snackbar = true;
         })
-    }
+        }
+      }
+    },
 }
 </script>
 

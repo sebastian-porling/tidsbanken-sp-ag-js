@@ -1,6 +1,7 @@
 import axios from "axios";
 import Vue from 'vue';
-axios.defaults.baseURL = "http://localhost:3400/";
+import { API_URL } from "@/constants/"
+axios.defaults.baseURL = API_URL;
 
 export default {
   state: {

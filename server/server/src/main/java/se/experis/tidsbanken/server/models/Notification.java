@@ -12,13 +12,10 @@ public class Notification {
     private Long id;
 
     @NonNull
+    @Column
     private String message;
 
-    @NonNull
-    private Boolean read = false;
-
     @ManyToOne
-    @NonNull
     private User user;
 
     public Notification() { }
@@ -52,12 +49,4 @@ public class Notification {
         this.user = user;
     }
 
-    public Boolean getRead() {
-        return this.read;
-    }
-
-    public Notification setRead(Boolean read) {
-        this.read = read;
-        return this;
-    }
 }

@@ -23,7 +23,6 @@ public class SocketHandler {
         ioServer.addConnectListener(handleConnect());
         ioServer.addDisconnectListener(handleDisconnect());
         ioServer.addEventListener("all", Long.class, handleGetAll());
-        ioServer.addEventListener("mark", Long.class, handleMarkRead());
         ioServer.addEventListener("delete", Long.class, handleDelete());
         ioServer.addEventListener("deleteAll", Long.class, handleDeleteAll());
     }
@@ -58,15 +57,6 @@ public class SocketHandler {
             final String token = parseToken(socketIOClient);
             socketIOClient.sendEvent("notifications",
                     notificationRepository.findAllByUser(authService.currentUser(token)));
-        };
-    }
-
-    private DataListener<Long> handleMarkRead() {
-        return (socketIOClient, notificationId, ackRequest) -> {
-            logger.info("Client marking notification as read");
-            notificationRepository.findById(notificationId).ifPresent(n -> {
-                socketIOClient.sendEvent("marked", notificationRepository.save(n.setRead(true)));
-            });
         };
     }
 
