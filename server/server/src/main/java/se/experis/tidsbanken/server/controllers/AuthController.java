@@ -11,7 +11,6 @@ import se.experis.tidsbanken.server.DTOs.LoginDTO;
 import se.experis.tidsbanken.server.models.*;
 import se.experis.tidsbanken.server.repositories.UserRepository;
 import se.experis.tidsbanken.server.services.LoginAttemptService;
-import se.experis.tidsbanken.server.socket.SocketHandler;
 import se.experis.tidsbanken.server.utils.*;
 
 import javax.servlet.http.HttpServletRequest;

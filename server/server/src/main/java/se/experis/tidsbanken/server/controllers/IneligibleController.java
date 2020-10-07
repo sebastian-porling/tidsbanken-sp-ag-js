@@ -66,7 +66,7 @@ public class IneligibleController{
     @GetMapping("/ineligible/{ip_id}")
     public ResponseEntity<CommonResponse> getIneligiblePeriodForId(@PathVariable("ip_id") Long ip_id,
                                                                    HttpServletRequest request){
-        if(!authService.isAuthorizedAdmin(request)) { return responseUtility.unauthorized(); }
+        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
         try {
             final Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
             if (fetchedPeriod.isPresent()){
