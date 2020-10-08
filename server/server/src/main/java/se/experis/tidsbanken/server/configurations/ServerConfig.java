@@ -9,9 +9,16 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * The server config for SSL
+ */
 @Configuration
 public class ServerConfig {
 
+    /**
+     * Sets up security configuration for all endpoints
+     * @return ServletWebServerFactory
+     */
     @Bean
     public ServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
@@ -29,6 +36,10 @@ public class ServerConfig {
         return tomcat;
     }
 
+    /**
+     * Redirects the http to https
+     * @return Connector
+     */
     private Connector getHttpConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");

@@ -10,12 +10,19 @@ import se.experis.tidsbanken.server.filters.RequestAttemptFilter;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 import se.experis.tidsbanken.server.services.LoginAttemptService;
 
+/**
+ * Filters for requests, rate-limiting and authorization
+ */
 @Configuration
 public class FilterConfig {
 
     @Autowired private AuthorizationService authorizationService;
     @Autowired private LoginAttemptService loginAttemptService;
 
+    /**
+     * Authenticates users on /api/ endponts
+     * @return FilterRegistrationBean
+     */
     @Bean
     public FilterRegistrationBean<AuthenticationFilter> authenticationFilter(){
         FilterRegistrationBean<AuthenticationFilter> registrationBean
@@ -27,6 +34,10 @@ public class FilterConfig {
         return registrationBean;
     }
 
+    /**
+     * Checks request attempts if they are blocked
+     * @return FilterRegistrationBean
+     */
     @Bean
     public FilterRegistrationBean<RequestAttemptFilter> requestAttemptFilter() {
         FilterRegistrationBean<RequestAttemptFilter> registrationBean = new FilterRegistrationBean<>();
@@ -36,6 +47,10 @@ public class FilterConfig {
         return registrationBean;
     }
 
+    /**
+     * Forwards the correct routing for frontend or backend or resources
+     * @return FilterRegistrationBean
+     */
     @Bean
     public FilterRegistrationBean<RedirectToClientFilter> redirectToClientFilterFilter() {
         FilterRegistrationBean<RedirectToClientFilter> registrationBean = new FilterRegistrationBean<>();

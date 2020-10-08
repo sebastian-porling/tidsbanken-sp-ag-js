@@ -1,4 +1,4 @@
-package se.experis.tidsbanken.server.utils;
+package se.experis.tidsbanken.server.models;
 
 public class Credentials {
     final private String email;

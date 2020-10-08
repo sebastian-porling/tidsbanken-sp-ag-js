@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Filters authenticated requests
+ */
 public class AuthenticationFilter implements Filter {
 
     final private AuthorizationService authorizationService;
@@ -23,6 +26,15 @@ public class AuthenticationFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
     }
 
+    /**
+     * If the user goes to the api/login we forward them.
+     * Otherwise we check if they are an authenticated user
+     * @param servletRequest HttpServletRequest
+     * @param servletResponse HttpServletResponse
+     * @param filterChain Filter Chain
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) servletRequest;

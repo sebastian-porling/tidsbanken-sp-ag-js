@@ -23,6 +23,10 @@ import javax.validation.ValidatorFactory;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Handles all functionality for settings.
+ * Are admin only
+ */
 @RestController
 @RequestMapping("/api")
 public class SettingsController {
@@ -36,6 +40,11 @@ public class SettingsController {
     @Autowired private Validator validator = factory.getValidator();
     private Logger logger = LoggerFactory.getLogger(CommentController.class);
 
+    /**
+     * Return all settings
+     * @param request HttpServletRequest
+     * @return 200 with all settings, 401 if not admin, 500 on server error
+     */
     @GetMapping("/setting")
     public ResponseEntity<CommonResponse> getSettings(HttpServletRequest request){
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
@@ -47,6 +56,12 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Creates a new setting with provided setting data
+     * @param setting Setting data
+     * @param request HttpServlerRequest
+     * @return 201 if created, 400 if it exists or not valid, 401 if not admin, 500 on server error
+     */
     @PostMapping("/setting")
     public ResponseEntity<CommonResponse> createSetting(@RequestBody Setting setting, HttpServletRequest request){
         if(!authService.isAuthorizedAdmin(request)) return responseUtility.unauthorized();
@@ -67,6 +82,13 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Updates a setting by provided setting id and data
+     * @param settingId Setting Id
+     * @param setting New Setting Data
+     * @param request HttpServlerRequest
+     * @return 200 if updated, 401 if not admin, 400 if not valid data, 404 if setting not found, 500 on server error.
+     */
     @PatchMapping("/setting/{setting_id}")
     public ResponseEntity<CommonResponse> updateSetting(@PathVariable("setting_id") String settingId,
                                                         @RequestBody Setting setting,
@@ -92,6 +114,12 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Returns setting by id
+     * @param settingId Setting Id
+     * @param request HttpServletReqeust
+     * @return 200 with setting, 401 if not admin, 404 if setting not found, 500 on server error
+     */
     @GetMapping("/setting/{setting_id}")
     public ResponseEntity<CommonResponse> getSetting(@PathVariable("setting_id") String settingId,
                                                      HttpServletRequest request){
@@ -107,6 +135,12 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Deletes the setting with the provided setting id
+     * @param settingId Setting Id
+     * @param request HttpServletRequest
+     * @return 200 if deleted, 401 if not admin, 404 if not found, 500 on server error
+     */
     @DeleteMapping("/setting/{setting_id}")
     public ResponseEntity<CommonResponse> deleteSetting(@PathVariable("setting_id") String settingId,
                                                         HttpServletRequest request){
@@ -125,6 +159,12 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Notifies all admin on setting changes
+     * @param setting Setting that have been changed
+     * @param performer User who performed the action
+     * @param message Message about the action
+     */
     private void notify(Setting setting, User performer, String message) {
         userRepository.findAllByIsAdminTrueAndIsActiveTrue().stream()
                 .filter(u -> !u.getId().equals(performer.getId()))

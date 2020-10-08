@@ -7,6 +7,9 @@ import se.experis.tidsbanken.server.DTOs.CommentDTO;
 import java.sql.Date;
 import java.util.List;
 
+/**
+ * Represents the Import and export data for Vaction Requests and its comments
+ */
 public class ImportExportDTO {
     @NonNull
     private String title;

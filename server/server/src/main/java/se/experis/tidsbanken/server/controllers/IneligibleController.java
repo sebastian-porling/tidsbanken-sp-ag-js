@@ -22,6 +22,9 @@ import se.experis.tidsbanken.server.socket.NotificationObserver;
 import se.experis.tidsbanken.server.utils.ResponseUtility;
 
 
+/**
+ * Handles all functionality for Ineligible Periods
+ */
 @RestController
 @RequestMapping("/api")
 public class IneligibleController{
@@ -34,8 +37,12 @@ public class IneligibleController{
     @Autowired private Validator validator = factory.getValidator();
     private Logger logger = LoggerFactory.getLogger(CommentController.class);
 
+    /**
+     * Returns all Ineligible Periods
+     * @return 200 with all ineligible periods, 500 on server error
+     */
     @GetMapping("/ineligible")
-    public ResponseEntity<CommonResponse> getIneligiblePeriod(HttpServletRequest request){
+    public ResponseEntity<CommonResponse> getIneligiblePeriod(){
         try { return responseUtility.ok("All ineligible periods",
                     ipRepository.findAllByOrderByStartDesc());
         } catch (Exception e) {
@@ -44,6 +51,12 @@ public class IneligibleController{
         }
     }
 
+    /**
+     * Creates a new ineligible period. Admin only action
+     * @param ip Ineligible Periods Data
+     * @param request HttpServletRequest
+     * @return 201 and created ineligible periods, 400 if it overlaps with existing ineligible periods or not valid, 500 on server error
+     */
     @PostMapping("/ineligible")
     public ResponseEntity<CommonResponse> createIneligiblePeriod(@RequestBody IneligiblePeriod ip,
                                                                  HttpServletRequest request) {
@@ -63,10 +76,13 @@ public class IneligibleController{
         } else return responseUtility.badRequest("Period already exists");
     }
 
+    /**
+     * Returns ineligible period by id
+     * @param ip_id Ineligible Period Id
+     * @return 200 with ineligible period, 404 if not found, 500 on server error
+     */
     @GetMapping("/ineligible/{ip_id}")
-    public ResponseEntity<CommonResponse> getIneligiblePeriodForId(@PathVariable("ip_id") Long ip_id,
-                                                                   HttpServletRequest request){
-        if(!authService.isAuthorized(request)) { return responseUtility.unauthorized(); }
+    public ResponseEntity<CommonResponse> getIneligiblePeriodForId(@PathVariable("ip_id") Long ip_id){
         try {
             final Optional<IneligiblePeriod> fetchedPeriod = ipRepository.findById(ip_id);
             if (fetchedPeriod.isPresent()){
@@ -78,6 +94,13 @@ public class IneligibleController{
         }
     }
 
+    /**
+     * Updates the ineligible period with the provided id and data
+     * @param ip_id Ineligible Period Id
+     * @param ip Ineligible Period Data
+     * @param request HttpServletRequest
+     * @return 200 with updated data, 400 if overlapping or not valid, 401 if not admin, 404 if not found, 500 on server error
+     */
     @PatchMapping("/ineligible/{ip_id}")
     public ResponseEntity<CommonResponse> updateIneligiblePeriod(@PathVariable("ip_id") Long ip_id,
                                                                  @RequestBody IneligiblePeriod ip,
@@ -119,6 +142,12 @@ public class IneligibleController{
         }
     }
 
+    /**
+     * Deletes the ineligible period by id
+     * @param ip_id Ineligible Period Id
+     * @param request HttpServletRequest
+     * @return 200 if deleted, 401 if not admin, 404 if not found, 500 on server error
+     */
     @DeleteMapping("/ineligible/{ip_id}")
     public ResponseEntity<CommonResponse> deleteIneligiblePeriod(@PathVariable("ip_id")long ip_id,
                                                                  HttpServletRequest request){
@@ -141,6 +170,12 @@ public class IneligibleController{
         }
     }
 
+    /**
+     * Notifies all users except performer about the ineligible period
+     * @param ip Ineligible Period to inform about
+     * @param performer User who performed the action
+     * @param message Message about the action
+     */
     private void notify(IneligiblePeriod ip, User performer, String message) {
         userRepository.findAllByIsActiveTrue().stream()
                 .filter(u -> !u.getId().equals(performer.getId()))

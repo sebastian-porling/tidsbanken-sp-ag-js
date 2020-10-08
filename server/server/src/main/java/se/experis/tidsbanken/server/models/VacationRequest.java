@@ -25,12 +25,9 @@ public class VacationRequest {
     private String title;
 
     @Column(nullable = false)
-    // TODO: Implement a check in request controller that prevents users from editing a past request.
-    //@Future(message = "Start date must be a future date")
     private Date start;
 
     @Column(nullable = false)
-    //@Future(message = "End date must be a future date")
     private Date end;
 
     @ManyToOne
@@ -148,37 +145,6 @@ public class VacationRequest {
         this.moderationDate = moderationDate;
     }
 
-    private HashMap<String, Object> getUser(User user) {
-        final HashMap<String, Object> userMap = new HashMap<>();
-        userMap.put("owner_id", user.getId());
-        userMap.put("email", user.getEmail());
-        userMap.put("full_name", user.getFullName());
-        userMap.put("profile_pic", user.getProfilePic());
-        return userMap;
-    }
-
-    @JsonIgnore
-    public boolean onlyApproved() {
-        return this.status.getStatus().equals("Approved");
-    }
-
-    @JsonIgnore
-    public boolean isPending() {
-        return this.status.getStatus().equals("Pending");
-    }
-
-    @JsonIgnore
-    public boolean excludesInPeriod(VacationRequest vr) {
-        return (this.start.before(vr.start) && this.end.before(vr.start)) ||
-                (this.start.after(vr.end) && this.end.after(vr.end));
-    }
-
-    @JsonIgnore
-    public boolean excludesInIP(IneligiblePeriod ip) {
-        return (this.start.before(ip.getStart()) && this.end.before(ip.getStart())) ||
-                (this.start.after(ip.getEnd()) && this.end.after(ip.getEnd()));
-    }
-
     @Override
     public String toString() {
         return "VacationRequest{" +
@@ -194,4 +160,55 @@ public class VacationRequest {
                 ", moderationDate=" + moderationDate +
                 '}';
     }
+
+    private HashMap<String, Object> getUser(User user) {
+        final HashMap<String, Object> userMap = new HashMap<>();
+        userMap.put("owner_id", user.getId());
+        userMap.put("email", user.getEmail());
+        userMap.put("full_name", user.getFullName());
+        userMap.put("profile_pic", user.getProfilePic());
+        return userMap;
+    }
+
+    /**
+     * Checks if vacation request is approved
+     * @return true if status is approved
+     */
+    @JsonIgnore
+    public boolean onlyApproved() {
+        return this.status.getStatus().equals("Approved");
+    }
+
+    /**
+     * Checks if vacation request is pending
+     * @return true if status is pending
+     */
+    @JsonIgnore
+    public boolean isPending() {
+        return this.status.getStatus().equals("Pending");
+    }
+
+    /**
+     * Checks so this vacation request doesn't overlap with given vacation request
+     * @param vr Vacation Request
+     * @return true if it doesn't overlap
+     */
+    @JsonIgnore
+    public boolean excludesInPeriod(VacationRequest vr) {
+        return (this.start.before(vr.start) && this.end.before(vr.start)) ||
+                (this.start.after(vr.end) && this.end.after(vr.end));
+    }
+
+    /**
+     * Checks so this vacation request doesn't overlap with given ineligible period
+     * @param ip Ineligible Period
+     * @return true if it doesn't overlap
+     */
+    @JsonIgnore
+    public boolean excludesInIP(IneligiblePeriod ip) {
+        return (this.start.before(ip.getStart()) && this.end.before(ip.getStart())) ||
+                (this.start.after(ip.getEnd()) && this.end.after(ip.getEnd()));
+    }
+
+
 }
