@@ -16,6 +16,11 @@ export default {
         }
     },
     actions: {
+        /**
+         * Retrieves all vacation request associated by the user id
+         * @param {Object} context Store context 
+         * @param {Number} userId User id
+         */
         retrieveRequestHistory(context, userId) {
             axios
                 .get(`user/${userId}/requests`, {

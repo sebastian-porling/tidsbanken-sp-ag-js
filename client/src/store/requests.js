@@ -30,6 +30,10 @@ export default {
         }
     },
     actions: {
+        /**
+         * Retrieves all vacation requests
+         * @param {Object} context Store context 
+         */
         retrieveAllRequests(context) {
             axios
                 .get("request", {
@@ -45,6 +49,11 @@ export default {
                     console.log(error.response);
                 });
         },
+        /**
+         * Updates the given vacationr request
+         * @param {Object} context Store context 
+         * @param {Object} request Vacation Request
+         */
         patchRequest(context, request) {
             return new Promise((resolve, reject) => {
                 axios
@@ -68,6 +77,11 @@ export default {
                     });
             });
         },
+        /**
+         * Creates a new vacation request
+         * @param {Object} context Store context 
+         * @param {Object} request Vacation Request data
+         */
         createVacationRequest({ commit, rootGetters }, request) {
             return new Promise((resolve, reject) => {
                 axios
@@ -91,6 +105,11 @@ export default {
                     });
             });
         },
+        /**
+         * Deletes a vacation request
+         * @param {Object} context Store context 
+         * @param {Object} request Vacation Request Data
+         */
         deleteRequest(context, request) {
             return new Promise((resolve, reject) => {
                 axios

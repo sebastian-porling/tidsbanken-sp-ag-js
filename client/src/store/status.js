@@ -17,6 +17,10 @@ export default {
     },
   },
   actions: {
+    /**
+     * Retrives all statuses
+     * @param {Object} context Store context 
+     */
     retrieveStatus(context) {
       axios
         .get('/status', {

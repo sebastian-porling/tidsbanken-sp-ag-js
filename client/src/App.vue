@@ -17,12 +17,18 @@ export default {
     'response-alert': ResponseAlert
   },
   computed: {
+    /**
+    * Checks if the alert is active
+    */
     isAlert: {
       get() {
         return this.$store.getters.getIsAlert;
       }
     }
   },
+  /**
+  * Establish client socket when user is logged in
+  */
   created() {
     if(this.$store.getters.loggedIn) {
       this.$store.dispatch('establishClientSocket');

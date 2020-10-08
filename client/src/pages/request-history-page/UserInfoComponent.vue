@@ -9,7 +9,7 @@
       </v-avatar>
       <h1 class="px-6">{{ user.full_name }}</h1>
     </v-row>
-    <v-row justify="center" align="center" v-if="currentUser.id === user.id">
+    <v-row justify="center" align="center" v-if="currentUser.id === userId">
       <h3>
         Vacation days:
         <h2>{{ user.used_vacation_days }}</h2>/
@@ -22,7 +22,7 @@
 <script>
 export default {
   name: "UserInfoComponent",
-  props: ["user"],
+  props: ["user", "userId"],
   computed: {
     currentUser() {
       return this.$store.getters.getCurrentUser;

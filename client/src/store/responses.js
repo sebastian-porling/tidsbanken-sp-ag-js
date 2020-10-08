@@ -31,6 +31,10 @@ export default {
         }
     },
     actions: {
+        /**
+         * Disables the alert
+         * @param {Object} context Store context 
+         */
         disableIsAlert(context) {
             context.commit("setIsAlert", false);
             context.commit("setResponse", null);

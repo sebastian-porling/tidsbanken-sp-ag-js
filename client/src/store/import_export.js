@@ -19,6 +19,10 @@ export default {
         }
     },
     actions: {
+        /**
+         * 
+         * @param {Object} context Store context 
+         */
         exportData({commit, rootGetters}) {
             return new Promise((resolve, reject) => {
                 axios.get('export', {
@@ -37,6 +41,11 @@ export default {
                 })
             })
         },
+        /**
+         * 
+         * @param {Object} context Store context 
+         * @param {*} data 
+         */
         importData({rootGetters, commit}, data) {
             return new Promise((resolve, reject) => {
                 axios.post('import', data, {

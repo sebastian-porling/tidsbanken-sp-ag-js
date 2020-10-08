@@ -2,7 +2,7 @@
   <v-container class="request-history-page">
     <v-card style="padding: 10px;">
       <v-row>
-        <UserInfoComponent :user="user" />
+        <UserInfoComponent :user="user" :userId="id" />
       </v-row>
       <br />
       <v-card-text>

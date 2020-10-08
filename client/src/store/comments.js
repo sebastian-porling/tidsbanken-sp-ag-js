@@ -29,6 +29,11 @@ export default {
     },
   },
   actions: {
+    /**
+     * 
+     * @param {Object} context Store context 
+     * @param {*} requestId 
+     */
     retrieveComments(context, requestId) {
       axios
         .get(`request/${requestId}/comment`, {
@@ -44,6 +49,11 @@ export default {
           console.log(error);
         });
     },
+    /**
+     * 
+     * @param {Object} context Store context 
+     * @param {*} param1 
+     */
     createComment(context, { requestId, message }) {
       return new Promise((resolve, reject) => {
         axios
@@ -71,6 +81,11 @@ export default {
           });
       });
     },
+    /**
+     * 
+     * @param {Object} context Store context 
+     * @param {*} param1 
+     */
     updateComment(context, { requestId, message, commentId }) {
       axios
         .patch(
@@ -94,6 +109,11 @@ export default {
           context.commit("setIsAlert", true);
         });
     },
+    /**
+     * 
+     * @param {Object} context Store context 
+     * @param {*} param1 
+     */
     deleteComment(context, { requestId, commentId }) {
         axios
           .delete(`request/${requestId}/comment/${commentId}`, {
