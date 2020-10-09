@@ -49,6 +49,9 @@ export default {
     data: () => ({
         menu: false,
     }),
+    /**
+     * Fetches notifications
+     */
     computed: {
         notifications: {
             get() {
@@ -57,6 +60,9 @@ export default {
         }
     },
     methods: {
+        /**
+         * Deletes all notifications
+         */
         deleteAll() {
             this.$store.dispatch('deleteAllUserNotifications');
         }

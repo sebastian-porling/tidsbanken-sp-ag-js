@@ -43,6 +43,10 @@ export default {
         };
     },
     methods: {
+        /**
+         * Reads from local file and parses it to json and will then try to upload the file
+         * @param {Object} event
+         */
         importData() {
             this.isLoading = true;
             const fr = new FileReader();

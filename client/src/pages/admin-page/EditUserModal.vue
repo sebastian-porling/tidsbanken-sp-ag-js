@@ -76,6 +76,10 @@ export default {
     changeMode() {
       this.$emit("changeMode");
     },
+    /**
+     * Update the user with new user info
+     * @param {Object} modified user
+     */
     submit() {
       if (this.valid) {
         this.isLoading = true;

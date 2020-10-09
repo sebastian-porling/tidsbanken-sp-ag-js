@@ -101,6 +101,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * Creates a new user with the user info from the form
+     * @param {Object} new user object
+     */
     submit() {
       if (this.valid) {
         this.isLoading = true;

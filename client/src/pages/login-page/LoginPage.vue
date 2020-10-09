@@ -23,6 +23,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Change to multi auth login component
+     */
     loginMultiAuth(email, password) {
       this.multiAuth = true;
       this.email = email;

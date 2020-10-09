@@ -104,10 +104,16 @@ export default {
     };
   },
   props: ["request"],
+  /**
+   * Retrieves all Ineligible Periods and all statuses
+   */
   created() {
     this.$store.dispatch("retrieveIneligiblePeriods");
     this.$store.dispatch("retrieveStatus");
   },
+  /**
+   * Fetch all ineligible periods, current user and statuses and the original request to modify
+   */
   computed: {
     ineligiblePeriods: {
       get() {
@@ -132,6 +138,10 @@ export default {
     }
   },
   filters: {
+      /**
+   * Generates a profile image placeholder if no name exists
+   * or if name is less than 2 characters
+   */
     initials: (data) => {
             if (!data) return '😁';
             data = data.toString();
@@ -148,6 +158,9 @@ export default {
     changeMode() {
       this.$emit("changeMode");
     },
+    /**
+     * Sets the color according to status
+     */
     getColor(status) {
       switch (status) {
         case "Pending":
@@ -158,6 +171,10 @@ export default {
           return "red";
       }
     },
+    /**
+     * Updates the vacation request
+     * @param {Object} modified vacation request
+     */
     submit() {
       if (this.valid) {
         this.$store
@@ -179,6 +196,9 @@ export default {
         alert("You have to fill out all the required fields");
       }
     },
+    /**
+     * Checks if the current request dates overlapps with Ineligible periods
+     */
     checkifDateInPeriod(date) {
       let isValid = true;
       if (this.ineligiblePeriods) {

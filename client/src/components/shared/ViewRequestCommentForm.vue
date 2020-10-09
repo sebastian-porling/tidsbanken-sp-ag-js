@@ -23,6 +23,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * Creates comment
+     * @param {Object} comment Object
+     */
     submit() {
       if (this.valid) {
         this.isLoading = true;

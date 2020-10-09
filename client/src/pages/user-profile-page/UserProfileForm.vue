@@ -65,6 +65,9 @@ export default {
       (v) => (v && v.length >= 6) || "Password must be more than 6 characters",
     ],
   }),
+  /**
+   * Checks if the user is logged in and then fetches the users information
+   */
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
@@ -76,15 +79,17 @@ export default {
     },
   },
   methods: {
-    twoFactorAuthenticationSettings() {
-      this.$refs.form.twoFactorAuthenticationSettings();
-    },
     launchModal() {
       this.activateModal = true;
     },
     closeModal() {
       this.activateModal = false;
     },
+    /**
+     * Sends a request to update the user with the information
+     * from the form
+     * @param {Object} id full_name email
+     */
     submit() {
       this.$store
         .dispatch("updateUser", {
@@ -98,6 +103,11 @@ export default {
         .catch(() => {
         });
     },
+    /**
+     * Sends a request to change the users password
+     * @param {Number} userId
+     * @param {String} password
+     */
     changePassword() {
       if (this.password !== "" && this.password !== null) {
         this.$store
@@ -108,10 +118,17 @@ export default {
           });
       }
     },
+    /**
+     * Opens modal to change 2FA
+     */
     openTwoFactorModal() {
       this.$emit('openTwoFactorModal');
     }
   },
+  /**
+   * Generates a profile image placeholder if no name exists
+   * or if name is less than 2 characters
+   */
   filters: {
       initials: (data) => {
             if (!data) return '😁';
