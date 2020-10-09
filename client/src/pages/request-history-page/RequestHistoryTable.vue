@@ -52,11 +52,18 @@ export default {
             request: {}
         };
     },
+    /**
+     * Instansiates and saves request history for a specific user to state
+     * @param {Number} id
+     */
     created() {
         this.$store.dispatch(
             "retrieveRequestHistory", this.userId
         );
     },
+    /**
+     * Fetches the request history
+     */
     computed: {
         requests: {
             get() {
@@ -68,6 +75,10 @@ export default {
         }
     },
     methods: {
+        /**
+         * Sets the colors for the different statuses a 
+         * request can have
+         */
         getColor(status) {
             switch (status) {
                 case "Pending":

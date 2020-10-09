@@ -28,9 +28,18 @@ export default {
       required: true,
     },
   },
+  /**
+   * Instansiates a request to retireve information about a
+   * specific user
+   * @param {Number} id
+   */
   created() {
     this.$store.dispatch("retrieveUser", this.id);
   },
+  /**
+   * Fetches the current user and the user who's vacation
+   * request history to view
+   */
   computed: {
     currentUser() {
       return this.$store.getters.getCurrentUser;

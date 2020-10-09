@@ -45,6 +45,11 @@ export default {
         }
     },
     methods: {
+      /**
+       * Validates request dates and initialise a request to
+       * create ineligible period
+       * @param {Object} start end
+       */
       validateData() {
           this.isLoading = true;
         if(this.dates[0] != null && this.dates[1] != null){
@@ -62,6 +67,9 @@ export default {
           this.errorMessage = "You need to enter a start and an end date..";
         }
       },
+      /**
+       * Switches the dates
+       */
       switchDates(){
         this.dates = [this.dates[1], this.dates[0]]
       }

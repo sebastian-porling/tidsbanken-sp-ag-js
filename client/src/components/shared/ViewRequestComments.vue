@@ -92,20 +92,23 @@ export default {
       currentComment: null,
     };
   },
+  /**
+   * Instantiate request to fetch all comments for a specific request
+   * @param (Number) id
+   */
   created() {
     this.$store
       .dispatch("retrieveComments", this.request_id)
       .then(() => {
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 500);
+        this.isLoading = false;
       })
       .catch(() => {
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 500);
+        this.isLoading = false;
       });
   },
+  /**
+   * Fetches all comments
+   */
   computed: {
     comments: {
       get() {
@@ -113,7 +116,12 @@ export default {
       },
     },
   },
+
   filters: {
+    /**
+   * Generates a profile image placeholder if no name exists
+   * or if name is less than 2 characters
+   */
     initials: (data) => {
       if (!data) return "UU";
       data = data.toString();
@@ -121,6 +129,9 @@ export default {
       if (data.length < 2) return "UU";
       return data[0].charAt(0).toUpperCase() + data[1].charAt(0).toUpperCase();
     },
+    /**
+     * Format dates and time to DD-MM-YYYY HH:MM AM/PM
+     */
     formatDate: (date) => {
       if (!date) {
         return "";
@@ -129,15 +140,21 @@ export default {
     },
   },
   methods: {
+    /**
+     * Deletes a comment
+     * @param {Object} requestId commentId
+     */
     deleteComment(comment) {
         this.$store.dispatch("deleteComment", {
           requestId: this.request_id,
           commentId: comment.id,
         });
     },
+    /**
+     * Edits comment
+     * @param {Object} requestId message commentId
+     */
     editComment(comment) {
-      console.log(comment.message);
-      // patch comment
       this.$store
         .dispatch("updateComment", {
           requestId: this.request_id,
@@ -149,6 +166,9 @@ export default {
         })
         .catch(() => {});
     },
+    /**
+     * Changes mode between edit and view
+     */
     changeMode(id) {
       this.editMode = !this.editMode;
       this.currentComment = id;

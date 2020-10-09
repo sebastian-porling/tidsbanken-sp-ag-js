@@ -69,6 +69,10 @@
       ]
     }),
     methods: {
+      /**
+       * Initialises the request to login the user
+       * @param {Object} email password code
+       */
       login () {
          this.$store.dispatch('retrieveToken', {
           email: this.email,

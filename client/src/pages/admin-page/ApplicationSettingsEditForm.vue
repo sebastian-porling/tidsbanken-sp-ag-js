@@ -58,6 +58,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * Modifies the setting with the modified setting data
+     * @param {Object} modified setting
+     */
     editSetting() {
       this.isLoading = true;
       if (this.setting.key && this.setting.value) {

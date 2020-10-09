@@ -31,12 +31,18 @@ export default {
             errorMessage: ''
         }
     },
+    /**
+     * Sets dates to match period if period exists
+     */
     mounted() {
         if (this.ineligible !== null) {
           this.dates = [this.ineligible.start, this.ineligible.end]
           this.today = this.ineligible.start;
         }
     },
+    /**
+     * Watches for date changes
+     */
     watch: {
       ineligible() {
         this.dates = [this.ineligible.start, this.ineligible.end]
@@ -47,6 +53,11 @@ export default {
           this.dates = [];
           this.$emit('closeModal');
         },
+        /**
+         * Validates if dates are correct
+         * Instansiates a request to update ineligible period
+         * @param {Object} id start end 
+         */
         validateData() {
           this.isLoading = true
         if(this.dates[0] != null && this.dates[1] != null){
@@ -64,9 +75,16 @@ export default {
           this.errorMessage = "You need to enter a start and an end date..";
         }
       },
+      /**
+       * Switches dates to have soonest last
+       */
       switchDates(){
         this.dates = [this.dates[1], this.dates[0]]
       },
+      /**
+       * Initialises a request to delete ineligible period
+       * @param {Object} ineligiblePeriod
+       */
       deleteIp() {
         this.$store.dispatch('deleteIneligiblePeriod', this.ineligible.id)
         .then(() => {

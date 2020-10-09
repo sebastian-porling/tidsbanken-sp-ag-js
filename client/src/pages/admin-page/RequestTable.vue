@@ -53,6 +53,10 @@ export default {
   components: {
     "view-request-modal": ViewRequestModal,
   },
+  /**
+   * Changes color of skeletion loader according to 
+   * application theme
+   */
   inject: {
     theme: {
       default: { isDark: false },
@@ -81,11 +85,17 @@ export default {
       request: {},
     };
   },
+  /**
+   * Initialises request to fetch all requests
+   */
   created() {
     this.$store.dispatch("retrieveAllRequests").then(() => {
-      setTimeout(() => (this.isLoading = false), 500);
+      this.isLoading = false;
     });
   },
+  /**
+   * Fetches current user and all requests
+   */
   computed: {
     user: {
       get() {
@@ -105,6 +115,9 @@ export default {
     },
   },
   methods: {
+    /**
+     * Sets color for vacation request status
+     */
     getColor(status) {
       switch (status) {
         case "Pending":

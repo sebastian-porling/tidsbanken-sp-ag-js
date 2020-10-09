@@ -72,23 +72,23 @@
             </v-btn>
             <v-btn v-if="loggedIn" @click="signOut" text> Sign Out </v-btn>
         </v-app-bar>
-        <notification-alert />
     </div>
 </template>
 
 <script>
 import HeaderNotifications from "./HeaderNotifications";
-import NotificationAlert from "./NotificationAlert";
 
 export default {
     name: "Header",
     components: {
         "header-notifications": HeaderNotifications,
-        "notification-alert": NotificationAlert
     },
     data: () => ({
         drawer: null
     }),
+    /**
+     * Fetches if the user is logged in and then the current user
+     */
     computed: {
         loggedIn() {
             return this.$store.getters.loggedIn;
@@ -100,6 +100,9 @@ export default {
         }
     },
     methods: {
+        /**
+         * Initialises sign out for the user
+         */
         signOut() {
             this.$store.dispatch("closeSocket");
             return this.$store.dispatch("destroyToken").then(() => {
@@ -108,6 +111,10 @@ export default {
         }
     },
     filters: {
+        /**
+        * Generates a profile image placeholder if no name exists
+        * or if name is less than 2 characters
+        */
         initials: data => {
             if (!data) return "😁";
             data = data.toString();
@@ -118,6 +125,9 @@ export default {
                 data[1].charAt(0).toUpperCase()
             );
         },
+        /**
+         * 
+         */
         shorten: data => {
             if (window.innerWidth < 440) return "";
             return data;

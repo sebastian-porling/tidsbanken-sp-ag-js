@@ -22,12 +22,10 @@ export default {
         };
     },
     props: ["active"],
-    created() {
-
-    },
-    computed: {
-    },
     methods: {
+      /**
+       * Toggle edit form and info card
+       */
        toggleCard(setting) {
          this.setting = setting;
          this.showEdit = !this.showEdit;

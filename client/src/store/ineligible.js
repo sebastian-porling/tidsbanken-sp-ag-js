@@ -31,7 +31,7 @@ export default {
     },
     actions: {
         /**
-         * 
+         * Fetches all ineligible periods
          * @param {Object} context Store context 
          */
         retrieveIneligiblePeriods({commit, rootGetters}) {
@@ -41,7 +41,7 @@ export default {
                 .catch(error => console.log(error.response));
         },
         /**
-         * 
+         * Deletes an ineligible period
          * @param {Object} context Store context 
          * @param {*} ineligiblePeriodId 
          */
@@ -64,7 +64,7 @@ export default {
             });
         },
         /**
-         * 
+         * Updates an existing ineligible period
          * @param {Object} context Store context 
          * @param {*} ineligiblePeriod 
          */
