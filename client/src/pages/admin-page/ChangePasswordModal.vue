@@ -51,6 +51,11 @@ export default {
     changeMode() {
       this.$emit("changeMode");
     },
+    /**
+     * Updates the password on the user
+     * @param {Number} user id
+     * @param {String} password
+     */
     submit() {
       this.isLoading = true;
       if (this.valid) {

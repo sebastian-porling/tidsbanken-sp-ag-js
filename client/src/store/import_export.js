@@ -20,7 +20,7 @@ export default {
     },
     actions: {
         /**
-         * 
+         * Exports vacations requests
          * @param {Object} context Store context 
          */
         exportData({commit, rootGetters}) {
@@ -42,7 +42,7 @@ export default {
             })
         },
         /**
-         * 
+         * Imports vacation requests
          * @param {Object} context Store context 
          * @param {*} data 
          */

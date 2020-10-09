@@ -43,6 +43,9 @@ export default {
         url: ''
     };
   },
+  /** 
+   * Fetches the url of the user profile picture
+   */
   mounted() {
       this.url = this.user.profile_pic
   },
@@ -53,6 +56,10 @@ export default {
     openModal() {
       this.dialog = true;
     },
+    /**
+     * Sends a request to update user
+     * @param {Object} id profile_pic
+     */
     submit() {
       this.$store
         .dispatch("updateUser", {

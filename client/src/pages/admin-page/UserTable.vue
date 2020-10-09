@@ -56,6 +56,10 @@ export default {
     "create-user-modal": CreateUserModal,
     "user-modal": UserModal,
   },
+  /**
+   * Changes color of skeletion loader according to 
+   * application theme
+   */
   inject: {
     theme: {
       default: { isDark: false },
@@ -79,12 +83,18 @@ export default {
       activateModal: false,
     };
   },
+  /**
+   * Initialises request to fetch all users
+   */
   created() {
     this.$store.dispatch("retrieveAllUsers")
         .then(() => {
-          setTimeout(() => (this.isLoading = false), 500);
+          this.isLoading = false;
         });
   },
+  /**
+   * Fetches all users
+   */
   computed: {
     users: {
       get() {
@@ -104,6 +114,10 @@ export default {
       this.user = {};
       this.activateModal = false;
     },
+    /**
+     * Initialises request to delete specific user
+     * @param {Number} id
+     */
     deleteUser(user) {
       this.$store.dispatch("deactivateUser", user.id);
     },

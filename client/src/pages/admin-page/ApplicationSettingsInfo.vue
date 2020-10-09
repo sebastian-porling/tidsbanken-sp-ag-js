@@ -69,9 +69,15 @@ export default {
         };
     },
     props: ["active"],
+    /**
+     * Instanstiates fetch all settings
+     */
     created() {
         this.$store.dispatch("retrieveAllSettings");
     },
+    /**
+     * Fethces all settings
+     */
     computed: {
         settings: {
             get() {
@@ -80,9 +86,17 @@ export default {
         }
     },
     methods: {
+        /**
+         * Deletes setting by id
+         * @param {Number} setting id
+         */
         deleteSetting(settingId) {
           this.$store.dispatch('deleteSetting', settingId);
         },
+        /**
+         * Adds a new setting
+         * @param {Object} setting
+         */
         addSetting() {
             this.isLoading = true;
           if(this.key && this.value) {
@@ -102,6 +116,10 @@ export default {
             this.value = null;
           }
         },
+        /**
+         * Emits edit setting
+         * @param {Object} setting to edit
+         */
         editSetting(setting) {
             this.$emit('editSetting', setting);
         }

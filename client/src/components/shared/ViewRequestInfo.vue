@@ -64,12 +64,19 @@ export default {
     "view-request-comments": ViewRequestComments,
   },
   filters: {
+    /**
+   * Formats the date to only show DD-MM-YYYY
+   */
     formatDate: (date) => {
       if (!date) {
         return "";
       }
       return date.substring(0, 10);
     },
+      /**
+   * Generates a profile image placeholder if no name exists
+   * or if name is less than 2 characters
+   */
     initials: (data) => {
             if (!data) return '😁';
             data = data.toString();
@@ -87,6 +94,9 @@ export default {
     changeMode() {
       this.$emit("changeMode");
     },
+    /**
+     * Sets colors according to state
+     */
     getColor(status) {
       switch (status) {
         case "Pending":
@@ -97,6 +107,9 @@ export default {
           return "red";
       }
     },
+    /**
+     * Deletes the vacation request
+     */
     deleteRequest() {
       if (confirm("You sure you want to delete this request?")) {
         this.$store
@@ -110,6 +123,9 @@ export default {
       }
     },
   },
+  /**
+   * Fetches current user
+   */
   computed: {
     currentUser() {
       return this.$store.getters.getCurrentUser;

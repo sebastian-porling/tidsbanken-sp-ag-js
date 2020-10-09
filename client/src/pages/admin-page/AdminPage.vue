@@ -98,6 +98,10 @@ export default {
         };
     },
     methods: {
+        /**
+         * Toggles the different tables such as users, requests and settings
+         * @param {String} table name
+         */
         toggleTable(val) {
             this.activeTable = val;
         },
@@ -109,6 +113,9 @@ export default {
             this.user = {};
             this.activateModal = false;
         },
+        /**
+         * Fetch all Vacation Requests and comments and exports on to file
+         */
         exportData() {
             this.$store
                 .dispatch("exportData")

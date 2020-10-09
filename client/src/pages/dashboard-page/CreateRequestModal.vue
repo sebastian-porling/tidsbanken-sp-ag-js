@@ -77,6 +77,11 @@ export default {
         }
     },
     methods: {
+      /**
+       * If form is valid, initialise request to create
+       * new vacation request
+       * @param {Object} title start end
+       */
       submit() {
         if (this.valid) {
           this.isLoading = true
@@ -95,6 +100,9 @@ export default {
         }
 
       },
+      /**
+       * Resets the form
+       */
       reset() {
         this.valid = true;
         this.title = "";
