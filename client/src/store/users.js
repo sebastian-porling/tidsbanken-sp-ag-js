@@ -35,6 +35,10 @@ export default {
     }
   },
   actions: {
+    /**
+     * Retrieves all users
+     * @param {Object} context Store context 
+     */
     retrieveAllUsers(context) {
       axios
         .get(`/user/all`, {
@@ -50,6 +54,11 @@ export default {
           console.log(error.response);
         });
     },
+    /**
+     * 
+     * @param {Object} context Store context 
+     * @param {*} userId 
+     */
     retrieveUser(context, userId) {
       axios
         .get(`/user/${userId}`, {
@@ -65,6 +74,11 @@ export default {
           console.log(error.response);
         });
     },
+    /**
+     * Creates a new user
+     * @param {Object} context Store context
+     * @param {Object} newUser 
+     */
     createUser(context, newUser) {
       return new Promise((resolve, reject) => {
         axios
@@ -88,6 +102,11 @@ export default {
           });
       });
     },
+    /**
+     * Updates the user with the given user data
+     * @param {Object} context Store context
+     * @param {Object} user User data
+     */
     updateUser(context, user) {
         return new Promise((resolve, reject) => {
           axios
@@ -112,6 +131,12 @@ export default {
             });
         });
       },
+      /**
+       * 
+       * @param {Object} context Store context
+       * @param {Number} userId user to update password
+       * @param {String} password new user password
+       */
       changePassword(context, userId, password) {
         return new Promise((resolve, reject) => {
           axios
@@ -133,6 +158,11 @@ export default {
             });
         });
       },
+      /**
+       * Deactivates the user on the given id 
+       * @param {Object} context The store context
+       * @param {Number} userId User id
+       */
       deactivateUser(context, userId) {
         axios
             .delete(`user/${userId}`, {

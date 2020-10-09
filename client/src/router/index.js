@@ -7,8 +7,14 @@ const RequestHistoryPage = () => import('../pages/request-history-page/RequestHi
 const UserPage = () => import('../pages/user-profile-page/UserPage')
 const NotFound = () => import('../pages/error/NotFound')
 
+/**
+ * Add Router Plugin To the Vue Instance
+ */
 Vue.use(Router)
 
+/**
+ * Setup all routes with history mode
+ */
 export default new Router ({
     mode: "history",
     routes: [

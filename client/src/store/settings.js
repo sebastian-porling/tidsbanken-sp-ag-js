@@ -27,6 +27,10 @@ export default {
         }
     },
     actions: {
+        /**
+         * Retrieves all settings
+         * @param {Object} context Store context 
+         */
         retrieveAllSettings({commit, rootGetters}) {
             axios.get('/setting', {
                 headers: {
@@ -38,6 +42,11 @@ export default {
             })
             .catch(error => console.log(error.response));
         },
+        /**
+         * Deletes settings by id
+         * @param {Object} context Store context 
+         * @param {Number} settingId setting id
+         */
         deleteSetting({commit, rootGetters}, settingId) {
             axios.delete(`/setting/${settingId}`, {
                 headers: {
@@ -55,6 +64,11 @@ export default {
             }
             );
         },
+        /**
+         * Retrieve Setting by id
+         * @param {Object} context Store context 
+         * @param {Number} settingId Setting id
+         */
         retrieveSettingById({rootGetters}, settingId){
             return new Promise((resolve, reject) => {
                 axios.get(`/setting/${settingId}`, {
@@ -66,6 +80,11 @@ export default {
                 .catch(error => reject(error.response));
             });
         },
+        /**
+         * Update setting by id
+         * @param {Object} context Store context 
+         * @param {Object} setting Setting data
+         */
         patchSetting({commit, rootGetters}, setting) {
             axios.patch(`/setting/${setting.id}`, setting, {
                 headers: {
@@ -82,6 +101,11 @@ export default {
                 commit("setIsAlert", true);
             });
         },
+        /**
+         * Creates a new setting
+         * @param {Object} context Store context 
+         * @param {Object} setting Setting data
+         */
         createSetting({commit, rootGetters}, setting) {
             axios.post(`/setting`, setting, {
                 headers: {

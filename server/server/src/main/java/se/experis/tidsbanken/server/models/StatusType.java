@@ -1,5 +1,8 @@
 package se.experis.tidsbanken.server.models;
 
+/**
+ * Represents all available status types
+ */
 public enum StatusType {
     PENDING (new Status(1, "Pending")),
     APPROVED( new Status(2, "Approved")),

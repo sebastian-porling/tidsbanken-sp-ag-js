@@ -17,6 +17,9 @@ import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Handles all functionality for user data
+ */
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -31,6 +34,11 @@ public class UserController {
     @Autowired private Validator validator = factory.getValidator();
     private Logger logger = LoggerFactory.getLogger(CommentController.class);
 
+    /**
+     * Returns current authenticated user
+     * @param request HttpServletRequest
+     * @return SEE_OTHER Status when authenticated, or 500 on server error
+     */
     @GetMapping("/user")
     public ResponseEntity<CommonResponse> getUser(HttpServletRequest request) {
         try {
@@ -43,6 +51,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Creates a user with given user data
+     * @param user User data
+     * @param request HttpServletRequest
+     * @return 201 when created and returns user, 400 if user exists by email or not valid, 500 on server error
+     */
     @PostMapping("/user")
     public ResponseEntity<CommonResponse> createUser(@RequestBody User user,
                                                      HttpServletRequest request) {
@@ -70,12 +84,15 @@ public class UserController {
         }
     }
 
+    /**
+     * Returns user by id and returns appropriate data for the current user
+     * @param userId User Id
+     * @param request HttpServletRequest
+     * @return 200 with user, 404 if user not found, 500 on server error
+     */
     @GetMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> getUser(@PathVariable("user_id") Long userId,
                                                   HttpServletRequest request) {
-        if (!authService.isAuthorized(request)) {
-            return responseUtility.unauthorized();
-        }
         try {
             final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
             if (fetchedUser.isPresent()) {
@@ -90,6 +107,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Updates the user with the provided user id with provided user data
+     * @param userId User Id
+     * @param user User Data to update
+     * @param request HttpServletRequest
+     * @return 200 if updated, 404 if not found, 400 if not valid, 403 if forbidden action 500 on server error, 401 if unauthorized
+     */
     @PatchMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> updateUser(@PathVariable("user_id") Long userId,
                                                      @RequestBody User user,
@@ -139,6 +163,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Deactivates a user by provided id
+     * @param userId User Id
+     * @param request HttpServletRequest
+     * @return 200 if deactivated, 404 if not found, 403 if not admin, 500 on server error
+     */
     @DeleteMapping("/user/{user_id}")
     public ResponseEntity<CommonResponse> deleteUser(@PathVariable("user_id") Long userId,
                                                      HttpServletRequest request) {
@@ -164,13 +194,16 @@ public class UserController {
         }
     }
 
+    /**
+     * Finds Vacation Requests associated with the user id
+     * @param userId User Id
+     * @param request HttpServletRequest
+     * @return 200 with vacation requests associated with the user, 404 if user not found, 500 on server error
+     */
     @GetMapping("/user/{user_id}/requests")
     public ResponseEntity<CommonResponse> getUserVacationRequests(@PathVariable("user_id") Long userId,
                                                                   HttpServletRequest request) {
         try {
-            if (!authService.isAuthorized(request)) {
-                return responseUtility.unauthorized();
-            }
             final Optional<User> fetchedUser = userRepository.findByIdAndIsActiveTrue(userId);
             if (fetchedUser.isPresent()) {
                 Object data;
@@ -193,6 +226,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Updates the password on given user id
+     * @param userId User Id
+     * @param user User data with password
+     * @param request HttpServletRequest
+     * @return 200 if updated, 401 if not authorized, 404 on not found, 500 on server error
+     */
     @PostMapping("/user/{user_id}/update_password")
     public ResponseEntity<CommonResponse> updatePassword(@PathVariable("user_id") Long userId,
                                                          @RequestBody User user,
@@ -225,6 +265,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Generates a new two factor for the given user.
+     * Only Admin and Current user
+     * @param userId User Id
+     * @param request HttpServletRequest
+     * @return 200 with new Two factor data, 404 on not found, 401 if current user not authorized, 500 on server error
+     */
     @PostMapping("/user/{user_id}/generate_two_factor")
     public ResponseEntity<CommonResponse> generateNewTwoFactorAuth(@PathVariable("user_id") Long userId,
                                                                    HttpServletRequest request) {
@@ -246,6 +293,11 @@ public class UserController {
         } else return responseUtility.notFound("User Not Found");
     }
 
+    /**
+     * Returns all users. Admin only action
+     * @param request HttpServletRequest
+     * @return 200 with all users, 401 on not authorized, 500 on server error
+     */
     @GetMapping("/user/all")
     public ResponseEntity<CommonResponse> getAllUsers(HttpServletRequest request) {
         if (authService.isAuthorizedAdmin(request)) {
@@ -258,21 +310,31 @@ public class UserController {
         } else return responseUtility.unauthorized();
     }
 
+    /**
+     * Makes a user data response for normal users
+     * @param user User
+     * @return HashMap with fields allowed for normal users
+     */
     private HashMap<String, Object> getUserResponse(User user) {
         final HashMap<String, Object> data = new HashMap<>();
+        data.put("user_id", user.getId());
         data.put("email", user.getEmail());
         data.put("full_name", user.getFullName());
         data.put("profile_pic", user.getProfilePic());
+        data.put("vacation_days", user.getVacationDays());
+        data.put("used_vacation_days", user.getUsedVacationDays());
         return data;
     }
 
+    /**
+     * Makes a user data response for admins
+     * @param user user
+     * @return HashMap with fields allowed for admins
+     */
     private HashMap<String, Object> getAdminResponse(User user) {
         final HashMap<String, Object> data = getUserResponse(user);
-        data.put("user_id", user.getId());
         data.put("created_at", user.getCreatedAt());
         data.put("is_admin", user.isAdmin());
-        data.put("vacation_days", user.getVacationDays());
-        data.put("used_vacation_days", user.getUsedVacationDays());
         return data;
     }
 }

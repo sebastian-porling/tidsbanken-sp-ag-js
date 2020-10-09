@@ -30,15 +30,6 @@
                   required
                 ></v-text-field>
               </v-col>
-              <!-- <v-col cols="10">
-                <v-text-field
-                  type="password"
-                  v-model="confirm"
-                  :rules="confirmRules"
-                  label="Confirm Password"
-                  required
-                ></v-text-field>
-              </v-col>-->
             </v-row>
           </v-form>
         </v-card-text>
@@ -73,10 +64,6 @@ export default {
       (v) => !!v || "Password is required",
       (v) => (v && v.length >= 6) || "Password must be more than 6 characters",
     ],
-    /* confirm: "",
-    confirmRules: [
-      (v) => (v && v === this.password) || "Passwords does not match"
-    ], */
   }),
   computed: {
     loggedIn() {

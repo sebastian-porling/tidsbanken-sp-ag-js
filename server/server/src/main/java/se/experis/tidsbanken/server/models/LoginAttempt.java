@@ -40,6 +40,10 @@ public class LoginAttempt {
         return this;
     }
 
+    /**
+     * Adds a timestamp that is 10 minutes in the future.
+     * @return this login attempt
+     */
     public LoginAttempt setToBlocked() {
         this.blockedTimeStamp = new java.sql.Timestamp(System.currentTimeMillis() + 1000 * 60 * 10);
         return this;

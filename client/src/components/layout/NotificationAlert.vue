@@ -39,13 +39,13 @@ export default {
     },
     watch: {
       socket() {
-        let socket = this.$store.getters.getSocket;
+        /*let socket = this.$store.getters.getSocket;
         if (socket !== null) {
           this.$store.getters.getSocket.on('notification', (notification) => {
             this.notification = notification;
             this.snackbar = true;
         })
-        }
+        }*/
       }
     },
 }

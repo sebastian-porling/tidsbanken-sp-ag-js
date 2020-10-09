@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Handles the import and export of Vacation Request data
+ * and comments associated with the Vacation Request
+ */
 @Service
 public class ImportExportService {
     @Autowired private VacationRequestRepository vrRepository;
@@ -22,6 +26,10 @@ public class ImportExportService {
     @Autowired private StatusRepository statusRepository;
     @Autowired private NotificationObserver observer;
 
+    /**
+     * Returns all Vacation Requests and comments as a combined object
+     * @return list of Vacation Requests and its comments
+     */
     @Transactional
     public List<ImportExportDTO> getExportData() {
         return vrRepository.findAll().stream()
@@ -29,6 +37,11 @@ public class ImportExportService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Saves data to the Vacation Request and Comment repository if it is valid
+     * @param importData list of Vacation Request and comments
+     * @throws Exception is thrown when a parsing error has occurred, or users doesn't exist or overlapping Vacation Requests
+     */
     @Transactional
     public void saveImportData(List<ImportExportDTO> importData) throws Exception{
         for (ImportExportDTO ieDTO: importData) {
@@ -42,11 +55,23 @@ public class ImportExportService {
         }
     }
 
+    /**
+     * Checks so the Vacation Request doesn't overlap with existing user Vacation Request or Ineligible Periods
+     * @param vr Vacation Request
+     * @return true if not valid
+     */
     private boolean notValidVacationRequest(VacationRequest vr) {
     return !vrRepository.findAllByOwner(vr.getOriginalOwner()).stream().allMatch(vr::excludesInPeriod)
                 || !ipRepository.findAllByOrderByStartDesc().stream().allMatch(vr::excludesInIP);
     }
 
+    /**
+     * Mapps a DTO to a Vacation Request
+     * @param dto ImportExportDTO
+     * @param owner User who owns the Vacation Request
+     * @param moderator User who moderated the Vacation Request or null if not moderated
+     * @return Vacation Request
+     */
     private VacationRequest DTOtoVacationRequest(ImportExportDTO dto, User owner, User moderator) {
         final VacationRequest vr = new VacationRequest();
         vr.setTitle(dto.getTitle());
@@ -61,6 +86,12 @@ public class ImportExportService {
         return vr;
     }
 
+    /**
+     * Mapps CommentDTO to comment entity
+     * @param commentDTOs list of comment dtos
+     * @param vr Vacation Request that the comments is associated to
+     * @return returns list of comments
+     */
     private List<Comment> DTOtoComments(List<CommentDTO> commentDTOs, VacationRequest vr) {
         return commentDTOs.stream()
                 .map(cDTO -> {
@@ -75,6 +106,11 @@ public class ImportExportService {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     * Maps a Vacation Request to a DTO
+     * @param vr Vacation Request
+     * @return ImportExportDTO
+     */
     private ImportExportDTO toImportExportDTO(VacationRequest vr) {
         final List<Comment> comments = commentRepository.findAllByRequest(vr);
         return new ImportExportDTO(
@@ -92,6 +128,11 @@ public class ImportExportService {
                 toCommentDTO(comments));
     }
 
+    /**
+     * Maps list of comments to a list of CommentDTOs
+     * @param comments list of comments
+     * @return list of CommentDTOs
+     */
     private List<CommentDTO> toCommentDTO(List<Comment> comments) {
         return comments.stream()
                 .map(c -> new CommentDTO(

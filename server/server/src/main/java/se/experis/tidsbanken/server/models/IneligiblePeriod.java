@@ -93,11 +93,6 @@ public class IneligiblePeriod {
         this.modifiedAt = modifiedAt;
     }
 
-    public boolean excludesInPeriod(IneligiblePeriod ip) {
-        return (ip.start.before(this.start) && ip.end.before(this.start)) ||
-                (ip.start.after(this.end) && ip.end.after(this.end));
-    }
-
     @Override
     public String toString() {
         return "IneligiblePeriod{" +
@@ -109,4 +104,15 @@ public class IneligiblePeriod {
                 ", modifiedAt=" + modifiedAt +
                 '}';
     }
+
+    /**
+     * Checks so this ineligible period doesn't overlap with given ineligible period
+     * @param ip Ineligible Period
+     * @return true if it doesn't overlap
+     */
+    public boolean excludesInPeriod(IneligiblePeriod ip) {
+        return (ip.start.before(this.start) && ip.end.before(this.start)) ||
+                (ip.start.after(this.end) && ip.end.after(this.end));
+    }
+
 }

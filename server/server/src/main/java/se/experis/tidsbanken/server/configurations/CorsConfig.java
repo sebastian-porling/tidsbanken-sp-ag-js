@@ -10,13 +10,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 
+/**
+ * Sets up cors to allow all origins
+ */
 @CrossOrigin
 @Configuration
 public class CorsConfig {
 
+    /**
+     * Allows all origins
+     * @return FilterRegistrationBean
+     */
     @Bean
     public FilterRegistrationBean corsFilter() {
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
@@ -28,7 +34,6 @@ public class CorsConfig {
         config.addAllowedMethod("POST");
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
-
         source.registerCorsConfiguration("/**", config);
         final FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);

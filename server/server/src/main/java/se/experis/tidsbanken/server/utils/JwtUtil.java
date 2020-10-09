@@ -8,50 +8,57 @@ import se.experis.tidsbanken.server.models.User;
 import java.util.*;
 import java.util.function.Function;
 
+/**
+ * Generates and validates JWT tokens used for Http Requests and sockets
+ */
 @Service
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String SECRET;
+    @Value("${jwt.secret}") private String SECRET;
 
+    /**
+     * Extracts the user id from the JWT
+     * @param token String JWT
+     * @return Long, the user id
+     */
     public Long extractUserId(String token) {
         final Claims claims = extractAllClaims(token);
         return Long.valueOf(claims.get("user_id").toString());
     }
 
     /**
-     *
-     * @param token
-     * @return
+     * Extracts the user role
+     * @param token String, JWT
+     * @return the user role
      */
     public String extractAudience(String token) {
         return extractClaim(token, Claims::getAudience);
     }
 
     /**
-     *
-     * @param token
-     * @return
+     * Extracts the user email
+     * @param token String, JWT
+     * @return String, user email
      */
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     /**
-     *
-     * @param token
-     * @return
+     * Extracts the expiration Date
+     * @param token String, JWT
+     * @return Expiration Date
      */
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
     /**
-     *
-     * @param token
-     * @param claimsResolver
-     * @param <T>
-     * @return
+     * Function to extract the given claims
+     * @param token String, JWT
+     * @param claimsResolver Function, with claim to extract
+     * @param <T> Function
+     * @return Claim any type
      */
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -68,19 +75,19 @@ public class JwtUtil {
     }
 
     /**
-     *
-     * @param token
-     * @return
+     * Checks if the JWT is expired
+     * @param token String, JWT
+     * @return true if expired
      */
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
     /**
-     *
-     * @param user
-     * @param audience
-     * @return
+     * Generates a JWT of the given user
+     * @param user User the JWT owns to
+     * @param audience the user role
+     * @return JWT token as a string
      */
     public String generateToken(User user, String audience) {
         Map<String, Object> claims = new HashMap<>();

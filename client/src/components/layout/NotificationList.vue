@@ -1,5 +1,5 @@
 <template>
-    <v-list>
+    <v-list style="max-height: 80vh;">
         <v-list-item v-for="notification in notifications" :key="notification.id">
             <v-list-item-text>{{notification.message}}</v-list-item-text>
             <v-list-item-action>

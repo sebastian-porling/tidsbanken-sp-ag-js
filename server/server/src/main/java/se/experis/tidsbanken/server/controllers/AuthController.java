@@ -16,6 +16,9 @@ import se.experis.tidsbanken.server.utils.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+/**
+ * Handles the login for the application
+ */
 @RestController
 @RequestMapping("/api")
 public class AuthController {
@@ -27,16 +30,21 @@ public class AuthController {
     @Autowired private LoginAttemptService loginAttemptService;
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
+    /**
+     * Handles the login procedure for non authenticated users.
+     * It will return two factor data if the user doesn't have it setup.
+     * Otherwise we will just take care of login
+     * @param credentials Credentials consisting of email, password and Two Factor Code
+     * @param request HttpServletRequest
+     * @return 200 with user data and JWT, 400 if email or password or missing fields, 500 on server error.
+     */
     @PostMapping("/login")
     public ResponseEntity<CommonResponse> login(@RequestBody Credentials credentials,
                                                 HttpServletRequest request) {
         try {
             if (credentials.getEmail() != null && credentials.getPassword() != null) {
-                System.out.println("In controller");
                 final Optional<User> fetchedUser = userRepository.getByEmailAndIsActiveTrue(credentials.getEmail());
-                System.out.println("fetched user");
                 if (fetchedUser.isPresent() && fetchedUser.get().getPassword().equals(credentials.getPassword())) {
-                    System.out.println("user exists!");
                     final User presentUser = fetchedUser.get();
                     if(!presentUser.isTwoFactorAuth()) {
                         presentUser.setTwoFactorAuth(true);
