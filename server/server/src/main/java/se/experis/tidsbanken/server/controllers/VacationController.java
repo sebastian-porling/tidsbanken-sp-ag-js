@@ -34,6 +34,7 @@ public class VacationController{
     @Autowired private CommentRepository commentRepository;
     @Autowired private IneligiblePeriodRepository ipRepository;
     @Autowired private SettingRepository settingRepository;
+    @Autowired private UserRepository userRepository;
     @Autowired private NotificationObserver observer;
     @Autowired private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     @Autowired private Validator validator = factory.getValidator();
@@ -167,11 +168,11 @@ public class VacationController{
                                 return responseUtility.badRequest("End date can't be before start date.");
                             }
                         }
-                        if (isAdmin && !isOwner) {
-                            if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) {
-                                vr.setStatus(vacationRequest.getStatus());
-                                vr.setModerationDate(new Date(System.currentTimeMillis()));
-                                vr.setModerator(currentUser);
+                        if (isAdmin && !isOwner && vacationRequest.getStatus() != null) {
+                            vr.setStatus(vacationRequest.getStatus());
+                            vr.setModerationDate(new Date(System.currentTimeMillis()));
+                            vr.setModerator(currentUser);
+                            if (vacationRequest.getStatus() != null && vacationRequest.onlyApproved()) {
                                 final Long days = TimeUnit.DAYS.convert(vr.getEnd().getTime() - vr.getStart().getTime(), TimeUnit.MILLISECONDS);
                                 final int userDays = vr.getOriginalOwner().getVacationDays() - vr.getOriginalOwner().getUsedVacationDays();
                                 if (days > userDays) return responseUtility.badRequest("Not enough vacation days");
@@ -180,6 +181,7 @@ public class VacationController{
                                 if (maxVacationDays.isPresent() && Long.parseLong((String) maxVacationDays.get().getValue()) < days)
                                     return responseUtility.badRequest("Request exceeds vacation day limit!");
                                 vr.getOriginalOwner().setUsedVacationDays(vr.getOriginalOwner().getUsedVacationDays()+days.intValue());
+                                userRepository.save(vr.getOriginalOwner());
                             }
                         } else {if (vacationRequest.getStatus() != null && !vacationRequest.isPending()) return responseUtility.forbidden("Not authorized to change status on this request."); }
                         vr.setModifiedAt(new Date(System.currentTimeMillis()));

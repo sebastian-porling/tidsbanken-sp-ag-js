@@ -189,6 +189,15 @@ public class VacationRequest {
     }
 
     /**
+     * Checks if the vacation request is denied
+     * @return true if denied
+     */
+    @JsonIgnore
+    public boolean isDenied() {
+        return this.status.getStatus().equals("Denied");
+    }
+
+    /**
      * Checks so this vacation request doesn't overlap with given vacation request
      * @param vr Vacation Request
      * @return true if it doesn't overlap

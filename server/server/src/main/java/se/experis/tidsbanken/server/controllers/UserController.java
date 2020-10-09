@@ -317,9 +317,12 @@ public class UserController {
      */
     private HashMap<String, Object> getUserResponse(User user) {
         final HashMap<String, Object> data = new HashMap<>();
+        data.put("user_id", user.getId());
         data.put("email", user.getEmail());
         data.put("full_name", user.getFullName());
         data.put("profile_pic", user.getProfilePic());
+        data.put("vacation_days", user.getVacationDays());
+        data.put("used_vacation_days", user.getUsedVacationDays());
         return data;
     }
 
@@ -330,11 +333,8 @@ public class UserController {
      */
     private HashMap<String, Object> getAdminResponse(User user) {
         final HashMap<String, Object> data = getUserResponse(user);
-        data.put("user_id", user.getId());
         data.put("created_at", user.getCreatedAt());
         data.put("is_admin", user.isAdmin());
-        data.put("vacation_days", user.getVacationDays());
-        data.put("used_vacation_days", user.getUsedVacationDays());
         return data;
     }
 }
