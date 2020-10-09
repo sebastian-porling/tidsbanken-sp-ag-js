@@ -15,7 +15,6 @@ export default {
         UserProfileForm,
         GenerateTwoFactorModal
     },
-    
     data() {
         return {
             displayModal: false,

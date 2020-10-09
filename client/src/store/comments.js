@@ -30,7 +30,7 @@ export default {
   },
   actions: {
     /**
-     * 
+     * Fetches all comments for a specific request
      * @param {Object} context Store context 
      * @param {*} requestId 
      */
@@ -50,7 +50,7 @@ export default {
         });
     },
     /**
-     * 
+     * Creates a new comment
      * @param {Object} context Store context 
      * @param {*} param1 
      */
@@ -82,7 +82,7 @@ export default {
       });
     },
     /**
-     * 
+     * Updates an existing comment
      * @param {Object} context Store context 
      * @param {*} param1 
      */
@@ -110,7 +110,7 @@ export default {
         });
     },
     /**
-     * 
+     * Deletes a comment
      * @param {Object} context Store context 
      * @param {*} param1 
      */

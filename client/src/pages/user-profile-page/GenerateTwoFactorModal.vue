@@ -30,6 +30,9 @@ export default {
             uri: null
         }
     },
+    /**
+     * Changes window witdh if mobile
+     */
     computed: {
       isMobile: {
         get() {
@@ -41,6 +44,9 @@ export default {
         closeModal() {
             this.$emit('closeModal');
         },
+        /**
+         * Generates a new QR code 
+         */
         generate() {
             this.$store.dispatch('generateMultiAuth')
             .then(() => {

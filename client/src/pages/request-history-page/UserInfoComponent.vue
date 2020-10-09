@@ -23,11 +23,18 @@
 export default {
   name: "UserInfoComponent",
   props: ["user", "userId"],
+  /**
+   * Fetches the current user
+   */
   computed: {
     currentUser() {
       return this.$store.getters.getCurrentUser;
     },
   },
+    /**
+   * Generates a profile image placeholder if no name exists
+   * or if name is less than 2 characters
+   */
   filters: {
       initials: (data) => {
             if (!data) return '😁';

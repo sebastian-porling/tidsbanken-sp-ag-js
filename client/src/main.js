@@ -51,7 +51,7 @@ router.beforeEach((to, from, next) => {
   } 
   
   /**
-   * Otherise forward them
+   * Otherwise forward them
    */
   else {
     next ()

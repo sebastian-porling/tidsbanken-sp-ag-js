@@ -86,6 +86,10 @@ export default {
     "view-request-modal": ViewRequestModal,
     "edit-ip-modal": EditIpModal,
   },
+  /**
+   * Checks the current theme and changes skeleton colors
+   * accordingly
+   */
   inject: {
     theme: {
       default: { isDark: false },
@@ -107,6 +111,9 @@ export default {
     vacationRequest: null,
     rerender: false,
   }),
+  /**
+   * Initialise a request to fetch all vacation requests
+   */
   created() {
     this.$store
       .dispatch("retrieveAllRequests")
@@ -123,22 +130,34 @@ export default {
     this.$store.dispatch("retrieveIneligiblePeriods");
   },
   computed: {
+    /**
+     * Fetches all vacation requests
+     */
     requests: {
       get() {
         return this.$store.getters.getAllRequests;
       },
     },
+    /**
+     * Fetches all ineligible periods
+     */
     ineligibles: {
       get() {
         return this.$store.getters.getIneligiblePeriods;
       },
     },
+    /**
+     * Fetches if the current user is admin
+     */
     isAdmin: {
       get() {
         return this.$store.getters.isAdmin;
       },
     },
   },
+  /**
+   * Watches for change in requests and ineligible periods
+   */
   watch: {
     requests() {
       this.updateRange();
@@ -147,27 +166,46 @@ export default {
       this.updateRange();
     },
   },
-
+  /**
+   * When this component is mounted we will generate the
+   * calendar
+   */
   mounted() {
     this.$refs.calendar.checkChange();
   },
   methods: {
+    /**
+     * Changes to day view
+     */
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
     },
+    /**
+     * Fetches color of event(request status)
+     */
     getEventColor(event) {
       return event.color;
     },
     setToday() {
       this.focus = "";
     },
+    /**
+     * Changes to next month or day
+     */
     prev() {
       this.$refs.calendar.prev();
     },
+    /**
+     * Changes to previous month or day
+     */
     next() {
       this.$refs.calendar.next();
     },
+    /**
+     * Adds all ineligible periods and vacation requests
+     * to the calendar
+     */
     updateRange() {
       const events = [];
       this.ineligibles.forEach((ineligible, index) => {
@@ -194,6 +232,9 @@ export default {
 
       this.events = events;
     },
+    /**
+     * Sets color of request status
+     */
     getColor(status) {
       switch (status) {
         case "Pending":
@@ -204,6 +245,10 @@ export default {
           return "red";
       }
     },
+    /**
+     * Opens modal depending on what calendar event (vacation request
+     * or ineligible period) it is
+     */
     launchModal(value) {
       if (this.isAdmin && value.event.type === "ip") {
         this.ineligiblePeriod = this.ineligibles[value.event.index];

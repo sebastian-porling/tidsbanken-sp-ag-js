@@ -16,6 +16,10 @@ export default {
     name: "NotificationList",
     props: ['notifications'],
     methods: {
+        /**
+         * Deletes notification
+         * @params {Number} notificationId
+         */
         deleteNotification(notificationId) {
             this.$store.dispatch('deleteNotification', notificationId);
         }

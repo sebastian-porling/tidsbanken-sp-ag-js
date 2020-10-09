@@ -33,6 +33,9 @@ export default {
             request: null
         };
     },
+    /**
+     * Fetches if the current user is admin
+     */
     computed: {
         isAdmin() {
             return this.$store.getters.isAdmin;

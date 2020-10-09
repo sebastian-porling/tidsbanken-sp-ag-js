@@ -30,11 +30,17 @@ export default {
         }
     },
     computed: {
+        /**
+         * Fetches response
+         */
         response: {
             get() {
                 return this.$store.getters.getResponse;
             }
         },
+        /**
+         * Sets snackbar to true or false depending on value of isAlert
+         */
         snackbar: {
             get() {
                 return this.$store.getters.getIsAlert;
@@ -43,11 +49,17 @@ export default {
                 this.$store.dispatch("disableIsAlert");
             }
         },
+        /**
+         * Sets type to error if message/alert is an error message
+         */
         typeIsError: {
             get() {
                 return this.$store.getters.getTypeIsError;
             }
         },
+        /**
+         * Sets color depending on error message or not
+         */
         color: {
             get() {
                 if(this.typeIsError) return 'red'

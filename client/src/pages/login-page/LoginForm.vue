@@ -68,11 +68,18 @@ export default {
     qrCode: null,
     uri: "",
   }),
+  /**
+   * Checks the theme and change the color of the skeleton
+   * loader accordingly
+   */
   inject: {
     theme: {
       default: { isDark: false },
     },
   },
+  /**
+   * Changes with of window if mobile
+   */
   computed: {
     isMobile: {
       get() {
@@ -81,6 +88,10 @@ export default {
     },
   },
   methods: {
+    /**
+     * Initialises a login, expects QR in return
+     * @param {Object} email password
+     */
     login() {
       this.submit = true;
       this.$store
@@ -103,6 +114,11 @@ export default {
           setTimeout(() => (this.submit = false), 500);          
         });
     },
+    /**
+     * Emits loginMultiAuth
+     * @param {String} email
+     * @param {String} password
+     */
     loginMultiAuth() {
       this.$emit("loginMultiAuth", this.email, this.password);
     },
