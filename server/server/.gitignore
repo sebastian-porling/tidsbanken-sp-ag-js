@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### BUILD ###
+*static/
+*application-prod.yml
+keystore.p12
