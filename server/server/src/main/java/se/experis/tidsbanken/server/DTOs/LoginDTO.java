@@ -4,6 +4,9 @@ import se.experis.tidsbanken.server.models.User;
 
 import java.util.HashMap;
 
+/**
+ * Represents the data given to a loged in user
+ */
 public class LoginDTO {
     final private String token;
     final private User user;

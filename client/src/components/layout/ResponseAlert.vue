@@ -4,6 +4,7 @@
       v-model="snackbar"
       :color="color"
       :multi-line="'multi-line'"
+        :timeout="5000"
       :top="'top'"
     >
         {{ response }}
@@ -56,7 +57,6 @@ export default {
     },
     methods: {
         close() {
-            console.log("clicked closed");
             this.$store.dispatch("disableIsAlert");
         }
     }

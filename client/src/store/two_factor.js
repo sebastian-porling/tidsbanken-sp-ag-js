@@ -22,6 +22,10 @@ export default {
         },
     },
     actions: {
+        /**
+         * Generates a new two factor for current user
+         * @param {Object} context Store context 
+         */
         generateMultiAuth({commit, rootGetters}) {
             return new Promise((resolve, reject) => {
                 axios.post(`/user/${rootGetters.getCurrentUser.id}/generate_two_factor`, {}, {

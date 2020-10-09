@@ -36,6 +36,11 @@ export default {
         }
     },
     actions: {
+        /**
+         * Logs in the user and retrieves the token
+         * @param {Object} context Store context 
+         * @param {Object} credentials data with email, password and two auth code
+         */
         retrieveToken(context, credentials) {
             return new Promise((resolve, reject) => {
                 axios
@@ -56,6 +61,11 @@ export default {
                     });
             });
         },
+        /**
+         * Retrieves qr code if it is the first time login in
+         * @param {Object} context Store context 
+         * @param {Object} credentials data with email and password
+         */
         retrieveQr(context, credentials) {
             return new Promise((resolve, reject) => {
                 axios
@@ -78,6 +88,10 @@ export default {
                     });
             });
         },
+        /**
+         * Removes the token and user data from local storage
+         * @param {Object} context Store context 
+         */
         destroyToken(context) {
             if (context.getters.loggedIn) {
                 localStorage.removeItem("access_token");

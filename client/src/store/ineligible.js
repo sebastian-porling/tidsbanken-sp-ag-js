@@ -30,12 +30,21 @@ export default {
         }
     },
     actions: {
+        /**
+         * 
+         * @param {Object} context Store context 
+         */
         retrieveIneligiblePeriods({commit, rootGetters}) {
             axios
                 .get('/ineligible', headers(rootGetters.getToken))
                 .then(response => commit("setIneligiblePeriods", response.data.data))
                 .catch(error => console.log(error.response));
         },
+        /**
+         * 
+         * @param {Object} context Store context 
+         * @param {*} ineligiblePeriodId 
+         */
         deleteIneligiblePeriod({commit, rootGetters}, ineligiblePeriodId) {
             return new Promise((resolve, reject) => {
                 axios.delete(`/ineligible/${ineligiblePeriodId}`, headers(rootGetters.getToken))
@@ -54,6 +63,11 @@ export default {
                 });
             });
         },
+        /**
+         * 
+         * @param {Object} context Store context 
+         * @param {*} ineligiblePeriod 
+         */
         updateIneligiblePeriod({commit, rootGetters}, ineligiblePeriod) {
             return new Promise((resolve, reject) => {
                 axios.patch(`/ineligible/${ineligiblePeriod.id}`, ineligiblePeriod, headers(rootGetters.getToken))
@@ -72,6 +86,11 @@ export default {
                 });
             });
         },
+        /**
+         * Creates a new ineligible period
+         * @param {Object} context Store context 
+         * @param {*} ineligiblePeriod 
+         */
         createIneligiblePeriod({commit, rootGetters}, ineligiblePeriod) {
             return new Promise((resolve, reject) => {
                 axios.post('/ineligible', ineligiblePeriod, headers(rootGetters.getToken))

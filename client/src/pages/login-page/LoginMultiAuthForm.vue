@@ -79,8 +79,7 @@
            this.$store.dispatch('establishClientSocket')
            this.$router.push('/')
          })
-         .catch((e) => {
-           console.log(e);
+         .catch(() => {
              this.code = '';
          })
       }

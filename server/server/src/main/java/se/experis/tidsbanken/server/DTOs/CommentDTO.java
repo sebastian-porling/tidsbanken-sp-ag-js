@@ -10,6 +10,9 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a comment for a import export dto
+ */
 public class CommentDTO {
     @NonNull
     private String message;

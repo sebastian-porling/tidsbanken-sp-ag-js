@@ -38,14 +38,20 @@ export default {
         }
     },
     actions: {
+        /**
+         * Establish a new client socket connection
+         * @param {Object} context Store context 
+         */
         establishClientSocket({commit, rootGetters}) {
             if (rootGetters.getToken === null) return; 
             const socket = io(SOCKET_URL, {
                 transports: ["websocket"],
                 query: { token: rootGetters.getToken},
-                secure: true,
+                secure: false,
             });
             socket.on('notification', (notification) => {
+                commit("setResponse", notification.message);
+                commit("setIsAlert", true);
                 commit('addNotification', notification);
             })
             socket.on('notifications', (notifications) => {
@@ -54,6 +60,11 @@ export default {
             socket.emit('all');
             commit('setSocket', socket);
         },
+        /**
+         * Deletes a notification by id owned by current user
+         * @param {Object} context Store context 
+         * @param {Number} notificationId notification id
+         */
         deleteNotification({commit, rootGetters}, notificationId) {
             const socket = rootGetters.getSocket;
             socket.emit('delete', notificationId);
@@ -61,6 +72,10 @@ export default {
                 commit('removeNotification', id);
             });
         },
+        /**
+         * Dispatches delete all user vacations for the current user
+         * @param {Object} context Store context 
+         */
         deleteAllUserNotifications({commit, rootGetters}) {
             const socket = rootGetters.getSocket;
             socket.emit('deleteAll');
@@ -68,13 +83,10 @@ export default {
                 commit('removeAllNotifications');
             });
         },
-        markRead({commit, rootGetters}, notificationId) {
-            const socket = rootGetters.getSocket;
-            socket.emit('mark', notificationId);
-            socket.on('marked', (notification) => {
-                commit('replaceNotification', notification);
-            });
-        },
+        /**
+         * Closes the connection with socket
+         * @param {Object} context Store context 
+         */
         closeSocket({commit, rootGetters}) {
             rootGetters.getSocket.close();
             commit('removeSocket');

@@ -10,6 +10,9 @@ import se.experis.tidsbanken.server.models.User;
 import se.experis.tidsbanken.server.repositories.NotificationRepository;
 import se.experis.tidsbanken.server.services.AuthorizationService;
 
+/**
+ * For handling all socket functionallity
+ */
 @Component
 public class SocketHandler {
 
@@ -18,6 +21,10 @@ public class SocketHandler {
     @Autowired private AuthorizationService authService;
     private Logger logger = LoggerFactory.getLogger(SocketHandler.class);
 
+    /**
+     * Setup for SocketIOServer "endpoints"
+     * @param ioServer socnet.io server
+     */
     @Autowired
     public SocketHandler(SocketIOServer ioServer) {
         ioServer.addConnectListener(handleConnect());
@@ -27,6 +34,11 @@ public class SocketHandler {
         ioServer.addEventListener("deleteAll", Long.class, handleDeleteAll());
     }
 
+    /**
+     * Handle client socket connection.
+     * Adds the user to the local store of authorized
+     * @return lambda function for the method
+     */
     private ConnectListener handleConnect() {
         return socketIOClient -> {
             logger.info("Connecting client");
@@ -40,6 +52,11 @@ public class SocketHandler {
         };
     }
 
+    /**
+     * Handle client socket disconnect.
+     * Removes user from the local store
+     * @return lambda function for the method
+     */
     private DisconnectListener handleDisconnect() {
         return socketIOClient -> {
             logger.info("Disconnecting client");
@@ -51,6 +68,10 @@ public class SocketHandler {
         };
     }
 
+    /**
+     * Handle getting all notifications for the socket user
+     * @return lambda function for the method
+     */
     private DataListener<Long> handleGetAll() {
         return (socketIOClient, __, ackRequest) -> {
             logger.info("Client receiving all user notifications");
@@ -60,6 +81,10 @@ public class SocketHandler {
         };
     }
 
+    /**
+     * Handles deleting of user notifications
+     * @return lambda function for the method
+     */
     private DataListener<Long> handleDelete() {
         return (socketIOClient, notificationId, ackRequest) -> {
             logger.info("Client deleting notification: " + notificationId);
@@ -70,6 +95,10 @@ public class SocketHandler {
         };
     }
 
+    /**
+     * Handles deleting all user notifications
+     * @return lambda function for the method
+     */
     private DataListener<Long> handleDeleteAll() {
         return (socketIOClient, aLong, ackRequest) -> {
             logger.info("Client deleting all user notifications");
@@ -80,6 +109,11 @@ public class SocketHandler {
         };
     }
 
+    /**
+     * Parses the client socket handshake for JWT token
+     * @param client socket.io client
+     * @return token if it exists.
+     */
     private String parseToken(SocketIOClient client) {
         return client.getHandshakeData().getSingleUrlParam("token");
     }

@@ -13,6 +13,9 @@ import se.experis.tidsbanken.server.utils.ResponseUtility;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+/**
+ * Handles all functions for vacation request status
+ */
 @RestController
 @RequestMapping("/api")
 public class StatusController {
@@ -22,8 +25,12 @@ public class StatusController {
     @Autowired ResponseUtility responseUtility;
     private Logger logger = LoggerFactory.getLogger(CommentController.class);
 
+    /**
+     * Return all status
+     * @return 200 with all status, or 500 on server error
+     */
     @GetMapping("/status")
-    public ResponseEntity<CommonResponse> getStatus(HttpServletRequest request) {
+    public ResponseEntity<CommonResponse> getStatus() {
         try{
             return responseUtility.ok("All statuses", statusRepository.findAll());
         } catch(Exception e) {
@@ -32,9 +39,13 @@ public class StatusController {
         }
     }
 
+    /**
+     * Return status by status id
+     * @param statusId Status id
+     * @return 200 with status, 404 on not found, 500 on server error
+     */
     @GetMapping("/status/{status_id}")
-    public ResponseEntity<CommonResponse> getStatus(@PathVariable("status_id") Integer statusId,
-                                                    HttpServletRequest request) {
+    public ResponseEntity<CommonResponse> getStatus(@PathVariable("status_id") Integer statusId) {
         try {
             final Optional<Status> statusOp = statusRepository.findById(statusId);
             if(statusOp.isPresent())

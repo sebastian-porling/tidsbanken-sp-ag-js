@@ -125,18 +125,15 @@ export default {
       if (!date) {
         return "";
       }
-      console.log(date); //REMOVE
       return date.substring(0, 10) + " at " + date.substring(11, 19);
     },
   },
   methods: {
     deleteComment(comment) {
-      if (confirm(`You sure you want to delete this comment?`)) {
         this.$store.dispatch("deleteComment", {
           requestId: this.request_id,
           commentId: comment.id,
         });
-      }
     },
     editComment(comment) {
       console.log(comment.message);
