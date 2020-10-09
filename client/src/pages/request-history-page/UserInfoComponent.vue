@@ -9,7 +9,7 @@
       </v-avatar>
       <h1 class="px-6">{{ user.full_name }}</h1>
     </v-row>
-    <v-row justify="center" align="center" v-if="currentUser.id === userId">
+    <v-row justify="center" align="center">
       <h3>
         Vacation days:
         <h2>{{ user.used_vacation_days }}</h2>/

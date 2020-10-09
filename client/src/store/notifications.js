@@ -47,9 +47,11 @@ export default {
             const socket = io(SOCKET_URL, {
                 transports: ["websocket"],
                 query: { token: rootGetters.getToken},
-                secure: true,
+                secure: false,
             });
             socket.on('notification', (notification) => {
+                commit("setResponse", notification.message);
+                commit("setIsAlert", true);
                 commit('addNotification', notification);
             })
             socket.on('notifications', (notifications) => {

@@ -105,9 +105,7 @@ export default {
       this.activateModal = false;
     },
     deleteUser(user) {
-      if (confirm(`You sure you want to delete user ${user.full_name}?`)) {
-        this.$store.dispatch("deactivateUser", user.id);
-      }
+      this.$store.dispatch("deactivateUser", user.id);
     },
   },
 };

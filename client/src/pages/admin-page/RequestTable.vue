@@ -84,7 +84,6 @@ export default {
   created() {
     this.$store.dispatch("retrieveAllRequests").then(() => {
       setTimeout(() => (this.isLoading = false), 500);
-      //this.isLoading = false;
     });
   },
   computed: {
